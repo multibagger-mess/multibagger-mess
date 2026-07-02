@@ -1,5 +1,5 @@
 export const HERO_CONTENT = {
-  badge: "📍 Near J.K. College • Peaceful Neighbourhood",
+  badge: " Near J.K. College • Peaceful Neighbourhood",
 
   title: "A Comfortable Place to Stay.",
 

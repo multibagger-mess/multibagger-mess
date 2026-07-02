@@ -41,10 +41,6 @@ export default function Navbar() {
             Location
           </a>
 
-          <a href="#process" className="hover:text-blue-600 transition">
-            Process
-          </a>
-
           <Link
             to="/request-access"
             className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-full font-medium transition duration-300"
@@ -73,11 +69,9 @@ export default function Navbar() {
 
           <div className="flex flex-col px-6 py-6 gap-5">
 
-            <a href="#why">Why Us</a>
+            <a href="#why">Why Choose Us</a>
 
             <a href="#location">Location</a>
-
-            <a href="#process">Process</a>
 
             <Link
               to={ROUTES.REQUEST_ACCESS}
