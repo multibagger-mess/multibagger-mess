@@ -12,7 +12,36 @@ const createRequest = async (req, res) => {
         message: "Name and phone number are required.",
       });
     }
+    const existingRequest = await Request.findOne({ phoneNumber });
+    
+    if (existingRequest && existingRequest.status === "Pending") {
+    return res.status(400).json({
+        success: false,
+        message: "You already have a pending request.",
+    });
+}
 
+if (existingRequest && existingRequest.status === "Approved") {
+    return res.status(400).json({
+        success: false,
+        message: "Your request has already been approved.",
+    });
+}
+
+if (existingRequest && existingRequest.status === "Rejected") {
+
+    existingRequest.status = "Pending";
+    existingRequest.name = name;
+
+    await existingRequest.save();
+
+    return res.status(200).json({
+        success: true,
+        message: "Request submitted again successfully.",
+        data: existingRequest,
+    });
+
+}
     // Save request to MongoDB
     const request = await Request.create({
       name,
