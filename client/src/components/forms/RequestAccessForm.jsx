@@ -6,6 +6,11 @@ import InputField from "../ui/InputField";
 
 import { REQUEST_ACCESS_CONTENT } from "../../constants/RequestAccessContent";
 import { ROUTES } from "../../constants/routes";
+import requestService from "../../services/requestService";
+import {
+  validateName,
+  validatePhone,
+} from "../../utils/validators";
 
 export default function RequestAccessForm() {
   const navigate = useNavigate();
@@ -15,21 +20,45 @@ export default function RequestAccessForm() {
     phone: "",
   });
 
+  const [errors, setErrors] = useState({
+    name: "",
+    phone: "",
+  });
+
   const handleChange = (field) => (event) => {
+    const value = event.target.value;
+
     setFormData((previous) => ({
       ...previous,
-      [field]: event.target.value,
+      [field]: value,
+    }));
+
+    setErrors((previous) => ({
+      ...previous,
+      [field]: "",
     }));
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
-    console.log(formData);
+    const nameError = validateName(formData.name);
+    const phoneError = validatePhone(formData.phone);
 
-    // Backend will be connected later.
+    if (nameError || phoneError) {
+      setErrors({
+        name: nameError,
+        phone: phoneError,
+      });
 
-    navigate(ROUTES.REQUEST_SUBMITTED);
+      return;
+    }
+
+    const response = await requestService.submitRequest(formData);
+
+if (response.success) {
+  navigate(ROUTES.REQUEST_SUBMITTED);
+}
   };
 
   return (
@@ -37,21 +66,35 @@ export default function RequestAccessForm() {
       onSubmit={handleSubmit}
       className="space-y-6"
     >
-      <InputField
-        label={REQUEST_ACCESS_CONTENT.fields.name.label}
-        placeholder={REQUEST_ACCESS_CONTENT.fields.name.placeholder}
-        value={formData.name}
-        onChange={handleChange("name")}
-        required
-      />
+      <div>
+        <InputField
+          label={REQUEST_ACCESS_CONTENT.fields.name.label}
+          placeholder={REQUEST_ACCESS_CONTENT.fields.name.placeholder}
+          value={formData.name}
+          onChange={handleChange("name")}
+        />
 
-      <InputField
-        label={REQUEST_ACCESS_CONTENT.fields.phone.label}
-        placeholder={REQUEST_ACCESS_CONTENT.fields.phone.placeholder}
-        value={formData.phone}
-        onChange={handleChange("phone")}
-        required
-      />
+        {errors.name && (
+          <p className="mt-2 text-sm text-red-500">
+            {errors.name}
+          </p>
+        )}
+      </div>
+
+      <div>
+        <InputField
+          label={REQUEST_ACCESS_CONTENT.fields.phone.label}
+          placeholder={REQUEST_ACCESS_CONTENT.fields.phone.placeholder}
+          value={formData.phone}
+          onChange={handleChange("phone")}
+        />
+
+        {errors.phone && (
+          <p className="mt-2 text-sm text-red-500">
+            {errors.phone}
+          </p>
+        )}
+      </div>
 
       <Button>
         {REQUEST_ACCESS_CONTENT.buttonText}
