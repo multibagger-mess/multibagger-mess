@@ -1,15 +1,15 @@
 export const HERO_CONTENT = {
-  badge: " Near J.K. College • Peaceful Neighbourhood",
+  badge: "📍 Near J.K. College • Peaceful Neighbourhood",
 
-  title: "A Comfortable Place to Stay.",
+  title: "Comfortable Stay for Students.",
 
-  subtitle: "A Peaceful Place to Study.",
+  subtitle: "A Peaceful Environment to Learn and Grow.",
 
   description:
-    "Located near J.K. College, The Multi-Bagger Mess provides students with a clean, comfortable and peaceful environment where students can stay comfortably and focus on their studies.",
+    "Located near J.K. College, Multi-Bagger Mess offers students a clean, comfortable and peaceful living environment. Our focus is to provide a calm atmosphere where students can stay comfortably while concentrating on their studies and personal growth.",
 
   buttonText: "Request Access",
 
   helperText:
-    "To know more in detail, request access to view the complete information."
+    "Request access to view room details, availability and complete information.",
 };

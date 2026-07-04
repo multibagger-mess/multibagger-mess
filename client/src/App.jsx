@@ -6,6 +6,7 @@ import RequestSubmitted from "./pages/RequestSubmitted";
 import WaitingPage from "./pages/WaitingPage";
 import DetailsPage from "./pages/DetailsPage";
 import AdminDashboard from "./pages/AdminDashboard";
+import OccupantManagement from "./pages/OccupantManagement";
 import { ROUTES } from "./constants/routes";
 
 function App() {
@@ -39,6 +40,11 @@ function App() {
   <Route
     path={ROUTES.ADMIN}
     element={<AdminDashboard />}
+  />
+
+  <Route
+    path="/occupants"
+    element={<OccupantManagement />}
   />
 </Routes>
   );

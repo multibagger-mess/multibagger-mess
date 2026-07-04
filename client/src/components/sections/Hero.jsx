@@ -101,23 +101,13 @@ export default function Hero() {
             className="flex justify-center"
           >
 
-            <div className="w-full max-w-md aspect-square rounded-3xl bg-gradient-to-br from-blue-100 to-blue-200 shadow-2xl flex items-center justify-center">
+            <div className="w-full max-w-md aspect-square rounded-3xl overflow-hidden shadow-2xl">
 
-              <div className="text-center">
-
-                <div className="text-7xl mb-5">
-                  🏡
-                </div>
-
-                <h2 className="text-2xl font-bold text-slate-700">
-                  Hostel Illustration
-                </h2>
-
-                <p className="text-slate-500 mt-2">
-                  Custom SVG Coming Soon
-                </p>
-
-              </div>
+             <img
+                src="/hostel.jpg"
+                alt="The Multi-Bagger Mess"
+                className="w-full h-full object-cover rounded-3xl"
+            />
 
             </div>
 

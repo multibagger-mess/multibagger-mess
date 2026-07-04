@@ -1,6 +1,7 @@
 import MainLayout from "../layouts/MainLayout";
 
 import Hero from "../components/sections/Hero";
+import AvailabilitySection from "../components/sections/AvailabilitySection";
 import AccessIncludes from "../components/sections/AccessIncludes";
 import WhyChooseUs from "../components/sections/WhyChooseUs";
 import Location from "../components/sections/Location";
@@ -10,6 +11,7 @@ export default function LandingPage() {
   return (
     <MainLayout>
       <Hero />
+       <AvailabilitySection />
       <AccessIncludes />
       <WhyChooseUs />
       <Location />

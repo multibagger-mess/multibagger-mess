@@ -4,6 +4,7 @@ require("dotenv").config();
 
 const connectDB = require("./config/db");
 const requestRoutes = require("./routes/requestRoutes");
+const occupantRoutes = require("./routes/occupantRoutes");
 
 const app = express();
 connectDB();
@@ -12,6 +13,7 @@ connectDB();
 app.use(cors());
 app.use(express.json());
 app.use("/api/requests", requestRoutes);
+app.use("/api/occupants", occupantRoutes);
 
 // Test Route
 app.get("/", (req, res) => {
