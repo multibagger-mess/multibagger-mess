@@ -17,6 +17,33 @@ export default function OccupantManagement() {
 
     const [showModal, setShowModal] = useState(false);
 
+    const [editingOccupant, setEditingOccupant] = useState(null);
+
+    const [searchTerm, setSearchTerm] = useState("");
+
+    const totalOccupants = occupants.length;
+
+const activeOccupants = occupants.filter(
+    (occupant) => occupant.status === "Active"
+).length;
+
+const leftOccupants = occupants.filter(
+    (occupant) => occupant.status === "Left"
+).length;
+
+const pendingPayments = occupants.filter(
+    (occupant) => occupant.paymentStatus === "Pending"
+).length;
+
+const filteredOccupants = occupants.filter((occupant) => {
+    const search = searchTerm.toLowerCase();
+
+    return (
+        occupant.name.toLowerCase().includes(search) ||
+        occupant.phoneNumber.includes(search)
+    );
+});
+
     const loadOccupants = async () => {
     const response = await occupantService.getOccupants();
 
@@ -51,8 +78,67 @@ export default function OccupantManagement() {
                 Occupant Management
             </h1>
 
+            <div
+    style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+        gap: "20px",
+        marginBottom: "30px",
+    }}
+>
+
+    <div
+        style={{
+            background: "#ffffff",
+            padding: "20px",
+            borderRadius: "12px",
+            boxShadow: "0 8px 20px rgba(0,0,0,0.08)",
+        }}
+    >
+        <h4>Total Occupants</h4>
+        <h2>{totalOccupants}</h2>
+    </div>
+
+    <div
+        style={{
+            background: "#ecfdf5",
+            padding: "20px",
+            borderRadius: "12px",
+        }}
+    >
+        <h4>Active</h4>
+        <h2>{activeOccupants}</h2>
+    </div>
+
+    <div
+        style={{
+            background: "#fef2f2",
+            padding: "20px",
+            borderRadius: "12px",
+        }}
+    >
+        <h4>Left</h4>
+        <h2>{leftOccupants}</h2>
+    </div>
+
+    <div
+        style={{
+            background: "#fff7ed",
+            padding: "20px",
+            borderRadius: "12px",
+        }}
+    >
+        <h4>Pending Payments</h4>
+        <h2>{pendingPayments}</h2>
+    </div>
+
+</div>
+
             <button
-                onClick={() => setShowModal(true)}
+                onClick={() => {
+    setEditingOccupant(null);
+    setShowModal(true);
+}}
                 style={{
                     background: "#2563eb",
                     color: "#fff",
@@ -65,6 +151,27 @@ export default function OccupantManagement() {
             >
                 + Add Occupant
             </button>
+
+            <div
+    style={{
+        marginBottom: "25px",
+    }}
+>
+    <input
+        type="text"
+        placeholder="🔍 Search by Name or Phone Number..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        style={{
+            width: "100%",
+            padding: "14px",
+            border: "1px solid #d1d5db",
+            borderRadius: "10px",
+            fontSize: "16px",
+            outline: "none",
+        }}
+    />
+</div>
 
             <div
                 style={{
@@ -80,7 +187,7 @@ export default function OccupantManagement() {
 
 ) : (
 
-    occupants.map((occupant) => (
+  filteredOccupants.map((occupant) => (
 
         <div
             key={occupant._id}
@@ -138,6 +245,10 @@ export default function OccupantManagement() {
     }}
 >
     <button
+    onClick={() => {
+        setEditingOccupant(occupant);
+        setShowModal(true);
+    }}
         style={{
             background: "#2563eb",
             color: "white",
@@ -179,15 +290,37 @@ export default function OccupantManagement() {
             </div>
 
            <AddOccupantModal
-    isOpen={showModal}
-    onClose={() => setShowModal(false)}
-    onSave={async (data) => {
+                isOpen={showModal}
+                occupant={editingOccupant}
+                onClose={() => setShowModal(false)}
+                onSave={async (data) => {
 
-    console.log("Received in OccupantManagement:", data);
+                    console.log("editingOccupant =", editingOccupant);
+                    
+                    if (editingOccupant) {
+
+    const response = await occupantService.updateOccupant(
+        editingOccupant._id,
+        data
+    );
+
+    if (response.success) {
+
+        await loadOccupants();
+
+        setEditingOccupant(null);
+
+        setShowModal(false);
+
+    } else {
+
+        alert(response.message);
+
+    }
+
+} else {
 
     const response = await occupantService.createOccupant(data);
-
-    console.log("POST Response:", response);
 
     if (response.success) {
 
@@ -201,8 +334,9 @@ export default function OccupantManagement() {
 
     }
 
-}}
-/>
+}
+                }}
+            />
         </div>
     );
 }

@@ -1,14 +1,15 @@
-import { useState } from "react";
+import { useState, } from "react";
 
 export default function OccupantForm({
+    occupant,
     onSave,
     onCancel,
 }) {
     const [formData, setFormData] = useState({
-        name: "",
-        phoneNumber: "",
-        status: "Active",
-    });
+    name: occupant?.name || "",
+    phoneNumber: occupant?.phoneNumber || "",
+    status: occupant?.status || "Active",
+});
 
    const handleChange = (e) => {
     let { name, value } = e.target;
@@ -140,7 +141,7 @@ export default function OccupantForm({
             : "not-allowed",
 }}
                 >
-                    Save Occupant
+                    {occupant ? "Update Occupant" : "Save Occupant"}
                 </button>
             </div>
 

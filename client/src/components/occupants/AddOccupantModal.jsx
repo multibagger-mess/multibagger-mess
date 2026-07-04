@@ -4,6 +4,7 @@ export default function AddOccupantModal({
     isOpen,
     onClose,
     onSave,
+    occupant,
 }) {
     if (!isOpen) return null;
 
@@ -34,10 +35,11 @@ export default function AddOccupantModal({
                         marginBottom: "25px",
                     }}
                 >
-                    Add New Occupant
+                    {occupant ? "Edit Occupant" : "Add New Occupant"}
                 </h2>
 
-                <OccupantForm
+               <OccupantForm
+                    occupant={occupant}
                     onSave={onSave}
                     onCancel={onClose}
                 />

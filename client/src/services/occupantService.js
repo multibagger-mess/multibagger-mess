@@ -35,7 +35,32 @@ const createOccupant = async (occupantData) => {
     }
 };
 
+        const updateOccupant = async (id, occupantData) => {
+    try {
+
+        const response = await api.put(
+            `/occupants/${id}`,
+            occupantData
+        );
+
+        return {
+            success: true,
+            data: response.data.data,
+        };
+
+    } catch (error) {
+
+        return {
+            success: false,
+            message: error.message,
+        };
+
+    }
+};
+
+
 export default {
     getOccupants,
     createOccupant,
+    updateOccupant,
 };

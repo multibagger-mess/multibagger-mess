@@ -53,8 +53,43 @@ const addOccupant = async (req, res) => {
     });
   }
 };
+const updateOccupant = async (req, res) => {
+    try {
+
+        const occupant = await Occupant.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            {
+                new: true,
+                runValidators: true,
+            }
+        );
+
+        if (!occupant) {
+            return res.status(404).json({
+                success: false,
+                message: "Occupant not found",
+            });
+        }
+
+        res.json({
+            success: true,
+            message: "Occupant updated successfully.",
+            data: occupant,
+        });
+
+    } catch (error) {
+
+        res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+
+    }
+};
 
 module.exports = {
-  getOccupants,
-  addOccupant,
+    addOccupant,
+    getOccupants,
+    updateOccupant,
 };
