@@ -31,24 +31,62 @@ export default function Navbar() {
 
         {/* Desktop Menu */}
 
-        <div className="hidden md:flex items-center gap-8">
+<div className="hidden md:flex items-center gap-8">
 
-          <a href="#why" className="hover:text-blue-600 transition">
-            Why Us
-          </a>
+    <a
+        href="#why"
+        className="hover:text-blue-600 transition"
+    >
+        Why Us
+    </a>
 
-          <a href="#location" className="hover:text-blue-600 transition">
-            Location
-          </a>
+    <a
+        href="#location"
+        className="hover:text-blue-600 transition"
+    >
+        Location
+    </a>
 
-          <Link
-            to="/request-access"
-            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-full font-medium transition duration-300"
-          >
-            Request Access
-          </Link>
+    <Link
+    to={ROUTES.REQUEST_ACCESS}
+    className="
+        bg-blue-600
+        hover:bg-blue-700
+        hover:scale-105
+        text-white
+        px-6
+        py-3
+        rounded-full
+        font-medium
+        transition
+        duration-300
+        cursor-pointer
+    "
+>
+    Request Access
+</Link>
 
-        </div>
+<Link
+    to={ROUTES.ACCESS_DETAILS}
+    className="
+        border
+        border-blue-600
+        text-blue-600
+        hover:bg-blue-50
+        px-6
+        py-3
+        rounded-full
+        font-medium
+        transition-all
+        duration-300
+        hover:scale-105
+        cursor-pointer
+    "
+>
+    View Hostel Details
+</Link>
+
+</div>
 
         {/* Mobile Button */}
 
@@ -74,11 +112,33 @@ export default function Navbar() {
             <a href="#location">Location</a>
 
             <Link
-              to={ROUTES.REQUEST_ACCESS}
-              className="bg-blue-600 text-white text-center rounded-full py-3"
-            >
-              Request Access
-            </Link>
+    to={ROUTES.REQUEST_ACCESS}
+    className="
+        bg-blue-600
+        text-white
+        text-center
+        rounded-full
+        py-3
+        font-medium
+    "
+>
+    Request Access
+</Link>
+
+<Link
+    to={ROUTES.ACCESS_DETAILS}
+    className="
+        text-center
+        rounded-full
+        py-3
+        border
+        border-blue-200
+        text-blue-600
+        font-medium
+    "
+>
+    View Hostel Details
+</Link>
 
           </div>
 

@@ -87,6 +87,20 @@ const updateRequestStatus = async (req, res) => {
     try {
         const { status } = req.body;
 
+        const allowedStatus = [
+              "Pending",
+              "Approved",
+              "Rejected",
+              "Expired",
+        ];
+
+if (!allowedStatus.includes(status)) {
+    return res.status(400).json({
+        success: false,
+        message: "Invalid status supplied.",
+    });
+}
+
         const request = await Request.findById(req.params.id);
 
         if (!request) {
@@ -97,6 +111,28 @@ const updateRequestStatus = async (req, res) => {
         }
 
         request.status = status;
+
+if (status === "Approved") {
+
+    const approvedDate = new Date();
+
+    const expiryDate = new Date();
+
+    expiryDate.setDate(expiryDate.getDate() + 5);
+
+    request.approvedAt = approvedDate;
+
+    request.accessExpiresAt = expiryDate;
+
+}
+
+else {
+
+    request.approvedAt = null;
+
+    request.accessExpiresAt = null;
+
+}
 
         await request.save();
 
@@ -116,8 +152,143 @@ const updateRequestStatus = async (req, res) => {
     }
 };
 
+  // Verify Access using Phone Number
+
+const verifyRequest = async (req, res) => {
+
+    try {
+
+        const { phoneNumber } = req.body;
+
+        if (!phoneNumber) {
+
+            return res.status(400).json({
+
+                success: false,
+
+                message: "Phone number is required.",
+
+            });
+
+        }
+
+        const request = await Request.findOne({
+
+            phoneNumber,
+
+        });
+
+        if (!request) {
+
+            return res.status(404).json({
+
+                success: false,
+
+                message: "No request found for this phone number.",
+
+            });
+
+        }
+
+        if (request.status === "Pending") {
+
+            return res.status(403).json({
+
+                success: false,
+
+                message: "Your request is still under review.",
+
+            });
+
+        }
+
+        if (request.status === "Rejected") {
+
+            return res.status(403).json({
+
+                success: false,
+
+                message: "Your request has been rejected.",
+
+            });
+
+        }
+
+          // -------------------------------------
+// Check whether approval has expired
+// -------------------------------------
+
+if (request.status === "Approved") {
+
+    const today = new Date();
+
+    if (
+        request.accessExpiresAt &&
+        today > request.accessExpiresAt
+    ) {
+
+        request.status = "Expired";
+
+        await request.save();
+
+        return res.status(403).json({
+
+            success: false,
+
+            message:
+                "Your approval has expired. Please request access again.",
+
+        });
+
+    }
+
+    // Days Remaining
+
+    const millisecondsRemaining =
+        request.accessExpiresAt - today;
+
+    const daysRemaining = Math.ceil(
+        millisecondsRemaining /
+        (1000 * 60 * 60 * 24)
+    );
+
+    return res.status(200).json({
+
+        success: true,
+
+        message: "Access Granted",
+
+        data: request,
+
+        daysRemaining,
+
+        expiryDate: request.accessExpiresAt,
+
+    });
+
+}
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+        return res.status(500).json({
+
+            success: false,
+
+            message: "Internal Server Error",
+
+        });
+
+    }
+
+};
+
 module.exports = {
   createRequest,
   getRequests,
   updateRequestStatus,
+  verifyRequest,
 };

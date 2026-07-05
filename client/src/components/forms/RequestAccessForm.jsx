@@ -25,19 +25,33 @@ export default function RequestAccessForm() {
     phone: "",
   });
 
-  const handleChange = (field) => (event) => {
-    const value = event.target.value;
+ const handleChange = (field) => (event) => {
+
+    let value = event.target.value;
+
+    if (field === "name") {
+
+        value = value.replace(/[^A-Za-z ]/g, "");
+
+    }
+
+    if (field === "phone") {
+
+        value = value.replace(/\D/g, "").slice(0, 10);
+
+    }
 
     setFormData((previous) => ({
-      ...previous,
-      [field]: value,
+        ...previous,
+        [field]: value,
     }));
 
     setErrors((previous) => ({
-      ...previous,
-      [field]: "",
+        ...previous,
+        [field]: "",
     }));
-  };
+
+};
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -84,6 +98,7 @@ if (response.success) {
       <div>
         <InputField
           label={REQUEST_ACCESS_CONTENT.fields.phone.label}
+          type="tel"
           placeholder={REQUEST_ACCESS_CONTENT.fields.phone.placeholder}
           value={formData.phone}
           onChange={handleChange("phone")}

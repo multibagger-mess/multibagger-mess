@@ -7,6 +7,8 @@ export const ROUTES = {
 
   WAITING: "/waiting",
 
+  ACCESS_DETAILS: "/view-hostel-details",
+
   DETAILS: "/details",
 
   ADMIN: "/admin",

@@ -1,3 +1,4 @@
+import Container from "../layout/Container";
 import { motion } from "framer-motion";
 import { MapPin } from "lucide-react";
 
@@ -6,15 +7,17 @@ import { HERO_CONTENT } from "../../constants/content";
 import { ROUTES } from "../../constants/routes";
 import { HERO_STATS } from "../../constants/heroStats";
 
+import HostelGallery from "../ui/HostelGallery";
+
 export default function Hero() {
   return (
     <section
       id="hero"
-      className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-white pt-28"
+      className="bg-gradient-to-br from-slate-50 via-blue-50 to-white pt-28 pb-20"
     >
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+      <Container>
 
-        <div className="grid lg:grid-cols-2 gap-14 items-center min-h-[85vh]">
+        <div className="grid lg:grid-cols-[38%_62%] gap-14 items-center min-h-[88vh]">
 
           {/* LEFT COLUMN */}
 
@@ -32,7 +35,7 @@ export default function Hero() {
 
             </div>
 
-            <h1 className="mt-8 text-5xl lg:text-6xl font-extrabold leading-tight text-slate-900">
+            <h1 className="mt-8 text-4xl md:text-5xl xl:text-6xl 2xl:text-7xl font-extrabold leading-tight text-slate-900">
 
               {HERO_CONTENT.title}
 
@@ -42,13 +45,13 @@ export default function Hero() {
 
             </h1>
 
-            <p className="mt-8 text-lg text-slate-600 leading-8 max-w-xl">
+            <p className="mt-8 text-base md:text-lg xl:text-xl text-slate-600 leading-8 xl:leading-9 max-w-2xl">
 
               {HERO_CONTENT.description}
 
             </p>
 
-            <div className="mt-10">
+            <div className="mt-12">
 
               <Button to={ROUTES.REQUEST_ACCESS}>
 
@@ -58,18 +61,18 @@ export default function Hero() {
 
             </div>
 
-            <p className="mt-5 text-sm text-slate-500">
+            <p className="mt-6 text-sm text-slate-500">
 
               {HERO_CONTENT.helperText}
 
             </p>
-            <div className="mt-10 grid gap-4 sm:grid-cols-3">
+            <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-6">
 
   {HERO_STATS.map((item) => (
 
     <div
       key={item.title}
-      className="rounded-2xl bg-white shadow-md p-5 border border-slate-100"
+      className="rounded-3xl bg-white shadow-lg p-6 border border-slate-100 hover:shadow-2xl transition-all duration-300 hover:-translate-y-1"
     >
 
       <div className="text-3xl mb-3">
@@ -98,16 +101,12 @@ export default function Hero() {
             initial={{ opacity: 0, x: 40 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
-            className="flex justify-center"
+            className="w-full"
           >
 
-            <div className="w-full max-w-md aspect-square rounded-3xl overflow-hidden shadow-2xl">
+            <div className="w-full max-w-none">
 
-             <img
-                src="/hostel.jpg"
-                alt="The Multi-Bagger Mess"
-                className="w-full h-full object-cover rounded-3xl"
-            />
+                <HostelGallery />
 
             </div>
 
@@ -115,7 +114,7 @@ export default function Hero() {
 
         </div>
 
-      </div>
+      </Container>
 
     </section>
   );

@@ -7,7 +7,7 @@ export default function Button({
   className = "",
 }) {
   const baseClasses =
-    "inline-flex items-center justify-center rounded-full px-8 py-4 font-semibold transition-all duration-300";
+  "inline-flex items-center justify-center rounded-full px-8 py-4 font-semibold transition-all duration-300 cursor-pointer";
 
   const variants = {
     primary:

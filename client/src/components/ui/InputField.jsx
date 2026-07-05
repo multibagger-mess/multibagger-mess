@@ -16,25 +16,27 @@ export default function InputField({
       </label>
 
       <input
-        type={type}
-        value={value}
-        onChange={onChange}
-        required={required}
-        placeholder={placeholder}
-        className="
-          w-full
-          rounded-xl
-          border
-          border-slate-300
-          px-4
-          py-3
-          outline-none
-          transition
-          focus:border-blue-500
-          focus:ring-4
-          focus:ring-blue-100
-        "
-      />
+  type={type}
+  value={value}
+  onChange={onChange}
+  required={required}
+  placeholder={placeholder}
+  autoComplete="off"
+  spellCheck={false}
+  className="
+    w-full
+    rounded-xl
+    border
+    border-slate-300
+    px-4
+    py-3
+    outline-none
+    transition
+    focus:border-blue-500
+    focus:ring-4
+    focus:ring-blue-100
+  "
+/>
 
     </div>
   );

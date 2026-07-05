@@ -7,6 +7,7 @@ import WaitingPage from "./pages/WaitingPage";
 import DetailsPage from "./pages/DetailsPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import OccupantManagement from "./pages/OccupantManagement";
+import ViewHostelDetails from "./pages/ViewHostelDetails";
 import { ROUTES } from "./constants/routes";
 
 function App() {
@@ -25,6 +26,11 @@ function App() {
   <Route
     path={ROUTES.REQUEST_SUBMITTED}
     element={<RequestSubmitted />}
+  />
+  
+  <Route
+    path={ROUTES.ACCESS_DETAILS}
+    element={<ViewHostelDetails />}
   />
 
   <Route

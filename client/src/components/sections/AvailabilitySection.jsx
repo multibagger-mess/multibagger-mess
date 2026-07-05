@@ -1,4 +1,9 @@
 import { useEffect, useState } from "react";
+import {
+    BedDouble,
+    DoorOpen,
+    Users,
+} from "lucide-react";
 import occupantService from "../../services/occupantService";
 
 export default function AvailabilitySection() {
@@ -8,6 +13,12 @@ const TOTAL_BEDS = 10;
 const [occupiedBeds, setOccupiedBeds] = useState(0);
 
 const availableBeds = TOTAL_BEDS - occupiedBeds;
+
+const availablePercentage =
+    (availableBeds / TOTAL_BEDS) * 100;
+
+const occupiedPercentage =
+    (occupiedBeds / TOTAL_BEDS) * 100;
 
 useEffect(() => {
 
@@ -56,15 +67,6 @@ useEffect(() => {
           🛏️ Current Bed Availability
         </h2>
 
-          <p
-    style={{
-        color: "#64748b",
-        marginBottom: "25px",
-        fontSize: "16px",
-    }}
->
-    We maintain limited occupancy to provide a peaceful and comfortable study environment.
-</p>
         <p
           style={{
             color: "#64748b",
@@ -77,65 +79,206 @@ useEffect(() => {
         </p>
 
         <div
-          style={{
-            fontSize: "48px",
-            fontWeight: "bold",
-            color: availableBeds > 0 ? "#16a34a" : "#dc2626",
-          }}
-        >
-          <span
     style={{
-        color: availableBeds > 0 ? "#16a34a" : "#dc2626",
+        display: "grid",
+        gridTemplateColumns:
+            "repeat(auto-fit, minmax(220px,1fr))",
+        gap: "25px",
+        marginTop: "40px",
     }}
 >
-    {availableBeds}
-</span>
 
-{" / "}
+    {/* Available */}
 
-{TOTAL_BEDS}
-        </div>
-        <div
-    style={{
-        width: "100%",
-        height: "12px",
-        background: "#e5e7eb",
-        borderRadius: "999px",
-        marginTop: "25px",
-        overflow: "hidden",
-    }}
->
     <div
         style={{
-            width: `${(occupiedBeds / TOTAL_BEDS) * 100}%`,
-            height: "100%",
-            background: "#2563eb",
-            transition: "0.5s",
+            background: "#f0fdf4",
+            padding: "38px",
+            borderRadius: "18px",
+            textAlign: "center",
         }}
-    />
-</div>
+    >
+        <DoorOpen
+            size={42}
+            color="#16a34a"
+        />
 
-         <p
+        <h3
             style={{
                 marginTop: "15px",
-                color: "#64748b",
-                fontSize: "15px",
+                marginBottom: "10px",
             }}
         >
-    Occupancy : {Math.round((occupiedBeds / TOTAL_BEDS) * 100)}%
-</p>
-        <p
-          style={{
-            fontSize: "20px",
-            marginTop: "15px",
-            color: "#334155",
-          }}
+            Available
+        </h3>
+
+        <h1
+            style={{
+                color: "#16a34a",
+                fontSize: "62px",
+                margin: 0,
+            }}
         >
-           
-          {availableBeds > 0
-            ? "Beds Currently Available"
-            : "Currently Full"}
+            {availableBeds}
+        </h1>
+
+        <p
+            style={{
+                color: "#64748b",
+            }}
+        >
+            Ready to Move In
         </p>
+    </div>
+
+    {/* Capacity */}
+
+    <div
+        style={{
+            background: "#eff6ff",
+            padding: "38px",
+            borderRadius: "18px",
+            textAlign: "center",
+        }}
+    >
+        <BedDouble
+            size={42}
+            color="#2563eb"
+        />
+
+        <h3
+            style={{
+                marginTop: "15px",
+                marginBottom: "10px",
+            }}
+        >
+            Total Capacity
+        </h3>
+
+        <h1
+            style={{
+                color: "#2563eb",
+                fontSize: "62px",
+                margin: 0,
+            }}
+        >
+            {TOTAL_BEDS}
+        </h1>
+
+        <p
+            style={{
+                color: "#64748b",
+            }}
+        >
+            Total Hostel Beds
+        </p>
+    </div>
+
+    {/* Occupied */}
+
+    <div
+        style={{
+            background: "#fef2f2",
+            padding: "38px",
+            borderRadius: "18px",
+            textAlign: "center",
+        }}
+    >
+        <Users
+            size={42}
+            color="#dc2626"
+        />
+
+        <h3
+            style={{
+                marginTop: "15px",
+                marginBottom: "10px",
+            }}
+        >
+            Occupied
+        </h3>
+
+        <h1
+            style={{
+                color: "#dc2626",
+                fontSize: "62px",
+                margin: 0,
+            }}
+        >
+            {occupiedBeds}
+        </h1>
+
+        <p
+            style={{
+                color: "#64748b",
+            }}
+        >
+            Currently Occupied
+        </p>
+    </div>
+
+</div>
+            <div
+    style={{
+        marginTop: "45px",
+    }}
+>
+
+    <div
+        style={{
+            display: "flex",
+            height: "18px",
+            borderRadius: "999px",
+            overflow: "hidden",
+            background: "#e5e7eb",
+        }}
+    >
+
+        <div
+            style={{
+                width: `${availablePercentage}%`,
+                background: "#16a34a",
+                transition: "0.8s",
+            }}
+        />
+
+        <div
+            style={{
+                width: `${occupiedPercentage}%`,
+                background: "#dc2626",
+                transition: "0.8s",
+            }}
+        />
+
+    </div>
+
+</div>
+            <div
+    style={{
+        display: "flex",
+        justifyContent: "space-between",
+        marginTop: "12px",
+        fontWeight: "600",
+    }}
+>
+
+    <span
+        style={{
+            color: "#16a34a",
+        }}
+    >
+        {Math.round(availablePercentage)}% Available
+    </span>
+
+    <span
+        style={{
+            color: "#dc2626",
+        }}
+    >
+        {Math.round(occupiedPercentage)}% Occupied
+    </span>
+
+</div>
       </div>
     </section>
   );

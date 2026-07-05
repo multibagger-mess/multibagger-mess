@@ -21,6 +21,8 @@ export default function OccupantManagement() {
 
     const [searchTerm, setSearchTerm] = useState("");
 
+    const [statusFilter, setStatusFilter] = useState("All");
+
     const totalOccupants = occupants.length;
 
 const activeOccupants = occupants.filter(
@@ -36,20 +38,81 @@ const pendingPayments = occupants.filter(
 ).length;
 
 const filteredOccupants = occupants.filter((occupant) => {
+
     const search = searchTerm.toLowerCase();
 
-    return (
+    const matchesSearch =
+
         occupant.name.toLowerCase().includes(search) ||
-        occupant.phoneNumber.includes(search)
-    );
+
+        occupant.phoneNumber.includes(search);
+
+    const matchesStatus =
+
+        statusFilter === "All" ||
+
+        occupant.status === statusFilter;
+
+    return matchesSearch && matchesStatus;
+
 });
 
     const loadOccupants = async () => {
+
     const response = await occupantService.getOccupants();
 
     if (response.success) {
         setOccupants(response.data);
     }
+};
+
+    const handleMarkLeft = async (occupantId) => {
+
+    const confirmed = window.confirm(
+        "Are you sure you want to mark this occupant as Left?"
+    );
+
+    if (!confirmed) return;
+
+    const response = await occupantService.markOccupantLeft(
+        occupantId
+    );
+
+    if (response.success) {
+
+        await loadOccupants();
+
+    } else {
+
+        alert(response.message);
+
+    }
+
+};
+
+        const handleRestoreOccupant = async (occupantId) => {
+
+    const confirmed = window.confirm(
+        "Are you sure you want to restore this occupant?"
+    );
+
+    if (!confirmed) return;
+
+    const response =
+        await occupantService.restoreOccupant(
+            occupantId
+        );
+
+    if (response.success) {
+
+        await loadOccupants();
+
+    } else {
+
+        alert(response.message);
+
+    }
+
 };
     
    useEffect(() => {
@@ -88,35 +151,42 @@ const filteredOccupants = occupants.filter((occupant) => {
 >
 
     <div
-        style={{
-            background: "#ffffff",
-            padding: "20px",
-            borderRadius: "12px",
-            boxShadow: "0 8px 20px rgba(0,0,0,0.08)",
-        }}
-    >
+    onClick={() => setStatusFilter("All")}
+    style={{
+        background: "#ffffff",
+        padding: "20px",
+        borderRadius: "12px",
+        boxShadow: "0 8px 20px rgba(0,0,0,0.08)",
+        cursor: "pointer",
+        transition: "0.2s",
+    }}
+>
         <h4>Total Occupants</h4>
         <h2>{totalOccupants}</h2>
     </div>
 
     <div
-        style={{
-            background: "#ecfdf5",
-            padding: "20px",
-            borderRadius: "12px",
-        }}
-    >
+    onClick={() => setStatusFilter("Active")}
+    style={{
+        background: "#ecfdf5",
+        padding: "20px",
+        borderRadius: "12px",
+        cursor: "pointer",
+    }}
+>
         <h4>Active</h4>
         <h2>{activeOccupants}</h2>
     </div>
 
-    <div
-        style={{
-            background: "#fef2f2",
-            padding: "20px",
-            borderRadius: "12px",
-        }}
-    >
+   <div
+    onClick={() => setStatusFilter("Left")}
+    style={{
+        background: "#fef2f2",
+        padding: "20px",
+        borderRadius: "12px",
+        cursor: "pointer",
+    }}
+>
         <h4>Left</h4>
         <h2>{leftOccupants}</h2>
     </div>
@@ -173,6 +243,76 @@ const filteredOccupants = occupants.filter((occupant) => {
     />
 </div>
 
+        <div
+    style={{
+        display: "flex",
+        gap: "12px",
+        marginBottom: "25px",
+    }}
+>
+
+    <button
+        onClick={() => setStatusFilter("All")}
+        style={{
+            padding: "10px 18px",
+            borderRadius: "8px",
+            border: "none",
+            cursor: "pointer",
+            background:
+                statusFilter === "All"
+                    ? "#2563eb"
+                    : "#e5e7eb",
+            color:
+                statusFilter === "All"
+                    ? "white"
+                    : "black",
+        }}
+    >
+        All
+    </button>
+
+    <button
+        onClick={() => setStatusFilter("Active")}
+        style={{
+            padding: "10px 18px",
+            borderRadius: "8px",
+            border: "none",
+            cursor: "pointer",
+            background:
+                statusFilter === "Active"
+                    ? "#16a34a"
+                    : "#e5e7eb",
+            color:
+                statusFilter === "Active"
+                    ? "white"
+                    : "black",
+        }}
+    >
+        Active
+    </button>
+
+    <button
+        onClick={() => setStatusFilter("Left")}
+        style={{
+            padding: "10px 18px",
+            borderRadius: "8px",
+            border: "none",
+            cursor: "pointer",
+            background:
+                statusFilter === "Left"
+                    ? "#dc2626"
+                    : "#e5e7eb",
+            color:
+                statusFilter === "Left"
+                    ? "white"
+                    : "black",
+        }}
+    >
+        Left
+    </button>
+
+</div>
+
             <div
                 style={{
                     background: "#fff",
@@ -223,18 +363,64 @@ const filteredOccupants = occupants.filter((occupant) => {
         </span>
     </div>
 
-    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-        <BadgeCheck
-            size={18}
-            color={occupant.status === "Active" ? "green" : "red"}
-        />
-        <span>Status : {occupant.status}</span>
-    </div>
+    <div
+    style={{
+        display: "flex",
+        alignItems: "center",
+        gap: "10px",
+    }}
+>
+    <BadgeCheck
+        size={18}
+        color={occupant.status === "Active" ? "green" : "red"}
+    />
 
-    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-        <CreditCard size={18} color="#64748b" />
-        <span>Payment : {occupant.paymentStatus}</span>
-    </div>
+    <span
+        style={{
+            background:
+                occupant.status === "Active"
+                    ? "#dcfce7"
+                    : "#fee2e2",
+            color:
+                occupant.status === "Active"
+                    ? "#166534"
+                    : "#991b1b",
+            padding: "4px 12px",
+            borderRadius: "999px",
+            fontWeight: "600",
+        }}
+    >
+        {occupant.status}
+    </span>
+</div>
+
+   <div
+    style={{
+        display: "flex",
+        alignItems: "center",
+        gap: "10px",
+    }}
+>
+    <CreditCard size={18} color="#64748b" />
+
+    <span
+        style={{
+            background:
+                occupant.paymentStatus === "Paid"
+                    ? "#dcfce7"
+                    : "#fef3c7",
+            color:
+                occupant.paymentStatus === "Paid"
+                    ? "#166534"
+                    : "#92400e",
+            padding: "4px 12px",
+            borderRadius: "999px",
+            fontWeight: "600",
+        }}
+    >
+        {occupant.paymentStatus}
+    </span>
+</div>
 </div>
 
 <div
@@ -266,21 +452,45 @@ const filteredOccupants = occupants.filter((occupant) => {
     </button>
 
     <button
-        style={{
-            background: "#dc2626",
-            color: "white",
-            border: "none",
-            padding: "10px 18px",
-            borderRadius: "8px",
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            gap: "8px",
-        }}
-    >
-        <UserMinus size={16} />
-        Mark Left
-    </button>
+    onClick={() => {
+
+        if (occupant.status === "Active") {
+
+            handleMarkLeft(occupant._id);
+
+        } else {
+
+            handleRestoreOccupant(
+                occupant._id
+            );
+
+        }
+
+    }}
+    style={{
+        background:
+            occupant.status === "Active"
+                ? "#dc2626"
+                : "#16a34a",
+        color: "white",
+        border: "none",
+        padding: "10px 18px",
+        borderRadius: "8px",
+        cursor: "pointer",
+        display: "flex",
+        alignItems: "center",
+        gap: "8px",
+    }}
+>
+    <UserMinus size={16} />
+
+    {
+        occupant.status === "Active"
+            ? "Mark Left"
+            : "Restore Occupant"
+    }
+
+</button>
 </div>
         </div>
 
@@ -296,7 +506,7 @@ const filteredOccupants = occupants.filter((occupant) => {
                 onSave={async (data) => {
 
                     console.log("editingOccupant =", editingOccupant);
-                    
+
                     if (editingOccupant) {
 
     const response = await occupantService.updateOccupant(

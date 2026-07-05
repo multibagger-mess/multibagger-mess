@@ -17,11 +17,26 @@ const requestSchema = new mongoose.Schema(
       match: [/^[6-9]\d{9}$/, "Please enter a valid 10-digit Indian mobile number"],
     },
 
-    status: {
-      type: String,
-      enum: ["Pending", "Approved", "Rejected"],
-      default: "Pending",
-    },
+   status: {
+    type: String,
+    enum: [
+        "Pending",
+        "Approved",
+        "Rejected",
+        "Expired",
+    ],
+    default: "Pending",
+},
+
+approvedAt: {
+    type: Date,
+    default: null,
+},
+
+accessExpiresAt: {
+    type: Date,
+    default: null,
+},
   },
   {
     timestamps: true,

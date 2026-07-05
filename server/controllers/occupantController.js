@@ -88,8 +88,120 @@ const updateOccupant = async (req, res) => {
     }
 };
 
+    const markOccupantLeft = async (req, res) => {
+
+    try {
+
+        const occupant = await Occupant.findByIdAndUpdate(
+
+            req.params.id,
+
+            {
+                status: "Left",
+            },
+
+            {
+                new: true,
+            }
+
+        );
+
+        if (!occupant) {
+
+            return res.status(404).json({
+
+                success: false,
+
+                message: "Occupant not found.",
+
+            });
+
+        }
+
+        res.json({
+
+            success: true,
+
+            message: "Occupant marked as Left.",
+
+            data: occupant,
+
+        });
+
+    } catch (error) {
+
+        res.status(500).json({
+
+            success: false,
+
+            message: error.message,
+
+        });
+
+    }
+
+};
+
+    const restoreOccupant = async (req, res) => {
+
+    try {
+
+        const occupant = await Occupant.findByIdAndUpdate(
+
+            req.params.id,
+
+            {
+                status: "Active",
+            },
+
+            {
+                new: true,
+            }
+
+        );
+
+        if (!occupant) {
+
+            return res.status(404).json({
+
+                success: false,
+
+                message: "Occupant not found.",
+
+            });
+
+        }
+
+        res.json({
+
+            success: true,
+
+            message: "Occupant restored successfully.",
+
+            data: occupant,
+
+        });
+
+    } catch (error) {
+
+        res.status(500).json({
+
+            success: false,
+
+            message: error.message,
+
+        });
+
+    }
+
+};
+
 module.exports = {
+
     addOccupant,
     getOccupants,
     updateOccupant,
+    markOccupantLeft,
+    restoreOccupant,
+
 };
