@@ -5,6 +5,7 @@ import {
     MapPin,
     Star,
 } from "lucide-react";
+import googleBusinessQR from "../../assets/images/google-business-qr.png";
 
 export default function ProtectedContactSection() {
 
@@ -174,75 +175,167 @@ export default function ProtectedContactSection() {
 
 <div className="bg-white/10 backdrop-blur rounded-3xl p-8">
 
-    <MapPin size={36}/>
+    <MapPin size={36} />
 
     <h3 className="mt-5 text-2xl font-bold">
 
-        Google Maps
+        Visit the Hostel
 
     </h3>
 
-    <p className="mt-2 text-blue-100">
+    <p className="mt-2 text-blue-100 leading-7">
 
-        Exact hostel location
+        View the exact location of{" "}
+        <strong> The Multi-Bagger Mess</strong>{" "}
+        and get turn-by-turn navigation using
+        Google Maps.
 
     </p>
 
-    <button
+    <a
 
-        disabled
+        href="https://maps.app.goo.gl/1Stxc21oQVaaomiV6"
+
+        target="_blank"
+
+        rel="noopener noreferrer"
 
         className="
+            inline-flex
+            items-center
+            justify-center
             mt-6
-            bg-white/30
+            bg-white
+            text-blue-700
             px-6
             py-3
             rounded-full
-            cursor-not-allowed
+            font-semibold
+            hover:scale-105
+            transition-all
+            duration-300
         "
 
     >
 
-        Coming Soon
+        📍 Open Google Maps
 
-    </button>
+    </a>
 
 </div>
 
 <div className="bg-white/10 backdrop-blur rounded-3xl p-8">
 
-    <Star size={36}/>
+    <Star size={36} />
 
     <h3 className="mt-5 text-2xl font-bold">
 
-        Google Business
+        Rate & Review Us
 
     </h3>
 
-    <p className="mt-2 text-blue-100">
+    <p className="mt-2 text-blue-100 leading-7">
 
-        Reviews, Photos & Directions
+        Your feedback helps future students choose
+        <strong> The Multi-Bagger Mess</strong>.
 
     </p>
 
-    <button
+    <a
 
-        disabled
+        href="https://g.page/r/Cev6CpdGc2wdEBM/review"
+
+        target="_blank"
+
+        rel="noreferrer"
 
         className="
+            inline-block
             mt-6
-            bg-white/30
+            bg-white
+            text-blue-700
             px-6
             py-3
             rounded-full
-            cursor-not-allowed
+            font-semibold
+            hover:scale-105
+            transition
         "
 
     >
 
-        QR Coming Soon
+        ⭐ Rate & Review
 
-    </button>
+    </a>
+
+                <div
+    className="
+        my-6
+        border-t
+        border-white/20
+    "
+></div>
+
+<div className="flex justify-center">
+
+    <a
+
+        href="https://g.page/r/Cev6CpdGc2wdEBM/review"
+
+        target="_blank"
+
+        rel="noreferrer"
+
+    >
+
+        <img
+
+            src={googleBusinessQR}
+
+            alt="Google Review QR"
+
+            className="
+                w-32
+                rounded-xl
+                bg-white
+                p-1
+                shadow-lg
+                hover:scale-105
+                transition
+                cursor-pointer
+            "
+
+        />
+
+    </a>
+
+</div>
+
+    <p
+
+        className="
+            text-center
+            text-blue-100
+            mt-4
+            text-sm
+        "
+
+    >
+
+        <p className="text-center text-blue-100 text-sm">
+
+            Prefer using another device?
+
+        </p>
+
+        <p className="text-center text-blue-200 text-xs mt-1">
+
+            Scan this QR code to rate and review
+            The Multi-Bagger Mess.
+
+        </p>
+
+    </p>
 
 </div>
 
