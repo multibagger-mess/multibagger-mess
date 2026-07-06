@@ -8,6 +8,7 @@ import DetailsPage from "./pages/DetailsPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import OccupantManagement from "./pages/OccupantManagement";
 import ViewHostelDetails from "./pages/ViewHostelDetails";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
 import { ROUTES } from "./constants/routes";
 
 function App() {
@@ -39,8 +40,12 @@ function App() {
   />
 
   <Route
-    path={ROUTES.DETAILS}
-    element={<DetailsPage />}
+  path={ROUTES.DETAILS}
+  element={
+    <ProtectedRoute>
+      <DetailsPage />
+    </ProtectedRoute>
+  }
   />
 
   <Route

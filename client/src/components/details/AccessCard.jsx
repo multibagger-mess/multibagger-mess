@@ -7,12 +7,17 @@ export default function AccessCard() {
     localStorage.getItem("hostelAccess") || "{}"
 );
 
-const userName =
-    access?.data?.name || "Guest";
+const userName = (access?.data?.name || "Guest")
+    .trim()
+    .split(/\s+/)
+    .map(
+        word =>
+            word.charAt(0).toUpperCase() +
+            word.slice(1).toLowerCase()
+    )
+    .join(" ");
 
-    console.log("Access =", access);
-    console.log("access.data =", access.data);
-    console.log("userName =", userName);
+    
 
 const daysRemaining =
     access?.daysRemaining ?? 0;
@@ -62,10 +67,8 @@ const expiryDate = access?.expiryDate
 
                 <div>
 
-                    <p className="text-blue-100">
-
-                        Welcome,
-
+                    <p className="text-blue-100 font-medium">
+                        Welcome back,
                     </p>
 
                     <h2 className="text-3xl font-bold">
@@ -78,11 +81,11 @@ const expiryDate = access?.expiryDate
 
             </div>
 
-            <p className="mt-8 text-blue-100 leading-7">
+            <p className="mt-8 text-blue-100 leading-7 text-lg">
 
-                Your request has been approved.
-
-                You now have access to view all hostel information.
+                Your access request has been approved successfully.
+                You now have full access to the hostel details, facilities,
+                pricing, rules and contact information.
 
             </p>
 
