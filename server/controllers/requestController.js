@@ -254,17 +254,23 @@ if (request.status === "Approved") {
 
     return res.status(200).json({
 
-        success: true,
+    success: true,
 
-        message: "Access Granted",
+    message: "Access Granted",
 
-        data: request,
+    data: {
+        name: request.name,
+        phoneNumber: request.phoneNumber,
+        status: request.status,
+    },
 
-        daysRemaining,
+    approvedAt: request.approvedAt,
 
-        expiryDate: request.accessExpiresAt,
+    expiryDate: request.accessExpiresAt,
 
-    });
+    daysRemaining,
+
+});
 
 }
 

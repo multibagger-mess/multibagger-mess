@@ -1,14 +1,32 @@
 import { ShieldCheck, CalendarDays, Clock3 } from "lucide-react";
 
-export default function AccessCard({
 
-    userName = "Guest",
+export default function AccessCard() {
 
-    daysRemaining = 5,
+    const access = JSON.parse(
+    localStorage.getItem("hostelAccess") || "{}"
+);
 
-    expiryDate = "10 July 2026",
+const userName =
+    access?.data?.name || "Guest";
 
-}) {
+    console.log("Access =", access);
+    console.log("access.data =", access.data);
+    console.log("userName =", userName);
+
+const daysRemaining =
+    access?.daysRemaining ?? 0;
+
+const expiryDate = access?.expiryDate
+    ? new Date(access.expiryDate).toLocaleDateString(
+          "en-GB",
+          {
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+          }
+      )
+    : "";
 
     return (
 

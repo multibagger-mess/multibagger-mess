@@ -5,6 +5,12 @@ import PricingSection from "../components/details/PricingSection";
 import FacilitiesSection from "../components/details/FacilitiesSection";
 import StudentLifeSection from "../components/details/StudentLifeSection";
 import DetailsLayout from "../components/details/layout/DetailsLayout";
+import GallerySection from "../components/details/GallerySection";
+import RulesSection from "../components/details/RulesSection";
+import DocumentsSection from "../components/details/DocumentsSection";
+import FAQSection from "../components/details/FAQSection";
+import ProtectedContactSection from "../components/details/ProtectedContactSection";
+
 export default function DetailsPage() {
 
     return (
@@ -24,6 +30,16 @@ export default function DetailsPage() {
                 <FacilitiesSection />
 
                 <StudentLifeSection />
+
+                <GallerySection />
+
+                <RulesSection />
+
+                <DocumentsSection />
+
+                <FAQSection />
+
+                <ProtectedContactSection />
 
             </div>
 

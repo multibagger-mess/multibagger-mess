@@ -37,6 +37,8 @@ export default function VerifyAccess() {
 
         const response = await requestService.verifyAccess(phoneNumber);
 
+        console.log(response);       
+        
         localStorage.setItem(
 
             "hostelAccess",

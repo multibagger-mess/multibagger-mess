@@ -7,10 +7,27 @@ import hostel3 from "../../assets/images/hostel3.png";
 import hostel4 from "../../assets/images/hostel4.png";
 
 const images = [
-    hostel1,
-    hostel2,
-    hostel3,
-    hostel4,
+
+    {
+        image: hostel1,
+        title: "Comfortable Student Rooms",
+    },
+
+    {
+        image: hostel2,
+        title: "Peaceful Study Environment",
+    },
+
+    {
+        image: hostel3,
+        title: "Clean Bathroom & Lavatory",
+    },
+
+    {
+        image: hostel4,
+        title: "Safe Hostel Entrance",
+    },
+
 ];
 
 export default function HostelGallery() {
@@ -62,7 +79,7 @@ useEffect(() => {
 
         key={current}
 
-        src={images[current]}
+        src={images[current].image}
 
         alt="Hostel"
 
@@ -134,7 +151,7 @@ useEffect(() => {
 >
 
                         <img
-                            src={image}
+                            src={image.image}
                             alt=""
                             className="
                                 w-full
