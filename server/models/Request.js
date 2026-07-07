@@ -37,10 +37,37 @@ accessExpiresAt: {
     type: Date,
     default: null,
 },
+
+accessToken: {
+    type: String,
+    default: null,
+},
+
+tokenExpiresAt: {
+    type: Date,
+    default: null,
+},
+
+accessCount: {
+    type: Number,
+    default: 0,
+},
+
+lastAccessedAt: {
+    type: Date,
+    default: null,
+},
   },
   {
     timestamps: true,
   }
 );
+
+requestSchema.index({
+
+    phoneNumber: 1,
+     accessToken: 1,
+
+});
 
 module.exports = mongoose.model("Request", requestSchema);

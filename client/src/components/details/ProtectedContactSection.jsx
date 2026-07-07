@@ -236,7 +236,7 @@ export default function ProtectedContactSection() {
 
     <p className="mt-2 text-blue-100 leading-7">
 
-        Your feedback helps future students choose
+        Your feedback helps future students choose{" "}
         <strong> The Multi-Bagger Mess</strong>.
 
     </p>
@@ -311,31 +311,27 @@ export default function ProtectedContactSection() {
 
 </div>
 
-    <p
+ <div
+    className="
+        mt-4
+        text-center
+    "
+>
 
-        className="
-            text-center
-            text-blue-100
-            mt-4
-            text-sm
-        "
+    <p className="text-blue-100 text-sm font-semibold">
 
-    >
-
-        <p className="text-center text-blue-100 text-sm">
-
-            Prefer using another device?
-
-        </p>
-
-        <p className="text-center text-blue-200 text-xs mt-1">
-
-            Scan this QR code to rate and review
-            The Multi-Bagger Mess.
-
-        </p>
+        Prefer using another device?
 
     </p>
+
+    <p className="text-blue-200 text-xs mt-1">
+
+        Scan this QR code to rate and review
+        <strong> The Multi-Bagger Mess</strong>.
+
+    </p>
+
+</div>
 
 </div>
 

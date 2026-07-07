@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 
-import HostelGallery from "../ui/HostelGallery";
+import DetailsGallery from "./DetailsGallery";
 
 export default function GallerySection() {
     return (
@@ -76,7 +76,7 @@ export default function GallerySection() {
 
             <div className="mt-14">
 
-                <HostelGallery />
+                <DetailsGallery />
 
             </div>
 

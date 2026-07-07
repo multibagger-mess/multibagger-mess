@@ -105,6 +105,30 @@ const createOccupant = async (occupantData) => {
 
 };
 
+    const getHostelAvailability = async () => {
+
+    try {
+
+        const response = await api.get(
+            "/occupants/availability"
+        );
+
+        return {
+            success: true,
+            data: response.data.data,
+        };
+
+    } catch (error) {
+
+        return {
+            success: false,
+            message: error.message,
+        };
+
+    }
+
+};
+
 
 export default {
     getOccupants,
@@ -112,4 +136,5 @@ export default {
     updateOccupant,
     markOccupantLeft,
     restoreOccupant,
+    getHostelAvailability,
 };

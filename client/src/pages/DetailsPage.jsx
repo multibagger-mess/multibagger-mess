@@ -10,6 +10,7 @@ import RulesSection from "../components/details/RulesSection";
 import DocumentsSection from "../components/details/DocumentsSection";
 import FAQSection from "../components/details/FAQSection";
 import ProtectedContactSection from "../components/details/ProtectedContactSection";
+import HostelAvailabilityCard from "../components/details/HostelAvailabilityCard";
 
 export default function DetailsPage() {
 
@@ -20,6 +21,8 @@ export default function DetailsPage() {
             <div className="max-w-7xl mx-auto px-6 py-12">
 
                 <AccessCard />
+
+                <HostelAvailabilityCard />
 
                 <AboutSection />
 

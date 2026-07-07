@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
-import hostel1 from "../../assets/images/hostel1.png";
-import hostel2 from "../../assets/images/hostel2.png";
-import hostel3 from "../../assets/images/hostel3.png";
-import hostel4 from "../../assets/images/hostel4.png";
+import hostel1 from "../../assets/images/homepage/hostel1.png";
+import hostel2 from "../../assets/images/homepage/hostel2.png";
+import hostel3 from "../../assets/images/homepage/hostel3.png";
+import hostel4 from "../../assets/images/homepage/hostel4.png";
 
 const images = [
 

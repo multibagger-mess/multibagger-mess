@@ -1,4 +1,5 @@
 const Occupant = require("../models/Occupant");
+const { TOTAL_BEDS } = require("../config/hostelConfig");
 
 // Get all occupants
 const getOccupants = async (req, res) => {
@@ -196,6 +197,54 @@ const updateOccupant = async (req, res) => {
 
 };
 
+        // Get Live Hostel Availability
+const getHostelAvailability = async (req, res) => {
+
+    try {
+
+        const occupiedBeds = await Occupant.countDocuments({
+            status: "Active",
+        });
+
+        const availableBeds = Math.max(
+            TOTAL_BEDS - occupiedBeds,
+            0
+        );
+
+        res.status(200).json({
+
+            success: true,
+
+            data: {
+
+                totalBeds: TOTAL_BEDS,
+
+                occupiedBeds,
+
+                availableBeds,
+
+                isFull: availableBeds === 0,
+
+            },
+
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+
+            success: false,
+
+            message: "Internal Server Error",
+
+        });
+
+    }
+
+};
+
 module.exports = {
 
     addOccupant,
@@ -203,5 +252,6 @@ module.exports = {
     updateOccupant,
     markOccupantLeft,
     restoreOccupant,
+    getHostelAvailability,
 
 };

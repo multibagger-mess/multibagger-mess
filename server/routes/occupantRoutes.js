@@ -9,12 +9,15 @@ const {
     updateOccupant,
     markOccupantLeft,
     restoreOccupant,
+    getHostelAvailability,
 
 } = require("../controllers/occupantController");
 
 router.post("/", addOccupant);
 
 router.get("/", getOccupants);
+
+router.get("/availability", getHostelAvailability);
 
 router.put("/:id", updateOccupant);
 
