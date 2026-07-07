@@ -10,6 +10,7 @@ import OccupantManagement from "./pages/OccupantManagement";
 import ViewHostelDetails from "./pages/ViewHostelDetails";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import { ROUTES } from "./constants/routes";
+import AccessTokenPage from "./pages/AccessTokenPage";
 
 function App() {
   return (
@@ -40,6 +41,14 @@ function App() {
   />
 
   <Route
+
+      path={ROUTES.ACCESS_TOKEN}
+
+      element={<AccessTokenPage />}
+
+  />
+
+  <Route
   path={ROUTES.DETAILS}
   element={
     <ProtectedRoute>
@@ -57,6 +66,7 @@ function App() {
     path="/occupants"
     element={<OccupantManagement />}
   />
+
 </Routes>
   );
 }

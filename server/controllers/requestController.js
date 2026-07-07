@@ -1,5 +1,7 @@
 const Request = require("../models/Request");
 
+const crypto = require("crypto");
+
 // Create a new access request
 const createRequest = async (req, res) => {
   try {
@@ -120,9 +122,26 @@ if (status === "Approved") {
 
     expiryDate.setDate(expiryDate.getDate() + 5);
 
+    const tokenExpiry = new Date();
+
+    tokenExpiry.setDate(tokenExpiry.getDate() + 5);
+
+    const token =
+        crypto.randomBytes(32).toString("hex");
+
+    request.status = "Approved";
+
     request.approvedAt = approvedDate;
 
     request.accessExpiresAt = expiryDate;
+
+    request.accessToken = token;
+
+    request.tokenExpiresAt = tokenExpiry;
+
+    request.accessCount = 0;
+
+    request.lastAccessedAt = null;
 
 }
 
@@ -292,9 +311,136 @@ if (request.status === "Approved") {
 
 };
 
+const verifyAccessToken = async (req, res) => {
+
+    try {
+
+        const { token } = req.params;
+
+        const request = await Request.findOne({
+
+            accessToken: token,
+
+        });
+
+        if (!request) {
+
+            return res.status(404).json({
+
+                success: false,
+
+                message: "Invalid access link.",
+
+            });
+
+        }
+
+        if (
+
+            request.status !== "Approved"
+
+        ) {
+
+            return res.status(403).json({
+
+                success: false,
+
+                message: "Access denied.",
+
+            });
+
+        }
+
+        if (
+
+            new Date() >
+
+            request.tokenExpiresAt
+
+        ) {
+
+            request.status = "Expired";
+
+            await request.save();
+
+            return res.status(403).json({
+
+                success: false,
+
+                message: "Access link has expired.",
+
+            });
+
+        }
+
+        request.accessCount += 1;
+
+        request.lastAccessedAt = new Date();
+
+        await request.save();
+
+        request.accessCount += 1;
+
+request.lastAccessedAt = new Date();
+
+await request.save();
+
+const today = new Date();
+
+const millisecondsRemaining =
+    request.accessExpiresAt - today;
+
+const daysRemaining = Math.ceil(
+    millisecondsRemaining /
+    (1000 * 60 * 60 * 24)
+);
+
+return res.status(200).json({
+
+    success: true,
+
+    message: "Access Granted",
+
+    data: {
+
+        name: request.name,
+
+        phoneNumber: request.phoneNumber,
+
+        status: request.status,
+
+    },
+
+    approvedAt: request.approvedAt,
+
+    expiryDate: request.accessExpiresAt,
+
+    daysRemaining,
+
+});
+
+    }
+
+    catch (err) {
+
+        console.error(err);
+
+        return res.status(500).json({
+
+            success: false,
+
+            message: "Internal Server Error",
+
+        });
+
+    }
+
+};
+
 module.exports = {
   createRequest,
   getRequests,
   updateRequestStatus,
   verifyRequest,
+  verifyAccessToken,
 };

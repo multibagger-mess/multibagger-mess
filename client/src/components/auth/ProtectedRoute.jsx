@@ -4,33 +4,63 @@ import { ROUTES } from "../../constants/routes";
 export default function ProtectedRoute({ children }) {
 
     const access = JSON.parse(
+
         localStorage.getItem("hostelAccess") || "{}"
+
     );
 
-    if (!access.success) {
+    if (
+
+        !access.success ||
+
+        !access.data ||
+
+        access.data.status !== "Approved"
+
+    ) {
+
+        localStorage.removeItem("hostelAccess");
 
         return (
+
             <Navigate
+
                 to={ROUTES.ACCESS_DETAILS}
+
                 replace
+
             />
+
         );
 
     }
 
     if (access.expiryDate) {
 
-        const expiry = new Date(access.expiryDate);
+        const expiry = new Date(
+
+            access.expiryDate
+
+        );
 
         if (new Date() > expiry) {
 
-            localStorage.removeItem("hostelAccess");
+            localStorage.removeItem(
+
+                "hostelAccess"
+
+            );
 
             return (
+
                 <Navigate
+
                     to={ROUTES.ACCESS_DETAILS}
+
                     replace
+
                 />
+
             );
 
         }

@@ -39,10 +39,28 @@ const verifyAccess = async (phoneNumber) => {
 
 };
 
+/*
+|--------------------------------------------------------------------------
+| Verify Access Token
+|--------------------------------------------------------------------------
+*/
+
+const verifyAccessToken = async (token) => {
+
+    const response = await api.get(
+        `/requests/access/${token}`
+    );
+
+    return response.data;
+
+};
+
 export default {
 
     submitRequest,
 
     verifyAccess,
+
+    verifyAccessToken,
 
 };

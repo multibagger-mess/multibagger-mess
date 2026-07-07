@@ -11,5 +11,7 @@ export const ROUTES = {
 
   DETAILS: "/details",
 
+  ACCESS_TOKEN: "/access/:token",
+
   ADMIN: "/admin",
 };

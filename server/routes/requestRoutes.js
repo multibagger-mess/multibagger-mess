@@ -7,6 +7,7 @@ const {
     getRequests,
     updateRequestStatus,
     verifyRequest,
+    verifyAccessToken,
 } = require("../controllers/requestController");
 
 // GET /api/requests
@@ -17,5 +18,7 @@ router.post("/", createRequest);
 router.patch("/:id", updateRequestStatus);
 //POST /api/verify
 router.post("/verify", verifyRequest);
+//GET /api/verify
+router.get("/access/:token", verifyAccessToken);
 
 module.exports = router;
