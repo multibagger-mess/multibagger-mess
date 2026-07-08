@@ -4,6 +4,12 @@ const adminLogin = async (req, res) => {
 
     const { username, password } = req.body;
 
+    /* console.log("Body Username :", username);
+    console.log("Body Password :", password);
+    console.log("ENV Username  :", process.env.ADMIN_USERNAME);
+    console.log("ENV Password  :", process.env.ADMIN_PASSWORD);
+    console.log("---------------"); */ //This log used for testing
+
     if (
         username !== process.env.ADMIN_USERNAME ||
         password !== process.env.ADMIN_PASSWORD
@@ -15,13 +21,9 @@ const adminLogin = async (req, res) => {
     }
 
     const token = jwt.sign(
-        {
-            role: "admin",
-        },
+        { role: "admin" },
         process.env.JWT_SECRET,
-        {
-            expiresIn: "7d",
-        }
+        { expiresIn: "7d" }
     );
 
     res.json({

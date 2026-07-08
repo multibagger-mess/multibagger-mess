@@ -10,12 +10,16 @@ const {
     verifyAccessToken,
 } = require("../controllers/requestController");
 
+const authenticateAdmin = require("../middlewares/authMiddleware");
+/*AdminOnly*/
 // GET /api/requests
-router.get("/", getRequests);
+router.get("/", authenticateAdmin, getRequests);
+// PATCH /api/requests/:id
+router.patch("/:id", authenticateAdmin, updateRequestStatus);
+
+/*Public*/
 // POST /api/requests
 router.post("/", createRequest);
-// PATCH /api/requests/:id
-router.patch("/:id", updateRequestStatus);
 //POST /api/verify
 router.post("/verify", verifyRequest);
 //GET /api/verify
