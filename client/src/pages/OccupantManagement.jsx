@@ -1,5 +1,6 @@
 import AddOccupantModal from "../components/occupants/AddOccupantModal";
 import { useEffect, useState } from "react";
+import AdminHeader from "../components/AdminHeader";
 import {
     User,
     Phone,
@@ -8,6 +9,7 @@ import {
     CreditCard,
     Pencil,
     UserMinus,
+    Trash2,
 } from "lucide-react";
 
 import occupantService from "../services/occupantService";
@@ -92,14 +94,39 @@ const filteredOccupants = occupants.filter((occupant) => {
 
         const handleRestoreOccupant = async (occupantId) => {
 
+                const confirmed = window.confirm(
+                    "Are you sure you want to restore this occupant?"
+                );
+
+                if (!confirmed) return;
+
+            const response =
+                await occupantService.restoreOccupant(
+                occupantId
+            );
+
+                if (response.success) {
+
+                await loadOccupants();
+
+                } else {
+
+                    alert(response.message);
+
+                }
+
+};
+
+const handleDeleteOccupant = async (occupantId) => {
+
     const confirmed = window.confirm(
-        "Are you sure you want to restore this occupant?"
+        "Delete this occupant permanently?"
     );
 
     if (!confirmed) return;
 
     const response =
-        await occupantService.restoreOccupant(
+        await occupantService.deleteOccupant(
             occupantId
         );
 
@@ -131,18 +158,14 @@ const filteredOccupants = occupants.filter((occupant) => {
                 padding: "20px",
             }}
         >
-            <h1
-                style={{
-                    fontSize: "34px",
-                    color: "#1e293b",
-                    marginBottom: "25px",
-                }}
-            >
-                Occupant Management
-            </h1>
+
+                        <AdminHeader
+                            title="Occupant Management"
+                        />
+            
 
             <div
-    style={{
+        style={{
         display: "grid",
         gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
         gap: "20px",
@@ -491,6 +514,29 @@ const filteredOccupants = occupants.filter((occupant) => {
     }
 
 </button>
+
+<button
+    onClick={() =>
+        handleDeleteOccupant(
+            occupant._id
+        )
+    }
+    style={{
+        background: "#991b1b",
+        color: "white",
+        border: "none",
+        padding: "10px 18px",
+        borderRadius: "8px",
+        cursor: "pointer",
+        display: "flex",
+        alignItems: "center",
+        gap: "8px",
+    }}
+>
+    <Trash2 size={16} />
+    Delete
+</button>
+
 </div>
         </div>
 

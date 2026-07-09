@@ -1,4 +1,12 @@
-import { Home, MapPin, Mail, Phone } from "lucide-react";
+import {
+    Home,
+    MapPin,
+    Mail,
+    Phone,
+    Star,
+    ClipboardList,
+    ShieldCheck,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 
 import { FOOTER_CONTENT } from "../../constants/FooterContent";
@@ -56,33 +64,54 @@ export default function Footer() {
 
             <div className="flex flex-col gap-4">
 
-              {FOOTER_CONTENT.quickLinks.map((link) =>
+    <Link
+        to={ROUTES.HOME}
+        className="flex items-center gap-3 hover:text-blue-400 transition"
+    >
+        <Home size={18} />
+        Home
+    </Link>
 
-                link.href.startsWith("/") ? (
+    <a
+        href="#why-us"
+        className="flex items-center gap-3 hover:text-blue-400 transition"
+    >
+        <Star size={18} />
+        Why Choose Us
+    </a>
 
-                  <Link
-                    key={link.name}
-                    to={ROUTES.REQUEST_ACCESS}
-                    className="hover:text-blue-400 transition"
-                  >
-                    {link.name}
-                  </Link>
+    <a
+        href="#location"
+        className="flex items-center gap-3 hover:text-blue-400 transition"
+    >
+        <MapPin size={18} />
+        Location
+    </a>
 
-                ) : (
+    <Link
+        to={ROUTES.REQUEST_ACCESS}
+        className="flex items-center gap-3 hover:text-blue-400 transition"
+    >
+        <ClipboardList size={18} />
+        Request Access
+    </Link>
 
-                  <a
-                    key={link.name}
-                    href={link.href}
-                    className="hover:text-blue-400 transition"
-                  >
-                    {link.name}
-                  </a>
+    <Link
+        to={ROUTES.ADMIN_LOGIN}
+        className="
+            flex
+            items-center
+            gap-3
+            text-slate-400
+            hover:text-white
+            transition
+        "
+    >
+        <ShieldCheck size={18} />
+        Admin Portal
+    </Link>
 
-                )
-
-              )}
-
-            </div>
+</div>
 
           </div>
 
@@ -134,9 +163,15 @@ export default function Footer() {
 
           {FOOTER_CONTENT.copyright}
 
-          <p className="mt-2">
+          <p className="mt-2 text-sm">
 
-            Built with ❤️ for students.
+              Built with ❤️ for students.
+
+          </p>
+
+          <p className="mt-2 text-xs text-slate-500">
+
+              Secure access. Student friendly. Privacy protected.
 
           </p>
 

@@ -5,7 +5,8 @@ import RequestAccess from "./pages/RequestAccess";
 import RequestSubmitted from "./pages/RequestSubmitted";
 import WaitingPage from "./pages/WaitingPage";
 import DetailsPage from "./pages/DetailsPage";
-import AdminDashboard from "./pages/AdminDashboard";
+import AdminHome from "./pages/AdminHome";
+import RequestManagement from "./pages/RequestManagement";
 import OccupantManagement from "./pages/OccupantManagement";
 import ViewHostelDetails from "./pages/ViewHostelDetails";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
@@ -13,6 +14,7 @@ import { ROUTES } from "./constants/routes";
 import AccessTokenPage from "./pages/AccessTokenPage";
 import AdminLogin from "./pages/AdminLogin";
 import AdminProtectedRoute from "./components/auth/AdminProtectedRoute";
+import { Navigate } from "react-router-dom";
 
 function App() {
   return (
@@ -60,6 +62,11 @@ function App() {
   />
 
   <Route
+    path="/admin"
+    element={<Navigate to="/admin/login" replace />}
+/>
+
+  <Route
     path={ROUTES.ADMIN_LOGIN}
     element={<AdminLogin />}
 />
@@ -68,7 +75,25 @@ function App() {
     path={ROUTES.ADMIN_DASHBOARD}
     element={
         <AdminProtectedRoute>
-            <AdminDashboard />
+            <AdminHome />
+        </AdminProtectedRoute>
+    }
+/>
+
+<Route
+    path="/admin/requests"
+    element={
+        <AdminProtectedRoute>
+            <RequestManagement />
+        </AdminProtectedRoute>
+    }
+/>
+
+<Route
+    path="/admin/occupants"
+    element={
+        <AdminProtectedRoute>
+            <OccupantManagement />
         </AdminProtectedRoute>
     }
 />

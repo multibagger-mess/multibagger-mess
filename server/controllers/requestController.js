@@ -437,10 +437,52 @@ return res.status(200).json({
 
 };
 
+const deleteRequest = async (req, res) => {
+
+    try {
+
+        const request = await Request.findByIdAndDelete(
+            req.params.id
+        );
+
+        if (!request) {
+
+            return res.status(404).json({
+
+                success: false,
+                message: "Request not found."
+
+            });
+
+        }
+
+        res.json({
+
+            success: true,
+            message: "Request deleted successfully."
+
+        });
+
+    }
+
+    catch (error) {
+
+        res.status(500).json({
+
+            success: false,
+            message: error.message
+
+        });
+
+    }
+
+};
+
 module.exports = {
   createRequest,
   getRequests,
   updateRequestStatus,
   verifyRequest,
   verifyAccessToken,
+  deleteRequest,
 };

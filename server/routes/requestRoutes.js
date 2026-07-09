@@ -8,6 +8,8 @@ const {
     updateRequestStatus,
     verifyRequest,
     verifyAccessToken,
+    deleteRequest,
+
 } = require("../controllers/requestController");
 
 const authenticateAdmin = require("../middlewares/authMiddleware");
@@ -24,5 +26,7 @@ router.post("/", createRequest);
 router.post("/verify", verifyRequest);
 //GET /api/verify
 router.get("/access/:token", verifyAccessToken);
+//delete /api/delete
+router.delete("/:id", deleteRequest);
 
 module.exports = router;

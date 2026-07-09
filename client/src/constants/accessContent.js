@@ -21,7 +21,7 @@ export const ACCESS_ITEMS = [
   },
   {
     title: "Food & Mess Details",
-    description: "Daily meals and menu information available after request access.",
+    description: "Information about daily meals will be available after request access.",
     icon: "Utensils",
   },
   {

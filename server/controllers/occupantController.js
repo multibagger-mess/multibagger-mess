@@ -245,6 +245,47 @@ const getHostelAvailability = async (req, res) => {
 
 };
 
+const deleteOccupant = async (req, res) => {
+
+    try {
+
+        const occupant = await Occupant.findByIdAndDelete(
+            req.params.id
+        );
+
+        if (!occupant) {
+
+            return res.status(404).json({
+
+                success: false,
+                message: "Occupant not found."
+
+            });
+
+        }
+
+        res.json({
+
+            success: true,
+            message: "Occupant deleted successfully."
+
+        });
+
+    }
+
+    catch (error) {
+
+        res.status(500).json({
+
+            success: false,
+            message: error.message
+
+        });
+
+    }
+
+};
+
 module.exports = {
 
     addOccupant,
@@ -253,5 +294,5 @@ module.exports = {
     markOccupantLeft,
     restoreOccupant,
     getHostelAvailability,
-
+    deleteOccupant,
 };

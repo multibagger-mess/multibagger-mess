@@ -129,6 +129,35 @@ const createOccupant = async (occupantData) => {
 
 };
 
+const deleteOccupant = async (id) => {
+
+    try {
+
+        const response = await api.delete(
+            `/occupants/${id}`
+        );
+
+        return {
+
+            success: true,
+            data: response.data,
+
+        };
+
+    }
+
+    catch (error) {
+
+        return {
+
+            success: false,
+            message: error.message,
+
+        };
+
+    }
+
+};
 
 export default {
     getOccupants,
@@ -137,4 +166,5 @@ export default {
     markOccupantLeft,
     restoreOccupant,
     getHostelAvailability,
+    deleteOccupant,
 };

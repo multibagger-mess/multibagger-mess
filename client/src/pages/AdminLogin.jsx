@@ -11,25 +11,21 @@ export default function AdminLogin() {
 
     const navigate = useNavigate();
 
-    useEffect(() => {
+useEffect(() => {
 
     const token = localStorage.getItem(
-
         "adminToken"
-
     );
 
-    if(token){
+    if (token) {
 
         navigate(
-
             ROUTES.ADMIN_DASHBOARD
-
         );
 
     }
 
-},[]);
+}, [navigate]);
 
     const handleLogin = async () => {
 

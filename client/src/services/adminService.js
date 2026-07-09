@@ -111,10 +111,48 @@ const updateRequestStatus = async (
 
 };
 
+const deleteRequest = async (id) => {
+
+    try {
+
+        const response = await api.delete(
+
+            `/requests/${id}`,
+
+            {
+
+                headers: getHeaders(),
+
+            }
+
+        );
+
+        return response.data;
+
+    }
+
+    catch (error) {
+
+        if (error.response?.status === 401) {
+
+            localStorage.removeItem("adminToken");
+
+            window.location.href = "/admin/login";
+
+        }
+
+        throw error;
+
+    }
+
+};
+
 export default {
 
     getAllRequests,
 
     updateRequestStatus,
+
+    deleteRequest,
 
 };

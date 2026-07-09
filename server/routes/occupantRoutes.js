@@ -10,6 +10,7 @@ const {
     markOccupantLeft,
     restoreOccupant,
     getHostelAvailability,
+    deleteOccupant,
 
 } = require("../controllers/occupantController");
 
@@ -24,5 +25,7 @@ router.put("/:id", updateOccupant);
 router.put("/:id/leave", markOccupantLeft);
 
 router.put("/:id/restore", restoreOccupant);
+
+router.delete("/:id", deleteOccupant);
 
 module.exports = router;
