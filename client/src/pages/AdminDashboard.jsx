@@ -70,6 +70,52 @@ useEffect(() => {
             padding: "20px",
         }}>
 
+    {/* ADD THIS */}
+
+        <div
+            style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                marginBottom: "20px",
+            }}
+        >
+
+            <button
+
+                onClick={() => {
+
+                    localStorage.removeItem("adminToken");
+
+                    window.location.href = "/admin/login";
+
+                }}
+
+                style={{
+
+                    backgroundColor:"#dc2626",
+
+                    color:"white",
+
+                    border:"none",
+
+                    padding:"10px 18px",
+
+                    borderRadius:"8px",
+
+                    cursor:"pointer",
+
+                }}
+
+            >
+
+                Logout
+
+            </button>
+
+        </div>
+
+        {/* END */}
+
       <h1 style={{ 
         fontSize: "36px", 
         marginBottom: "10px",
@@ -78,6 +124,47 @@ useEffect(() => {
           Admin Dashboard
           
           </h1>
+          <div
+    style={{
+        display: "flex",
+        justifyContent: "flex-end",
+        marginBottom: "20px",
+    }}
+>
+
+<button
+
+    onClick={() => {
+
+        localStorage.removeItem("adminToken");
+
+        window.location.href="/admin/login";
+
+    }}
+
+    style={{
+
+        background:"#dc2626",
+
+        color:"white",
+
+        border:"none",
+
+        padding:"10px 18px",
+
+        borderRadius:"8px",
+
+        cursor:"pointer",
+
+    }}
+
+>
+
+Logout
+
+</button>
+
+</div>
 
       <div
     style={{

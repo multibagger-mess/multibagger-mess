@@ -11,6 +11,8 @@ import ViewHostelDetails from "./pages/ViewHostelDetails";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import { ROUTES } from "./constants/routes";
 import AccessTokenPage from "./pages/AccessTokenPage";
+import AdminLogin from "./pages/AdminLogin";
+import AdminProtectedRoute from "./components/auth/AdminProtectedRoute";
 
 function App() {
   return (
@@ -58,9 +60,18 @@ function App() {
   />
 
   <Route
-    path={ROUTES.ADMIN}
-    element={<AdminDashboard />}
-  />
+    path={ROUTES.ADMIN_LOGIN}
+    element={<AdminLogin />}
+/>
+
+<Route
+    path={ROUTES.ADMIN_DASHBOARD}
+    element={
+        <AdminProtectedRoute>
+            <AdminDashboard />
+        </AdminProtectedRoute>
+    }
+/>
 
   <Route
     path="/occupants"

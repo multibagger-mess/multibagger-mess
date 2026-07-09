@@ -13,5 +13,7 @@ export const ROUTES = {
 
   ACCESS_TOKEN: "/access/:token",
 
-  ADMIN: "/admin",
+  ADMIN_LOGIN: "/admin/login",
+
+  ADMIN_DASHBOARD: "/admin/dashboard",
 };
