@@ -71,7 +71,25 @@ export default function RequestAccessForm() {
     const response = await requestService.submitRequest(formData);
 
 if (response.success) {
-  navigate(ROUTES.REQUEST_SUBMITTED);
+
+    navigate(
+
+        ROUTES.REQUEST_SUBMITTED,
+
+        {
+
+            state: {
+
+                phoneNumber: formData.phone,
+
+                name: formData.name,
+
+            },
+
+        }
+
+    );
+
 }
   };
 

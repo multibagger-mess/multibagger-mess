@@ -57,6 +57,27 @@ lastAccessedAt: {
     type: Date,
     default: null,
 },
+
+telegramLinkToken: {
+    type: String,
+    default: null,
+},
+
+telegramLinkTokenExpiresAt: {
+    type: Date,
+    default: null,
+},
+
+telegramChatId: {
+    type: String,
+    default: null,
+},
+
+telegramLinkedAt: {
+    type: Date,
+    default: null,
+},
+
   },
   {
     timestamps: true,
@@ -66,7 +87,10 @@ lastAccessedAt: {
 requestSchema.index({
 
     phoneNumber: 1,
-     accessToken: 1,
+
+    accessToken: 1,
+
+    telegramLinkToken: 1,
 
 });
 

@@ -6,9 +6,13 @@ const connectDB = require("./config/db");
 const requestRoutes = require("./routes/requestRoutes");
 const occupantRoutes = require("./routes/occupantRoutes");
 const adminRoutes = require("./routes/adminRoutes");
+const telegramRoutes = require("./routes/telegramRoutes");
 
 const app = express();
 connectDB();
+
+const notificationService =
+require("./services/notification");
 
 // Middlewares
 app.use(
@@ -21,6 +25,7 @@ app.use(express.json());
 app.use("/api/requests", requestRoutes);
 app.use("/api/occupants", occupantRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/telegram", telegramRoutes);
 
 // Test Route
 app.get("/", (req, res) => {

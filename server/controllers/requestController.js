@@ -2,6 +2,9 @@ const Request = require("../models/Request");
 
 const crypto = require("crypto");
 
+const notificationService =
+require("../services/notification");
+
 // Create a new access request
 const createRequest = async (req, res) => {
   try {
@@ -49,6 +52,21 @@ if (existingRequest && existingRequest.status === "Rejected") {
       name,
       phoneNumber,
     });
+
+    try {
+
+    await notificationService.notifyNewRequest(request);
+
+}
+
+catch (error) {
+
+    console.error(
+        "Notification Failed:",
+        error.message
+    );
+
+}
 
     res.status(201).json({
       success: true,
@@ -155,11 +173,40 @@ else {
 
         await request.save();
 
-        res.status(200).json({
-            success: true,
-            message: "Status updated successfully",
-            data: request,
-        });
+try {
+
+    if (status === "Approved") {
+
+        await notificationService.notifyApproval(request);
+
+    }
+
+    else if (status === "Rejected") {
+
+        await notificationService.notifyRejection(request);
+
+    }
+
+}
+
+catch (error) {
+
+    console.error(
+        "Notification Failed:",
+        error.message
+    );
+
+}
+
+res.status(200).json({
+
+    success: true,
+
+    message: "Status updated successfully",
+
+    data: request,
+
+});
 
     } catch (error) {
         console.error(error);

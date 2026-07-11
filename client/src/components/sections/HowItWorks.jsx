@@ -226,7 +226,7 @@ export default function HowItWorks() {
 
         <h4 className="text-green-700 text-xl font-semibold mb-6">
 
-            Receive SMS / WhatsApp
+            Receive SMS / WhatsApp / Telegram
 
         </h4>
 

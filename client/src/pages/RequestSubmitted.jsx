@@ -1,10 +1,55 @@
-import { Link } from "react-router-dom";
+import {
+
+    Link,
+
+    useLocation,
+
+} from "react-router-dom";
 import { CheckCircle2, MessageCircle, Smartphone } from "lucide-react";
 
 import Button from "../components/ui/Button";
+import telegramService from "../services/telegramService";
 import { ROUTES } from "../constants/routes";
 
 export default function RequestSubmitted() {
+
+  const location = useLocation();
+
+  const phoneNumber =
+    location.state?.phoneNumber || "";
+
+  const name =
+    location.state?.name || "";
+
+    const handleConnectTelegram = async () => {
+
+    try {
+
+        const response =
+            await telegramService.generateTelegramLink(
+                phoneNumber
+            );
+
+        if (response.success) {
+
+            window.open(response.telegramUrl, "_blank");
+
+        }
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Unable to connect Telegram at the moment."
+        );
+
+    }
+
+};
+
   return (
     <section className="min-h-screen bg-slate-50 flex items-center justify-center px-6">
 
@@ -110,6 +155,67 @@ export default function RequestSubmitted() {
           </p>
 
         </div>
+
+        {/* Telegram Notification */}
+
+<div className="mt-10 rounded-2xl border border-sky-200 bg-sky-50 p-6">
+
+    <h3 className="text-xl font-semibold text-sky-700">
+
+        🔔 Instant Telegram Notifications
+
+    </h3>
+
+    <p className="mt-3 text-slate-700 leading-7">
+
+        You'll receive approval updates through
+        <strong> WhatsApp </strong>
+        and
+        <strong> SMS</strong>.
+
+    </p>
+
+    <p className="mt-3 text-slate-700 leading-7">
+
+        Want even faster Telegram notifications?
+
+        Connect your Telegram account below.
+
+    </p>
+
+    <button
+
+        onClick={handleConnectTelegram}
+
+        className="
+
+            mt-6
+
+            rounded-full
+
+            bg-sky-600
+
+            px-6
+
+            py-3
+
+            font-medium
+
+            text-white
+
+            transition
+
+            hover:bg-sky-700
+
+        "
+
+    >
+
+        📲 Connect Telegram
+
+    </button>
+
+</div>
 
         {/* Review Time */}
 
