@@ -100,7 +100,7 @@ export default function PaymentSummaryCard({
                             "
                         >
 
-                            Reveal Both Cards
+                            Reveal Both Amounts
 
                         </h3>
 
@@ -193,7 +193,7 @@ export default function PaymentSummaryCard({
 
                             <div className="flex justify-between">
 
-                                <span>Hostel Rent</span>
+                                <span>Hostel Accomodation</span>
 
                                 <strong>₹ {rent}</strong>
 
@@ -203,7 +203,7 @@ export default function PaymentSummaryCard({
 
                                 <span>
 
-                                    Weekly Cleaning &
+                                    Cleaning &
                                     Maintenance
 
                                 </span>
@@ -248,9 +248,10 @@ export default function PaymentSummaryCard({
                                 "Hostel Accommodation",
                                 "Weekly Bathroom Cleaning",
                                 "Weekly Lavatory Cleaning",
-                                "Weekly Room Mopping",
+                                "Daily Room Cleaning and Mopping",
                                 "Electricity Included",
                                 "Drinking Water Included",
+                                "Tank Water Included",
                             ].map((item) => (
 
                                 <div

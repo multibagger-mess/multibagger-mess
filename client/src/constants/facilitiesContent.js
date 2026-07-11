@@ -15,6 +15,15 @@ export const FACILITIES = [
     },
 
     {
+        icon: "🚰",
+        title: "Tank Water Available",
+        description:
+            "Tank water is available for residents, subject to responsible usage.",
+        note:
+            "*For more information, please refer to the FAQ section.",
+    },
+
+    {
         icon: "📚",
         title: "Study Table",
         description:
@@ -51,16 +60,16 @@ export const FACILITIES = [
 
     {
         icon: "💡",
-        title: "Inverter Backup",
+        title: "Inverter LED Backup",
         description:
-            "Lights remain available during power cuts.",
+            "Inverter-powered LED lights ensure basic illumination during power cuts.",
     },
 
     {
         icon: "🧹",
-        title: "Weekly Cleaning",
+        title: "Daily & Weekly Cleaning",
         description:
-            "Bathrooms, lavatories and all rooms are cleaned every week.",
+            "Rooms are cleaned and mopped daily, while bathrooms and lavatories are cleaned every week.",
     },
 
 ];

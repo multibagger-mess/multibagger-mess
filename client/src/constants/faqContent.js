@@ -37,9 +37,22 @@ export const FAQS = [
     },
 
     {
+        question: "Is Tank water available throughout the year?",
+        answer:
+            "Yes. Tank water is provided as an additional facility for residents. Since our locality experiences severe seasonal water scarcity, responsible use of water is mandatory. Wastage of tank water is treated as a serious violation of hostel rules. If repeated misuse or unnecessary wastage is observed despite warnings, the hostel management reserves the right to discontinue the tank water facility. Residents are expected to use water judiciously for the benefit of everyone.",
+    },
+
+    {
+        question: "Does the hostel provide food or dining facilities?",
+        answer:
+            "Currently, dining (food mess) services are not available. However, if there is sufficient demand from residents, the hostel management plans to introduce a dining facility in the future. We are always open to improving our services based on students' needs.",
+    },
+
+    {
         question: "How do I request admission?",
         answer:
-            "Visit our hostel and talk to us for admission",
-    }
+            "Use the Google Maps location available on our website to visit The Multi-Bagger Mess. We encourage you to inspect the hostel, understand the facilities, and discuss any questions with the management before making your admission decision.",
+    },
+
 
 ];

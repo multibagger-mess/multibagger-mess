@@ -2,7 +2,7 @@ export const PRICING = {
 
     rent: {
 
-        title: "Hostel Rent",
+        title: "Hostel Accomodation",
 
         amount: 2000,
 

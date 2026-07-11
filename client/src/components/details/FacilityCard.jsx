@@ -4,6 +4,7 @@ export default function FacilityCard({
     icon,
     title,
     description,
+    note,
 }) {
     return (
         <motion.div
@@ -45,15 +46,33 @@ export default function FacilityCard({
                 {title}
             </h3>
 
-            <p
-                className="
-                    mt-4
-                    text-slate-600
-                    leading-7
-                "
-            >
-                {description}
-            </p>
+            <div className="mt-4">
+
+    <p
+        className="
+            text-slate-600
+            leading-7
+        "
+    >
+        {description}
+    </p>
+
+    {note && (
+
+        <p
+            className="
+                mt-2
+                text-xs
+                italic
+                text-slate-400
+            "
+        >
+            {note}
+        </p>
+
+    )}
+
+</div>
 
         </motion.div>
     );

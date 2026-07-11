@@ -23,20 +23,17 @@ export default function PricingSection() {
 
                 <h2 className="text-4xl font-bold text-slate-900">
 
-                    Monthly Payment Breakdown
+                    Monthly Fee Breakdown
 
                 </h2>
 
                 <p className="mt-4 text-slate-600 max-w-2xl mx-auto">
 
-                    We believe in complete transparency.
+                   We believe in complete transparency.
 
-                    Your monthly payment consists of the hostel rent and a mandatory
+                   Your monthly fee consists of the accommodation charges and the monthly cleaning service charge.
 
-                    weekly cleaning & maintenance charge.
-
-                    There are absolutely no hidden charges.
-
+                   There are absolutely no hidden charges.
                 </p>
 
             </div>

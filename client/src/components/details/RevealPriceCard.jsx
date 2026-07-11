@@ -168,7 +168,7 @@ export default function RevealPriceCard({
                                     text-slate-700
                                 "
                             >
-                                Move your mouse
+                                Scratch the Card
                             </p>
 
                             <p
@@ -177,7 +177,7 @@ export default function RevealPriceCard({
                                     text-slate-500
                                 "
                             >
-                                to reveal the amount
+                                Swipe your finger or move your mouse to reveal the amount.
                             </p>
 
                         </div>

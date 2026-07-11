@@ -13,7 +13,7 @@ export const DETAILS_CONTENT = {
 
         rent: {
 
-            title: "Hostel Rent",
+            title: "Hostel Accommodation",
 
             amount: 2000,
 
@@ -23,7 +23,7 @@ export const DETAILS_CONTENT = {
 
         cleaning: {
 
-            title: "Weekly Cleaning & Maintenance",
+            title: "Cleaning Services",
 
             amount: 150,
 
@@ -35,10 +35,9 @@ export const DETAILS_CONTENT = {
 
                 "Weekly Lavatory Cleaning",
 
-                "Weekly Room Mopping",
+                "Daily Room Cleaning & Mopping",
 
             ],
-
         },
 
     },
