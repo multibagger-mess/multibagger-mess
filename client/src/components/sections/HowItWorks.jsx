@@ -8,6 +8,7 @@ import {
     Smartphone,
     Home,
     ArrowDown,
+    Menu,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { ROUTES } from "../../constants/routes";
@@ -276,7 +277,18 @@ export default function HowItWorks() {
 
         <div className="space-y-4 text-slate-700">
 
-            <p>✅ Click "View Hostel Details".</p>
+            <p className="flex items-center gap-2">
+                ✅ Click <strong>"View Hostel Details"</strong>.
+            </p>
+
+            <p className="flex items-center gap-2">
+                📱 On mobile, tap the
+                <Menu
+                    size={16}
+                    className="inline mx-1 text-slate-700"
+                />
+                menu first to access it.
+            </p>
 
             <p>✅ Enter your registered mobile number.</p>
 
