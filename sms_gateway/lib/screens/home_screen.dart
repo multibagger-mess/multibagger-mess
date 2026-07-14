@@ -4,6 +4,7 @@ import '../widgets/status_card.dart';
 import '../widgets/action_button.dart';
 import '../widgets/sms_tile.dart';
 import '../services/permission_service.dart';
+import '../services/gateway_service.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -17,8 +18,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
 
-  final GatewayStatus gatewayStatus =
-    GatewayStatus();
+  final GatewayStatus gatewayStatus = GatewayStatus();
+  final GatewayService gatewayService = GatewayService();
     
   Future<void> startGateway() async {
 
@@ -45,23 +46,23 @@ class _HomeScreenState extends State<HomeScreen> {
 
   }
 
-  setState(() {
+    await gatewayService.start();
 
-    gatewayStatus.isRunning = true;
-
-  });
+    setState(() {
+      gatewayStatus.isRunning = gatewayService.isRunning;
+    });
 
 }
 
 
 
-void stopGateway() {
+Future<void> stopGateway() async {
 
-  setState(() {
+  await gatewayService.stop();
 
-    gatewayStatus.isRunning = false;
-
-  });
+    setState(() {
+      gatewayStatus.isRunning = gatewayService.isRunning;
+    });
 
 }
 
