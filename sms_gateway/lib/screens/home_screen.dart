@@ -29,10 +29,16 @@ class _HomeScreenState extends State<HomeScreen> {
     
   Future<void> startGateway() async {
 
-    debugPrint("===== Start Gateway Pressed =====");
+    ScaffoldMessenger.of(context).showSnackBar(
+  const SnackBar(
+    content: Text("Start Gateway Pressed"),
+  ),
+);
 
   bool granted =
       await PermissionService.requestSmsPermission();
+
+      debugPrint("Permission Granted = $granted");
 
   if (!mounted) return;
 
@@ -105,19 +111,38 @@ Future<void> stopGateway() async {
 
 Future<void> loadPendingJobs() async {
 
-  debugPrint("STEP 1");
-
   final jobs = await gatewayService.fetchPendingJobs();
-
-  debugPrint("STEP 2");
-
-  debugPrint("Jobs = ${jobs.length}");
 
   setState(() {
     pendingJobs = jobs;
   });
 
-  debugPrint("STEP 3");
+  debugPrint("Pending Jobs = ${jobs.length}");
+
+  for (final job in jobs) {
+
+    debugPrint("Phone : ${job.phone}");
+    debugPrint("Message : ${job.message}");
+
+    bool sent = await smsService.sendSms(
+
+      phone: job.phone,
+
+      message: job.message,
+
+    );
+
+    if (sent) {
+
+      debugPrint("SMS sent successfully");
+
+    } else {
+
+      debugPrint("SMS failed");
+
+    }
+
+  }
 
 }
 

@@ -2,6 +2,8 @@ const Request = require("../models/Request");
 
 const SmsJob = require("../models/SmsJob");
 
+const approvedSMSTemplate = require("../templates/sms/approved");
+
 const crypto = require("crypto");
 
 const notificationService =
@@ -177,14 +179,13 @@ else {
 
         if (status === "Approved") {
 
-    await SmsJob.create({
+await SmsJob.create({
 
-        phone: request.phoneNumber,
+    phone: request.phoneNumber,
 
-        message:
-            `Congratulations ${request.name}! Your request for The Multi-Bagger Mess has been approved.`
+    message: approvedSMSTemplate(request),
 
-    });
+});
 
 }
 

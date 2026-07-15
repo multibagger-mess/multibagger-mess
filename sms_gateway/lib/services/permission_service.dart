@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class PermissionService {
@@ -6,8 +7,16 @@ class PermissionService {
 
     final status = await Permission.sms.request();
 
-    return status.isGranted;
+    debugPrint("SMS Permission Status: $status");
 
+    if (status.isGranted) {
+      return true;
+    }
+
+    if (status.isPermanentlyDenied) {
+      await openAppSettings();
+    }
+
+    return false;
   }
-
 }
