@@ -1,5 +1,7 @@
 const Request = require("../models/Request");
 
+const SmsJob = require("../models/SmsJob");
+
 const crypto = require("crypto");
 
 const notificationService =
@@ -172,6 +174,32 @@ else {
 }
 
         await request.save();
+
+        if (status === "Approved") {
+
+    await SmsJob.create({
+
+        phone: request.phoneNumber,
+
+        message:
+            `Congratulations ${request.name}! Your request for The Multi-Bagger Mess has been approved.`
+
+    });
+
+}
+
+else if (status === "Rejected") {
+
+    await SmsJob.create({
+
+        phone: request.phoneNumber,
+
+        message:
+            `Hello ${request.name}, we regret to inform you that your request for The Multi-Bagger Mess has been rejected.`
+
+    });
+
+}
 
 try {
 

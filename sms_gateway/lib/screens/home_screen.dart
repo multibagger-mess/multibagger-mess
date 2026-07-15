@@ -5,7 +5,11 @@ import '../widgets/action_button.dart';
 import '../widgets/sms_tile.dart';
 import '../services/permission_service.dart';
 import '../services/gateway_service.dart';
-
+import '../utils/ip_utils.dart';
+import '../widgets/gateway_info_card.dart';
+import '../models/sms_job.dart';
+import '../services/sms_service.dart';
+import '../services/native_sms_service.dart';
 
 class HomeScreen extends StatefulWidget {
 
@@ -20,11 +24,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final GatewayStatus gatewayStatus = GatewayStatus();
   final GatewayService gatewayService = GatewayService();
+  final SmsService smsService = SmsService();
+  List<SmsJob> pendingJobs = [];
     
   Future<void> startGateway() async {
 
+    debugPrint("===== Start Gateway Pressed =====");
+
   bool granted =
       await PermissionService.requestSmsPermission();
+
+  if (!mounted) return;
 
   if (!granted) {
 
@@ -47,9 +57,28 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
     await gatewayService.start();
+    debugPrint("Gateway started");
+
+    final response = await NativeSmsService.ping();
+
+    debugPrint("Native response: $response");
+
+    await loadPendingJobs();
+
+    final ip = await IPUtils.getLocalIp();
+
+    if (!mounted) return;
 
     setState(() {
+
       gatewayStatus.isRunning = gatewayService.isRunning;
+
+      gatewayStatus.ipAddress = ip;
+
+      gatewayStatus.port = 8080;
+
+      gatewayStatus.statusMessage =
+          "Waiting for requests...";
     });
 
 }
@@ -61,8 +90,34 @@ Future<void> stopGateway() async {
   await gatewayService.stop();
 
     setState(() {
+
       gatewayStatus.isRunning = gatewayService.isRunning;
+
+      gatewayStatus.ipAddress =
+          "Unavailable";
+
+      gatewayStatus.statusMessage =
+          "Gateway Offline";
     });
+
+}
+
+
+Future<void> loadPendingJobs() async {
+
+  debugPrint("STEP 1");
+
+  final jobs = await gatewayService.fetchPendingJobs();
+
+  debugPrint("STEP 2");
+
+  debugPrint("Jobs = ${jobs.length}");
+
+  setState(() {
+    pendingJobs = jobs;
+  });
+
+  debugPrint("STEP 3");
 
 }
 
@@ -178,6 +233,14 @@ Future<void> stopGateway() async {
                   ],
                 ),
               ),
+            ),
+
+            const SizedBox(height: 30),
+
+            GatewayInfoCard(
+              ipAddress: gatewayStatus.ipAddress,
+              port: gatewayStatus.port,
+              status: gatewayStatus.statusMessage,
             ),
 
             const SizedBox(height: 30),
