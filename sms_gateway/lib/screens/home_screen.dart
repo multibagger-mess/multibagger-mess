@@ -11,6 +11,7 @@ import '../models/sms_job.dart';
 import '../services/sms_service.dart';
 import '../services/native_sms_service.dart';
 import 'dart:async';
+import 'package:intl/intl.dart';
 
 class HomeScreen extends StatefulWidget {
 
@@ -33,6 +34,20 @@ class _HomeScreenState extends State<HomeScreen> {
   List<SmsJob> pendingJobs = [];
 
  List<SmsJob> recentActivity = [];
+
+String formatDateTime(DateTime? dateTime) {
+
+  if (dateTime == null) {
+
+    return "";
+
+  }
+
+  return DateFormat(
+    "dd MMM yyyy • hh:mm a",
+  ).format(dateTime);
+
+}
 
 @override
 void initState() {
@@ -492,7 +507,8 @@ else {
 
               title: job.status,
 
-              subtitle: "${job.phone}\n${job.sentAt ?? ""}",
+              subtitle:
+                      "📱 ${job.phone}\n🕒 ${formatDateTime(job.sentAt)}",
 
               icon: icon,
 

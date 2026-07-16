@@ -10,6 +10,7 @@
         "cupertino_icons",
         "flutter",
         "http",
+        "intl",
         "permission_handler"
       ],
       "devDependencies": [
@@ -40,6 +41,15 @@
         "stream_channel",
         "test_api",
         "vector_math"
+      ]
+    },
+    {
+      "name": "intl",
+      "version": "0.20.3",
+      "dependencies": [
+        "clock",
+        "meta",
+        "path"
       ]
     },
     {
