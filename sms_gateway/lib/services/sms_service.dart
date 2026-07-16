@@ -14,9 +14,10 @@ class SmsService {
       );
 
       return true;
-    } catch (e) {
-      debugPrint("SMS Error: $e");
-      return false;
-    }
+    } catch (e, stackTrace) {
+  debugPrint("SMS Error: $e");
+  debugPrint(stackTrace.toString());
+  return false;
+}
   }
 }

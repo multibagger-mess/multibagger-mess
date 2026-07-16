@@ -10,6 +10,7 @@ import '../widgets/gateway_info_card.dart';
 import '../models/sms_job.dart';
 import '../services/sms_service.dart';
 import '../services/native_sms_service.dart';
+import 'dart:async';
 
 class HomeScreen extends StatefulWidget {
 
@@ -25,7 +26,13 @@ class _HomeScreenState extends State<HomeScreen> {
   final GatewayStatus gatewayStatus = GatewayStatus();
   final GatewayService gatewayService = GatewayService();
   final SmsService smsService = SmsService();
+
+  Timer? pollingTimer;
+  Timer? heartbeatTimer;
+
   List<SmsJob> pendingJobs = [];
+
+  List<SmsJob> recentActivity = [];
     
   Future<void> startGateway() async {
 
@@ -63,13 +70,63 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
     await gatewayService.start();
-    debugPrint("Gateway started");
+    
+    pollingTimer?.cancel();
+
+pollingTimer = Timer.periodic(
+
+  const Duration(seconds: 5),
+
+  (_) async {
+
+    if (gatewayService.isRunning) {
+
+      await loadPendingJobs();
+
+      await loadGatewayStats();
+
+      await loadRecentActivity();
+
+    }
+
+  },
+
+);
+
+heartbeatTimer?.cancel();
+
+heartbeatTimer = Timer.periodic(
+
+  const Duration(seconds: 30),
+
+  (_) async {
+
+    if (gatewayService.isRunning) {
+
+      await gatewayService.sendHeartbeat();
+
+      debugPrint(
+    "❤️ Heartbeat sent at ${DateTime.now()}");
+
+    }
+
+  },
+
+);
+
+    debugPrint("🟢 Gateway Started");
 
     final response = await NativeSmsService.ping();
 
     debugPrint("Native response: $response");
 
     await loadPendingJobs();
+
+    await loadGatewayStats();
+
+    await loadRecentActivity();
+
+    await gatewayService.sendHeartbeat();
 
     final ip = await IPUtils.getLocalIp();
 
@@ -95,6 +152,10 @@ Future<void> stopGateway() async {
 
   await gatewayService.stop();
 
+    pollingTimer?.cancel();
+
+    heartbeatTimer?.cancel();
+
     setState(() {
 
       gatewayStatus.isRunning = gatewayService.isRunning;
@@ -117,7 +178,7 @@ Future<void> loadPendingJobs() async {
     pendingJobs = jobs;
   });
 
-  debugPrint("Pending Jobs = ${jobs.length}");
+  debugPrint("📋 Pending Jobs = ${jobs.length}");
 
   for (final job in jobs) {
 
@@ -126,29 +187,93 @@ Future<void> loadPendingJobs() async {
 
     bool sent = await smsService.sendSms(
 
-      phone: job.phone,
+  phone: job.phone,
 
-      message: job.message,
+  message: job.message,
 
-    );
+);
 
-    if (sent) {
+if (sent) {
 
-      debugPrint("SMS sent successfully");
+  debugPrint("📩 SMS sent to ${job.phone}");
 
-    } else {
+  await gatewayService.updateSmsJob(
 
-      debugPrint("SMS failed");
+    id: job.id,
 
-    }
+    status: "SENT",
+
+  );
+
+}
+
+else {
+
+  debugPrint("SMS failed");
+
+  await gatewayService.updateSmsJob(
+
+    id: job.id,
+
+    status: "FAILED",
+
+    error: "Android SMS failed",
+
+  );
+
+}
 
   }
 
 }
 
-  @override
-  Widget build(BuildContext context) {
+    Future<void> loadGatewayStats() async {
 
+  final stats =
+      await gatewayService.fetchGatewayStats();
+
+  if (!mounted) return;
+
+  setState(() {
+
+    gatewayStatus.smsSent =
+        stats["sent"];
+
+    gatewayStatus.pendingSms =
+        stats["pending"];
+
+    gatewayStatus.failedSms =
+        stats["failed"];
+
+  });
+
+}
+
+    Future<void> loadRecentActivity() async {
+
+  final activity = await gatewayService.fetchRecentActivity();
+
+  if (!mounted) return;
+
+  setState(() {
+
+    recentActivity = activity;
+
+  });
+
+}
+
+    @override
+    void dispose() {
+
+      pollingTimer?.cancel();
+
+      super.dispose();
+
+    }
+
+    @override
+    Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("The Multi-Bagger Mess"),
@@ -298,17 +423,32 @@ Future<void> loadPendingJobs() async {
 
             const SizedBox(height: 15),
 
-            const Card(
-              child: Column(
-                children: [
+           Card(
+  child: Column(
+    children: [
 
-                  SmsTile(
-                    title: "No SMS sent yet",
-                  ),
+      if (recentActivity.isEmpty)
 
-                ],
-              ),
-            ),
+        const SmsTile(
+          title: "No SMS sent yet",
+        )
+
+      else
+
+        ...recentActivity.map(
+
+          (job) => SmsTile(
+
+            title:
+                "${job.status} • ${job.phone}",
+
+          ),
+
+        ),
+
+    ],
+  ),
+),
 
             const SizedBox(height: 40),
 

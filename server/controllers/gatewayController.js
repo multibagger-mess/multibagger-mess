@@ -46,8 +46,112 @@ const getPendingJobs = async (req, res) => {
 
 };
 
+// ------------------------------------------------
+// Gateway Statistics
+// ------------------------------------------------
+
+const getGatewayStats = async (req, res) => {
+
+    try {
+
+        const sent = await SmsJob.countDocuments({
+
+            status: "SENT"
+
+        });
+
+        const pending = await SmsJob.countDocuments({
+
+            status: "PENDING"
+
+        });
+
+        const failed = await SmsJob.countDocuments({
+
+            status: "FAILED"
+
+        });
+
+        res.json({
+
+            success: true,
+
+            data: {
+
+                sent,
+
+                pending,
+
+                failed
+
+            }
+
+        });
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+
+            success: false,
+
+            message: error.message
+
+        });
+
+    }
+
+};
+
+// ------------------------------------------------
+// Recent SMS Activity
+// ------------------------------------------------
+
+const getRecentActivity = async (req, res) => {
+
+    try {
+
+        const jobs = await SmsJob.find()
+
+            .sort({ updatedAt: -1 })
+
+            .limit(10);
+
+        res.json({
+
+            success: true,
+
+            data: jobs
+
+        });
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+
+            success: false,
+
+            message: error.message
+
+        });
+
+    }
+
+};
+
 module.exports = {
 
-    getPendingJobs
+    getPendingJobs,
+
+    getGatewayStats,
+
+    getRecentActivity
 
 };

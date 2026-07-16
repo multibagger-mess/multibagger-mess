@@ -8,6 +8,7 @@ const occupantRoutes = require("./routes/occupantRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 const telegramRoutes = require("./routes/telegramRoutes");
 const gatewayRoutes = require("./routes/gatewayRoutes");
+const gatewayStatusRoutes = require("./routes/gatewayStatusRoutes");
 
 const app = express();
 connectDB();
@@ -28,6 +29,7 @@ app.use("/api/occupants", occupantRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/telegram", telegramRoutes);
 app.use("/api/gateway", gatewayRoutes);
+app.use("/api/gateway", gatewayStatusRoutes);
 
 // Test Route
 app.get("/", (req, res) => {

@@ -24,50 +24,74 @@ class MainActivity : FlutterActivity() {
                     result.success("Android is connected")
                 }
 
-                "sendSms" -> {
+"sendSms" -> {
 
-                    val phone = call.argument<String>("phone")
-                    val message = call.argument<String>("message")
+    android.util.Log.d("SMS_GATEWAY", "sendSms called")
 
-                    if (phone == null || message == null) {
-                        result.error(
-                            "INVALID_ARGUMENTS",
-                            "Phone or message missing",
-                            null
-                        )
-                        return@setMethodCallHandler
-                    }
+    val phone = call.argument<String>("phone")
+    val message = call.argument<String>("message")
 
-                    try {
+    android.util.Log.d("SMS_GATEWAY", "Phone = $phone")
+    android.util.Log.d("SMS_GATEWAY", "Message = $message")
 
-                        val smsManager =
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                                applicationContext.getSystemService(SmsManager::class.java)
-                            } else {
-                                SmsManager.getDefault()
-                            }
+    if (phone == null || message == null) {
 
-                        smsManager.sendTextMessage(
-                            phone,
-                            null,
-                            message,
-                            null,
-                            null
-                        )
+        android.util.Log.d("SMS_GATEWAY", "Phone or Message is NULL")
 
-                        result.success(true)
+        result.error(
+            "INVALID_ARGUMENTS",
+            "Phone or message missing",
+            null
+        )
+        return@setMethodCallHandler
+    }
 
-                    } catch (e: Exception) {
+try {
 
-                        result.error(
-                            "SMS_ERROR",
-                            e.message,
-                            null
-                        )
+    android.util.Log.d("SMS_GATEWAY", "Before SmsManager")
 
-                    }
+    val smsManager =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            applicationContext.getSystemService(SmsManager::class.java)
+        } else {
+            SmsManager.getDefault()
+        }
 
-                }
+    android.util.Log.d("SMS_GATEWAY", "After SmsManager")
+
+    val parts = smsManager.divideMessage(message)
+
+    smsManager.sendMultipartTextMessage(
+        phone,
+        null,
+        parts,
+        null,
+        null
+    )
+
+    android.util.Log.d(
+        "SMS_GATEWAY",
+        "Multipart SMS executed"
+    )
+
+    result.success(true)
+
+} catch (e: Exception) {
+
+    android.util.Log.e(
+        "SMS_GATEWAY",
+        "Exception",
+        e
+    )
+
+    result.error(
+        "SMS_ERROR",
+        e.toString(),
+        null
+    )
+
+}
+}
 
                 else -> result.notImplemented()
 
