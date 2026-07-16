@@ -8,6 +8,8 @@ class SmsJob {
 
   final String status;
 
+  final DateTime? sentAt;
+
   SmsJob({
 
     required this.id,
@@ -17,6 +19,8 @@ class SmsJob {
     required this.message,
 
     required this.status,
+
+    this.sentAt,
 
   });
 
@@ -32,7 +36,11 @@ class SmsJob {
 
       status: json["status"],
 
-    );
+      sentAt: json["sentAt"] == null
+          ? null
+          : DateTime.parse(json["sentAt"]),
+
+);
 
   }
 

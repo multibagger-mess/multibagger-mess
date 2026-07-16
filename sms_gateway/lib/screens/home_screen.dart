@@ -32,9 +32,30 @@ class _HomeScreenState extends State<HomeScreen> {
 
   List<SmsJob> pendingJobs = [];
 
-  List<SmsJob> recentActivity = [];
-    
-  Future<void> startGateway() async {
+ List<SmsJob> recentActivity = [];
+
+@override
+void initState() {
+
+  super.initState();
+
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+
+    startGateway();
+
+  });
+
+}
+
+Future<void> startGateway() async {
+
+  if (gatewayService.isRunning) {
+
+  debugPrint("Gateway already running.");
+
+  return;
+
+}
 
     ScaffoldMessenger.of(context).showSnackBar(
   const SnackBar(
@@ -263,10 +284,12 @@ else {
 
 }
 
-    @override
+   @override
     void dispose() {
 
       pollingTimer?.cancel();
+
+      heartbeatTimer?.cancel();
 
       super.dispose();
 
@@ -431,18 +454,53 @@ else {
 
         const SmsTile(
           title: "No SMS sent yet",
+          icon: Icons.sms,
+          iconColor: Colors.grey,
         )
 
       else
 
         ...recentActivity.map(
 
-          (job) => SmsTile(
+          (job) {
 
-            title:
-                "${job.status} • ${job.phone}",
+            IconData icon;
 
-          ),
+            Color color;
+
+            if (job.status == "SENT") {
+
+              icon = Icons.check_circle;
+
+              color = Colors.green;
+
+            } else if (job.status == "FAILED") {
+
+              icon = Icons.cancel;
+
+              color = Colors.red;
+
+            } else {
+
+              icon = Icons.schedule;
+
+              color = Colors.orange;
+
+            }
+
+            return SmsTile(
+
+              title: job.status,
+
+              subtitle: "${job.phone}\n${job.sentAt ?? ""}",
+
+              icon: icon,
+
+              iconColor: color,
+
+            );
+
+          },
 
         ),
 
