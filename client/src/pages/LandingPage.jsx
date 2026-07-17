@@ -13,7 +13,7 @@ export default function LandingPage() {
       <Hero />
        <AvailabilitySection />
       <AccessIncludes />
-      <WhyChooseUs />
+     <WhyChooseUs />
       <Location />
       <HowItWorks />
     </MainLayout>

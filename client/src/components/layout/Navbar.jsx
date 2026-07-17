@@ -8,21 +8,21 @@ export default function Navbar() {
 
   return (
     <nav className="fixed top-0 left-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
-      <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
+      <div className="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 py-4">
 
         {/* Logo */}
         <Link to={ROUTES.HOME} className="flex items-center gap-3">
 
-          <div className="bg-blue-600 text-white p-3 rounded-2xl shadow-md">
-            <House size={24} />
+          <div className="bg-blue-600 text-white p-2.5 sm:p-3 rounded-2xl shadow-md">
+            <House className="w-5 h-5 sm:w-6 sm:h-6" />
           </div>
 
           <div>
-            <h1 className="font-bold text-xl text-slate-800">
+            <h1 className="font-bold text-base sm:text-lg md:text-xl text-slate-800 leading-tight">
               The Multi-Bagger Mess
             </h1>
 
-            <p className="text-sm text-gray-500">
+            <p className="hidden sm:block text-xs md:text-sm text-gray-500">
               Boys' Hostel • Near J.K. College
             </p>
           </div>

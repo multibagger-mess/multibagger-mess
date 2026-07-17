@@ -42,13 +42,7 @@ useEffect(() => {
 }, []);
 
   return (
-    <section
-      style={{
-        maxWidth: "1100px",
-        margin: "60px auto",
-        padding: "0 20px",
-      }}
-    >
+    <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 my-12 md:my-16">
       <motion.div
 
     initial={{
@@ -68,48 +62,60 @@ useEffect(() => {
     viewport={{
         once: true,
     }}
-        style={{
-          background: "#ffffff",
-          borderRadius: "20px",
-          padding: "40px",
-          boxShadow: "0 20px 45px rgba(0,0,0,0.10)",
-          transition: "0.35s",
-          textAlign: "center",
-        }}
+        className="
+            bg-white
+            rounded-3xl
+            p-6
+            sm:p-8
+            lg:p-10
+            shadow-xl
+            text-center
+            transition-all
+            duration-300
+            "
       >
                     <div
-                style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: "10px",
-                    background: "#dcfce7",
-                    color: "#166534",
-                    padding: "10px 20px",
-                    borderRadius: "999px",
-                    fontWeight: "700",
-                    marginBottom: "25px",
-                }}
+                className="
+                inline-flex
+                items-center
+                gap-2
+                bg-green-100
+                text-green-700
+                px-4
+                py-2
+                rounded-full
+                font-semibold
+                mb-6
+                text-sm
+                sm:text-base
+                "
             >
                 🟢 LIVE AVAILABILITY
             </div>
 
             <h2
-                style={{
-                    fontSize: "38px",
-                    color: "#1e293b",
-                    marginBottom: "15px",
-                    fontWeight: "700",
-                }}
+                className="
+                text-3xl
+                sm:text-4xl
+                lg:text-5xl
+                font-bold
+                text-slate-800
+                mb-4
+                "
             >
                 Live Hostel Availability
             </h2>
 
         <p
-          style={{
-            color: "#64748b",
-            marginBottom: "30px",
-            fontSize: "18px",
-          }}
+          className="
+            text-slate-500
+            text-base
+            sm:text-lg
+            max-w-3xl
+            mx-auto
+            mb-8
+            leading-relaxed
+            "
         >
          Real-time occupancy of The Multi-Bagger Mess.
          Availability updates automatically whenever a resident joins or leaves.

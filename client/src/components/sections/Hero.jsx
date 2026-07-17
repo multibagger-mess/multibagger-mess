@@ -17,15 +17,19 @@ export default function Hero() {
     >
       <Container>
 
-        <div className="grid lg:grid-cols-[38%_62%] gap-14 items-center min-h-[88vh]">
+        <div className="
+                          grid
+                          grid-cols-1
+                          lg:grid-cols-[38%_62%]
+                          gap-10
+                          lg:gap-14
+                          items-center
+                          min-h-[88vh]
+                          ">
 
           {/* LEFT COLUMN */}
 
-          <motion.div
-            initial={{ opacity: 0, x: -40 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-          >
+          <motion.div>
 
             <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-4 py-2 rounded-full font-medium">
 
@@ -35,7 +39,11 @@ export default function Hero() {
 
             </div>
 
-            <h1 className="mt-8 text-4xl md:text-5xl xl:text-6xl 2xl:text-7xl font-extrabold leading-tight text-slate-900">
+            <h1 className="mt-8 text-3xl
+                                sm:text-4xl
+                                md:text-5xl
+                                xl:text-6xl
+                                2xl:text-7xl font-extrabold leading-tight text-slate-900">
 
               {HERO_CONTENT.title}
 
@@ -45,7 +53,9 @@ export default function Hero() {
 
             </h1>
 
-            <p className="mt-8 text-base md:text-lg xl:text-xl text-slate-600 leading-8 xl:leading-9 max-w-2xl">
+            <p className="mt-8 text-base
+                                sm:text-lg
+                                xl:text-xl text-slate-600 leading-8 xl:leading-9 max-w-2xl">
 
               {HERO_CONTENT.description}
 
@@ -66,7 +76,9 @@ export default function Hero() {
               {HERO_CONTENT.helperText}
 
             </p>
-            <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <div className="mt-12 grid grid-cols-1
+                                        sm:grid-cols-2
+                                        lg:grid-cols-3 gap-6">
 
   {HERO_STATS.map((item) => (
 
@@ -97,12 +109,7 @@ export default function Hero() {
 
           {/* RIGHT COLUMN */}
 
-          <motion.div
-            initial={{ opacity: 0, x: 40 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            className="w-full"
-          >
+          <motion.div>
 
             <div className="w-full max-w-none">
 

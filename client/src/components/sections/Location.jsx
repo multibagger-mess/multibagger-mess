@@ -12,8 +12,8 @@ import { LOCATION_CONTENT } from "../../constants/LocationContent";
 export default function Location() {
   return (
     <section
-      id="location"
-      className="py-28 bg-white"
+    id="location"
+    className="py-28 bg-white overflow-x-hidden"
     >
       <div className="max-w-7xl mx-auto px-6">
 
@@ -31,17 +31,20 @@ export default function Location() {
     className="lg:col-span-2"
 
     initial={{
-        opacity: 0,
-        x: -80,
+    opacity: 0,
+    y: 30,
+    scale: 0.98,
     }}
 
     whileInView={{
         opacity: 1,
-        x: 0,
+        y: 0,
+        scale: 1,
     }}
 
     transition={{
-        duration: 0.8,
+        duration: 0.7,
+        ease: "easeOut",
     }}
 
     viewport={{
@@ -49,7 +52,15 @@ export default function Location() {
     }}
 >
 
-  <div className="grid grid-cols-3 gap-4 mb-8">
+  <div
+    className="
+        grid
+        grid-cols-1
+        sm:grid-cols-3
+        gap-4
+        mb-8
+    "
+    >
 
     <div
         className="
@@ -161,7 +172,13 @@ export default function Location() {
                     size={22}
                   />
 
-                  <span className="text-lg text-slate-700">
+                  <span
+                        className="
+                            text-base
+                            sm:text-lg
+                            text-slate-700
+                        "
+                    >
 
                     {item}
 
@@ -180,6 +197,9 @@ export default function Location() {
                       className="
                           mt-10
                           inline-flex
+                          w-full
+                          sm:w-auto
+                          justify-center
                           items-center
                           gap-3
                           bg-blue-600
@@ -229,13 +249,27 @@ export default function Location() {
     "
 >
 
-    <h3 className="font-bold text-xl text-slate-800 mb-3">
+    <h3
+        className="
+            font-bold
+            text-lg
+            sm:text-xl
+            text-slate-800
+            mb-3
+        "
+    >
 
         📍 Verified Hostel Location
 
     </h3>
 
-    <p className="text-slate-600 leading-7">
+    <p
+        className="
+            text-slate-600
+            leading-6
+            sm:leading-7
+        "
+    >
 
         Feel free to visit the hostel before making your
         decision. The location is verified and easy to
@@ -254,18 +288,21 @@ export default function Location() {
     className="lg:col-span-3 flex justify-center"
 
     initial={{
-        opacity: 0,
-        x: 80,
+    opacity: 0,
+    y: 30,
+    scale: 0.98,
     }}
 
     whileInView={{
         opacity: 1,
-        x: 0,
+        y: 0,
+        scale: 1,
     }}
 
     transition={{
-        duration: 0.8,
-        delay: 0.2,
+    duration: 0.8,
+    delay: 0.15,
+    ease: "easeOut",
     }}
 
     viewport={{
@@ -283,8 +320,8 @@ export default function Location() {
         border
         border-slate-200
         bg-white
-        hover:shadow-[0_25px_60px_rgba(37,99,235,0.25)]
-        hover:scale-[1.02]
+        lg:hover:shadow-[0_25px_60px_rgba(37,99,235,0.25)]
+        lg:hover:scale-[1.02]
         transition-all
         duration-500
     "
@@ -293,13 +330,17 @@ export default function Location() {
     <div
         className="
             absolute
-            top-5
-            left-5
+            top-3
+            left-3
+            sm:top-5
+            sm:left-5
             z-10
             bg-white/90
             backdrop-blur-md
-            px-5
-            py-3
+            px-3
+            py-2
+            sm:px-5
+            sm:py-3
             rounded-2xl
             shadow-lg
         "
@@ -322,8 +363,10 @@ export default function Location() {
     <div
         className="
             absolute
-            bottom-5
-            right-5
+            bottom-3
+            right-3
+            sm:bottom-5
+            sm:right-5
             z-10
             bg-green-500
             text-white
@@ -341,7 +384,12 @@ export default function Location() {
 
     <iframe
         src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d457.9961951417953!2d86.371157215218!3d23.31686315611421!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39f67d822919e357%3A0x1d6c7346970afaeb!2sThe%20Multi-Bagger%20Mess!5e0!3m2!1sen!2sin!4v1783619694112!5m2!1sen!2sin"
-        className="w-full h-[550px]"
+        className="
+            w-full
+            h-[320px]
+            sm:h-[420px]
+            lg:h-[550px]
+        "
         style={{ border: 0 }}
         loading="lazy"
         allowFullScreen

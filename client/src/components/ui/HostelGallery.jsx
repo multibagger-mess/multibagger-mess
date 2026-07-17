@@ -63,14 +63,16 @@ useEffect(() => {
     onMouseEnter={() => setIsPaused(true)}
     onMouseLeave={() => setIsPaused(false)}
     className="
-        relative
-        w-full
-        h-[520px]
-        lg:h-[620px]
-        rounded-3xl
-        overflow-hidden
-        shadow-2xl
-    "
+    relative
+    w-full
+    h-[260px]
+    sm:h-[360px]
+    md:h-[450px]
+    lg:h-[620px]
+    rounded-3xl
+    overflow-hidden
+    shadow-2xl
+"
 >
 
                 <AnimatePresence mode="wait">
@@ -124,7 +126,9 @@ useEffect(() => {
                     mt-5
                     grid
                     grid-cols-4
-                    gap-4
+                    gap-2
+                    sm:gap-3
+                    lg:gap-4
                 "
             >
 
@@ -155,7 +159,10 @@ useEffect(() => {
                             alt=""
                             className="
                                 w-full
-                                h-28
+                                h-16
+                                sm:h-20
+                                md:h-24
+                                lg:h-28
                                 object-cover
                             "
                         />
@@ -169,8 +176,10 @@ useEffect(() => {
             <p
                 className="
                     text-center
-                    mt-4
-                    text-sm
+                    mt-3
+                    sm:mt-4
+                    text-xs
+                    sm:text-sm
                     italic
                     text-slate-400
                 "
