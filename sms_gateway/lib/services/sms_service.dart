@@ -8,10 +8,17 @@ class SmsService {
     required String message,
   }) async {
     try {
-      await NativeSmsService.sendSms(
-        phone: phone,
-        message: message,
-      );
+      debugPrint("================================");
+      debugPrint("PHONE: $phone");
+      debugPrint("MESSAGE LENGTH: ${message.length}");
+      debugPrint("MESSAGE:");
+      debugPrint(message);
+      debugPrint("================================");
+
+await NativeSmsService.sendSms(
+  phone: phone,
+  message: message,
+);
 
       return true;
     } catch (e, stackTrace) {

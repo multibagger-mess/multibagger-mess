@@ -13,37 +13,28 @@ Your request has been approved.
 
 ━━━━━━━━━━━━━━
 
-✅ OPTION 1 (Recommended)
-
-Open your hostel details directly:
+🔗 Open your hostel details instantly:
 
 ${accessLink}
 
 ━━━━━━━━━━━━━━
 
-🌐 OPTION 2
+🌐 Prefer using the website?
 
-If you prefer accessing through the website:
-
-1. Visit
-
+Visit:
 https://multibagger-mess.vercel.app
 
-2. Click
-
-"View Hostel Details"
-
-3. Enter your registered mobile number
-
-4. Submit
+Select "View Hostel Details" and enter your registered mobile number.
 
 ━━━━━━━━━━━━━━
 
-⏳ This secure access expires in 5 days.
+⏳ Access expires in 5 days.
 
-Thank you.
+Thank you for choosing The Multi-Bagger Mess.
 
-The Multi-Bagger Mess`;
+📚 We wish you a comfortable and successful stay!
+
+— The Multi-Bagger Mess`;
 
 };
 
