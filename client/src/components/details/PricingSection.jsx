@@ -96,6 +96,8 @@ export default function PricingSection() {
 
             <PaymentSummaryCard
 
+                key={`${rentRevealed}-${cleaningRevealed}`}
+
                 rentRevealed={rentRevealed}
 
                 cleaningRevealed={cleaningRevealed}
@@ -103,7 +105,7 @@ export default function PricingSection() {
                 rent={DETAILS_CONTENT.pricing.rent.amount}
 
                 cleaning={DETAILS_CONTENT.pricing.cleaning.amount}
-
+                
             />
 
         </section>

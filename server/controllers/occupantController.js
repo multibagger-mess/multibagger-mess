@@ -206,6 +206,13 @@ const getHostelAvailability = async (req, res) => {
             status: "Active",
         });
 
+        const totalFounderSlots = 10;
+
+        const remainingFounderSlots = Math.max(
+            totalFounderSlots - occupiedBeds,
+            0
+        );
+
         const availableBeds = Math.max(
             TOTAL_BEDS - occupiedBeds,
             0
@@ -222,6 +229,10 @@ const getHostelAvailability = async (req, res) => {
                 occupiedBeds,
 
                 availableBeds,
+
+                remainingFounderSlots,
+
+                totalFounderSlots,
 
                 isFull: availableBeds === 0,
 

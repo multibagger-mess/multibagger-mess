@@ -1,0 +1,1 @@
+ D:\\Project-Mess\\sms_gateway\\.dart_tool\\flutter_build\\1b566d1e0bcd8af6da8ea2e8f6a8656c\\native_assets.json: 
