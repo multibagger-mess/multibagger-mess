@@ -8,6 +8,8 @@ export default function FounderSlotsCard({
 
     const percentage =
         (remainingSlots / totalSlots) * 100;
+    
+    const founderOfferActive = remainingSlots > 0;
 
         let statusColor = "text-green-600";
 let progressColor = "from-green-500 to-emerald-400";
@@ -62,11 +64,15 @@ if (remainingSlots === 0) {
                 <div>
 
                     <h3 className="font-bold text-lg">
-                        Founder Offer
+                        {founderOfferActive
+                            ? "Founder Offer"
+                            : "Founder Offer Closed"}
                     </h3>
 
                     <p className="text-sm text-gray-600">
-                        First 10 occupants get lifetime founder pricing.
+                        {founderOfferActive
+                            ? "First 10 occupants get lifetime founder pricing."
+                            : "All founder slots have been successfully claimed."}
                     </p>
 
                 </div>
@@ -138,17 +144,21 @@ if (remainingSlots === 0) {
                     {statusMessage}
                 </p>
 
-                <p className="mt-2 text-sm text-gray-600">
+                {founderOfferActive ? (
+                    <p className="mt-2 text-sm text-gray-600">
+                        Be among the first residents and lock your
 
-                    Be among the first residents and lock your
+                        <span className="font-semibold text-orange-700">
+                            {" "}₹2000/month founder price{" "}
+                        </span>
 
-                    <span className="font-semibold text-orange-700">
-                        {" "}₹2000/month founder price{" "}
-                    </span>
-
-                    forever.
-
-                </p>
+                        forever.
+                    </p>
+                ) : (
+                    <p className="mt-2 text-sm text-gray-600">
+                        Current pricing applies to all new admissions.
+                    </p>
+                )}
 
             </div>
 

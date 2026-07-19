@@ -44,11 +44,17 @@ export default function PaymentSummaryCard({
     const [totalFounderSlots, setTotalFounderSlots] =
         useState(10);
 
+    const founderOfferActive = remainingFounderSlots > 0;
+
+    const effectiveCleaning = founderOfferActive ? 0 : cleaning;
+
+    const effectiveTotal = rent + effectiveCleaning;
+
 useEffect(() => {
     if (!ready) {
         setOfferUnlocked(false);
 
-        setDisplayTotal(originalTotal);
+        setDisplayTotal(effectiveTotal);
 
         setShowRibbon(false);
 
@@ -64,7 +70,7 @@ useEffect(() => {
 
         setShowSavingsCard(false);
     }
-}, [ready, originalTotal]);
+}, [ready, effectiveTotal]);
 
     useEffect(() => {
         if (!ready || offerUnlocked) return;
@@ -78,25 +84,31 @@ useEffect(() => {
                     setShowPlaceholder(false);
                 }, 200);
 
-                setTimeout(() => {
-                    setShowRibbon(true);
-                }, 300);
+                if (founderOfferActive) {
+                    setTimeout(() => {
+                        setShowRibbon(true);
+                    }, 300);
+                }
 
                 setTimeout(() => {
                     setShowPaymentSummary(true);
                 }, 450);
 
-                setTimeout(() => {
-                    setShowLifetimeOffer(true);
-                }, 700);
+                if (founderOfferActive) {
+                    setTimeout(() => {
+                        setShowLifetimeOffer(true);
+                    }, 700);
+                }
 
                 setTimeout(() => {
                     setShowFounderSlots(true);
                 }, 850);
 
-                setTimeout(() => {
-                    setShowSavingsCard(true);
-                }, 1050);
+                if (founderOfferActive) {
+                    setTimeout(() => {
+                        setShowSavingsCard(true);
+                    }, 1050);
+                }
 
                 setTimeout(() => {
                     confetti({
@@ -110,34 +122,46 @@ useEffect(() => {
 
                 setTimeout(() => {
 
+                    // If the founder offer has ended,
+                    // don't animate the price reduction.
+                    if (!founderOfferActive) {
+                        setDisplayTotal(effectiveTotal);
+                        return;
+                    }
+
                     let current = originalTotal;
 
                     const countdown = setInterval(() => {
-                current--;
 
-                setDisplayTotal(current);
+                        current--;
 
-                if (current <= rent) {
-                    clearInterval(countdown);
+                        setDisplayTotal(current);
 
-                    setDisplayTotal(rent);
+                        if (current <= effectiveTotal) {
 
-                    setTimeout(() => {
-                        setShowLifetimeBadge(true);
-                    }, 400);
-                }
-            }, 18);
+                            clearInterval(countdown);
 
-            }, 450);
+                            setDisplayTotal(effectiveTotal);
+
+                            setTimeout(() => {
+                                setShowLifetimeBadge(true);
+                            }, 400);
+
+                        }
+
+                    }, 18);
+
+                }, 450);
         }, 150);
 
         return () => clearTimeout(timer);
-    }, [
-        ready,
-        offerUnlocked,
-        originalTotal,
-        rent,
-    ]);
+}, [
+    ready,
+    offerUnlocked,
+    originalTotal,
+    effectiveTotal,
+    founderOfferActive,
+]);
 
     useEffect(() => {
 
@@ -208,21 +232,23 @@ return (
 
             <>
 
-                <div
-                    className={`
-                        transition-all
-                        duration-700
-                        ${
-                            showRibbon
-                                ? "opacity-100 translate-y-0"
-                                : "opacity-0 -translate-y-6"
-                        }
-                    `}
-                >
-                    <OfferRibbon
-                        visible={showRibbon}
-                    />
-                </div>
+                {founderOfferActive && (
+                    <div
+                        className={`
+                            transition-all
+                            duration-700
+                            ${
+                                showRibbon
+                                    ? "opacity-100 translate-y-0"
+                                    : "opacity-0 -translate-y-6"
+                            }
+                        `}
+                    >
+                        <OfferRibbon
+                            visible={showRibbon}
+                        />
+                    </div>
+                )}
 
                 <div
                     className={`
@@ -238,32 +264,34 @@ return (
 
                     <PaymentBreakdown
                         rent={rent}
-                        cleaning={cleaning}
+                        cleaning={effectiveCleaning}
                         displayTotal={displayTotal}
                         offerUnlocked={offerUnlocked}
-                        showLifetimeBadge={showLifetimeBadge}
-                    />
-
-                </div>
-
-                <div
-                    className={`
-                        transition-all
-                        delay-300
-                        duration-700
-                        ${
-                            showLifetimeOffer
-                                ? "translate-y-0 opacity-100"
-                                : "translate-y-8 opacity-0"
+                        showLifetimeBadge={
+                            founderOfferActive && showLifetimeBadge
                         }
-                    `}
-                >
-
-                    <LifetimeOfferCard
-                        offerUnlocked={offerUnlocked}
                     />
 
                 </div>
+
+                {founderOfferActive && (
+                    <div
+                        className={`
+                            transition-all
+                            delay-300
+                            duration-700
+                            ${
+                                showLifetimeOffer
+                                    ? "translate-y-0 opacity-100"
+                                    : "translate-y-8 opacity-0"
+                            }
+                        `}
+                    >
+                        <LifetimeOfferCard
+                            offerUnlocked={offerUnlocked}
+                        />
+                    </div>
+                )}
 
                 <div
                     className={`
@@ -284,26 +312,26 @@ return (
 
                 </div>
 
-                <div
-                    className={`
-                        transition-all
-                        delay-500
-                        duration-700
-                        ${
-                            showSavingsCard
-                                ? "translate-y-0 opacity-100"
-                                : "translate-y-8 opacity-0"
-                        }
-                    `}
-                >
-
-                    <SavingsCard
-                        rent={rent}
-                        cleaning={cleaning}
-                        offerUnlocked={offerUnlocked}
-                    />
-
-                </div>
+                {founderOfferActive && (
+                    <div
+                        className={`
+                            transition-all
+                            delay-500
+                            duration-700
+                            ${
+                                showSavingsCard
+                                    ? "translate-y-0 opacity-100"
+                                    : "translate-y-8 opacity-0"
+                            }
+                        `}
+                    >
+                        <SavingsCard
+                            rent={rent}
+                            cleaning={effectiveCleaning}
+                            offerUnlocked={offerUnlocked}
+                        />
+                    </div>
+                )}
 
             </>
 
