@@ -4,6 +4,7 @@ import { IndianRupee, CheckCircle2 } from "lucide-react";
 export default function PaymentBreakdown({
     rent,
     cleaning,
+    originalCleaning,
     displayTotal,
     offerUnlocked,
     showLifetimeBadge,
@@ -64,7 +65,7 @@ export default function PaymentBreakdown({
                 <div className="flex items-center justify-between">
 
     <h2 className="text-xl font-bold">
-        Monthly Payment Summary
+        Monthly Fee Summary
     </h2>
 
     {offerUnlocked && (
@@ -204,7 +205,7 @@ export default function PaymentBreakdown({
                 <div className="flex items-center justify-between">
 
                     <span className="text-lg font-bold">
-                        Total Monthly
+                        Total Monthly Fee
                     </span>
 
                     <div className="flex flex-col items-end">
@@ -228,7 +229,7 @@ export default function PaymentBreakdown({
                             "
                         >
 
-                            ₹{rent + cleaning}
+                            ₹{rent + originalCleaning}
 
                         </motion.div>
 

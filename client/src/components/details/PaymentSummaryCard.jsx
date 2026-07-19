@@ -265,6 +265,7 @@ return (
                     <PaymentBreakdown
                         rent={rent}
                         cleaning={effectiveCleaning}
+                        originalCleaning={cleaning}
                         displayTotal={displayTotal}
                         offerUnlocked={offerUnlocked}
                         showLifetimeBadge={
