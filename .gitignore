@@ -1,0 +1,30 @@
+# =========================
+# VS Code
+# =========================
+.vscode/
+
+# =========================
+# Flutter
+# =========================
+.dart_tool/
+sms_gateway/.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# =========================
+# Node.js
+# =========================
+node_modules/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment variables
+.env
+.env.local
+
+# Operating System
+.DS_Store
+Thumbs.db

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Menu, X, House } from "lucide-react";
 import { Link } from "react-router-dom";
 import { ROUTES } from "../../constants/routes";
+import { COMPONENTS } from "../../theme/components";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -49,39 +50,33 @@ export default function Navbar() {
 
     <Link
     to={ROUTES.REQUEST_ACCESS}
-    className="
-        bg-blue-600
-        hover:bg-blue-700
-        hover:scale-105
-        text-white
-        px-6
-        py-3
-        rounded-full
-        font-medium
-        transition
-        duration-300
-        cursor-pointer
-    "
+    className={`
+    bg-blue-600
+    hover:bg-blue-700
+    hover:scale-105
+    text-white
+    ${COMPONENTS.button.primary}
+    transition
+    duration-300
+    cursor-pointer
+`}
 >
     Request Access
 </Link>
 
 <Link
     to={ROUTES.ACCESS_DETAILS}
-    className="
-        border
-        border-blue-600
-        text-blue-600
-        hover:bg-blue-50
-        px-6
-        py-3
-        rounded-full
-        font-medium
-        transition-all
-        duration-300
-        hover:scale-105
-        cursor-pointer
-    "
+    className={`
+    border
+    border-blue-600
+    text-blue-600
+    hover:bg-blue-50
+    ${COMPONENTS.button.secondary}
+    transition-all
+    duration-300
+    hover:scale-105
+    cursor-pointer
+`}
 >
     View Hostel Details
 </Link>
@@ -113,29 +108,25 @@ export default function Navbar() {
 
             <Link
     to={ROUTES.REQUEST_ACCESS}
-    className="
-        bg-blue-600
-        text-white
-        text-center
-        rounded-full
-        py-3
-        font-medium
-    "
+    className={`
+    bg-blue-600
+    text-white
+    text-center
+    ${COMPONENTS.button.primary}
+`}
 >
     Request Access
 </Link>
 
 <Link
     to={ROUTES.ACCESS_DETAILS}
-    className="
-        text-center
-        rounded-full
-        py-3
-        border
-        border-blue-200
-        text-blue-600
-        font-medium
-    "
+    className={`
+    text-center
+    border
+    border-blue-200
+    text-blue-600
+    ${COMPONENTS.button.secondary}
+`}
 >
     View Hostel Details
 </Link>

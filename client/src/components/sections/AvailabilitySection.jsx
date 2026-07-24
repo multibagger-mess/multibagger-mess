@@ -6,24 +6,35 @@ import {
     Users,
 } from "lucide-react";
 import occupantService from "../../services/occupantService";
+import AvailabilityCard from "../ui/AvailabilityCard";
+import { getAvailabilityStatus } from "../../utils/availabilityUtils";
+import { AVAILABILITY_CONTENT } from "../../constants/availabilityContent";
+import { HOSTEL_CONFIG } from "../../constants/hostelConfig";
+import SkeletonCard from "../ui/SkeletonCard";
 
 export default function AvailabilitySection() {
 
-const TOTAL_BEDS = 10;
-
 const [occupiedBeds, setOccupiedBeds] = useState(0);
 
-const availableBeds = TOTAL_BEDS - occupiedBeds;
+const [loading, setLoading] = useState(true);
+
+const availableBeds =
+    HOSTEL_CONFIG.totalBeds - occupiedBeds;
 
 const availablePercentage =
-    (availableBeds / TOTAL_BEDS) * 100;
+    (availableBeds / HOSTEL_CONFIG.totalBeds) * 100;
 
 const occupiedPercentage =
-    (occupiedBeds / TOTAL_BEDS) * 100;
+    (occupiedBeds / HOSTEL_CONFIG.totalBeds) * 100;
+
+const availabilityStatus =
+    getAvailabilityStatus(availableBeds);
 
 useEffect(() => {
 
     const loadOccupants = async () => {
+
+        setLoading(true);
 
         const response = await occupantService.getOccupants();
 
@@ -35,6 +46,8 @@ useEffect(() => {
 
             setOccupiedBeds(activeOccupants.length);
         }
+
+        setLoading(false);
     };
 
     loadOccupants();
@@ -90,7 +103,7 @@ useEffect(() => {
                 sm:text-base
                 "
             >
-                🟢 LIVE AVAILABILITY
+                {AVAILABILITY_CONTENT.badge}
             </div>
 
             <h2
@@ -103,7 +116,7 @@ useEffect(() => {
                 mb-4
                 "
             >
-                Live Hostel Availability
+                {AVAILABILITY_CONTENT.title}
             </h2>
 
         <p
@@ -117,8 +130,7 @@ useEffect(() => {
             leading-relaxed
             "
         >
-         Real-time occupancy of The Multi-Bagger Mess.
-         Availability updates automatically whenever a resident joins or leaves.
+         {AVAILABILITY_CONTENT.description}
         </p>
 
         <div
@@ -153,20 +165,33 @@ useEffect(() => {
     }}
 >
 
-{
-    availableBeds >= 5
-        ? "🟢 Good Availability"
-
-        : availableBeds >= 2
-
-        ? "🟠 Limited Beds"
-
-        : "🔴 Hostel Full"
-}
+{availabilityStatus.label}
 
 </span>
 
 </div>
+
+{loading ? (
+
+    <div
+        className="
+            grid
+            grid-cols-1
+            md:grid-cols-3
+            gap-6
+            mt-10
+        "
+    >
+
+        <SkeletonCard />
+
+        <SkeletonCard />
+
+        <SkeletonCard />
+
+    </div>
+
+) : (
 
         <div
     style={{
@@ -180,286 +205,41 @@ useEffect(() => {
 
     {/* Available */}
 
-    <motion.div
-
-    initial={{
-        opacity:0,
-        y:40,
-    }}
-
-    whileInView={{
-        opacity:1,
-        y:0,
-    }}
-
-    transition={{
-        duration:0.5,
-        delay:0,
-    }}
-
-    viewport={{
-        once:true,
-    }}
-
-    style={{
-        background: "#f0fdf4",
-        padding: "38px",
-        borderRadius: "20px",
-        textAlign: "center",
-        boxShadow: "0 10px 25px rgba(22,163,74,0.08)",
-        transition: "all 0.35s ease",
-        cursor: "default",
-    }}
-
-    onMouseEnter={(e)=>{
-        e.currentTarget.style.transform="translateY(-8px)";
-        e.currentTarget.style.boxShadow="0 20px 35px rgba(22,163,74,0.18)";
-    }}
-
-    onMouseLeave={(e)=>{
-        e.currentTarget.style.transform="translateY(0px)";
-        e.currentTarget.style.boxShadow="0 10px 25px rgba(22,163,74,0.08)";
-    }}
->
-        <div
-    style={{
-        width: "70px",
-        height: "70px",
-        margin: "0 auto",
-        borderRadius: "50%",
-        background: "#dcfce7",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-    }}
->
-
-    <DoorOpen
-        size={34}
-        color="#16a34a"
-    />
-
-</div>
-
-        <h3
-            style={{
-                marginTop: "15px",
-                marginBottom: "10px",
-            }}
-        >
-            Available
-        </h3>
-
-        <h1
-            style={{
-                color: "#16a34a",
-                fontSize: "62px",
-                margin: 0,
-            }}
-        >
-            {availableBeds}
-        </h1>
-
-        <p
-            style={{
-                color: "#64748b",
-            }}
-        >
-            Beds Available Right Now
-        </p>
-    </motion.div>
+<AvailabilityCard
+    title={AVAILABILITY_CONTENT.cards.available.title}
+    value={availableBeds}
+    subtitle={AVAILABILITY_CONTENT.cards.available.subtitle}
+    icon={DoorOpen}
+    color="green"
+    delay={0}
+/>
 
     {/* Capacity */}
 
-    {/* Capacity */}
-
-<motion.div
-
-    initial={{
-        opacity: 0,
-        y: 40,
-    }}
-
-    whileInView={{
-        opacity: 1,
-        y: 0,
-    }}
-
-    transition={{
-        duration: 0.5,
-        delay: 0.15,
-    }}
-
-    viewport={{
-        once: true,
-    }}
-
-    style={{
-        background: "#eff6ff",
-        padding: "38px",
-        borderRadius: "20px",
-        textAlign: "center",
-        boxShadow: "0 10px 25px rgba(37,99,235,0.08)",
-        transition: "all 0.35s ease",
-        cursor: "default",
-    }}
-
-    onMouseEnter={(e)=>{
-        e.currentTarget.style.transform="translateY(-8px)";
-        e.currentTarget.style.boxShadow="0 20px 35px rgba(37,99,235,0.18)";
-    }}
-
-    onMouseLeave={(e)=>{
-        e.currentTarget.style.transform="translateY(0px)";
-        e.currentTarget.style.boxShadow="0 10px 25px rgba(37,99,235,0.08)";
-    }}
->
-        <div
-    style={{
-        width: "70px",
-        height: "70px",
-        margin: "0 auto",
-        borderRadius: "50%",
-        background: "#dbeafe",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-    }}
->
-
-    <BedDouble
-        size={34}
-        color="#2563eb"
-    />
-
-</div>
-
-        <h3
-            style={{
-                marginTop: "15px",
-                marginBottom: "10px",
-            }}
-        >
-            Total Capacity
-        </h3>
-
-        <h1
-            style={{
-                color: "#2563eb",
-                fontSize: "62px",
-                margin: 0,
-            }}
-        >
-            {TOTAL_BEDS}
-        </h1>
-
-        <p
-            style={{
-                color: "#64748b",
-            }}
-        >
-            Total Hostel Beds
-        </p>
-    </motion.div>
+<AvailabilityCard
+    title="Total Capacity"
+    value={HOSTEL_CONFIG.totalBeds}
+    subtitle="Total Hostel Beds"
+    icon={BedDouble}
+    color="blue"
+    delay={0.15}
+/>
 
     {/* Occupied */}
 
-    {/* Occupied */}
-
-<motion.div
-
-    initial={{
-        opacity: 0,
-        y: 40,
-    }}
-
-    whileInView={{
-        opacity: 1,
-        y: 0,
-    }}
-
-    transition={{
-        duration: 0.5,
-        delay: 0.30,
-    }}
-
-    viewport={{
-        once: true,
-    }}
-
-    style={{
-        background:"#fef2f2",
-        padding:"38px",
-        borderRadius:"20px",
-        textAlign:"center",
-        boxShadow:"0 10px 25px rgba(220,38,38,0.08)",
-        transition:"all 0.35s ease",
-        cursor:"default",
-    }}
-
-    onMouseEnter={(e)=>{
-        e.currentTarget.style.transform="translateY(-8px)";
-        e.currentTarget.style.boxShadow="0 20px 35px rgba(220,38,38,0.18)";
-    }}
-
-    onMouseLeave={(e)=>{
-        e.currentTarget.style.transform="translateY(0px)";
-        e.currentTarget.style.boxShadow="0 10px 25px rgba(220,38,38,0.08)";
-    }}
->
-        <div
-    style={{
-        width: "70px",
-        height: "70px",
-        margin: "0 auto",
-        borderRadius: "50%",
-        background: "#fee2e2",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-    }}
->
-
-    <Users
-        size={34}
-        color="#dc2626"
-    />
-
+<AvailabilityCard
+    title="Occupied"
+    value={occupiedBeds}
+    subtitle="Beds Occupied"
+    icon={Users}
+    color="red"
+    delay={0.30}
+/>
 </div>
 
-        <h3
-            style={{
-                marginTop: "15px",
-                marginBottom: "10px",
-            }}
-        >
-            Occupied
-        </h3>
-
-        <h1
-            style={{
-                color: "#dc2626",
-                fontSize: "62px",
-                margin: 0,
-            }}
-        >
-            {occupiedBeds}
-        </h1>
-
-        <p
-            style={{
-                color: "#64748b",
-            }}
-        >
-            Beds Occupied
-        </p>
-    </motion.div>
-
-</div>
+)}
             <div
-    style={{
-        marginTop: "45px",
-    }}
+    className="mt-11"
 >
 
     <div
@@ -495,13 +275,13 @@ useEffect(() => {
 
 </div>
             <div
-    style={{
-        display: "flex",
-        justifyContent: "space-between",
-        marginTop: "12px",
-        fontWeight: "600",
-    }}
->
+                className="
+                flex
+                justify-between
+                mt-3
+                font-semibold
+                "
+            >
 
     <span
         style={{
@@ -522,16 +302,13 @@ useEffect(() => {
 </div>
 
 <div
-    style={{
-        marginTop: "40px",
-        display: "flex",
-        justifyContent: "center",
-        flexWrap: "wrap",
-        gap: "25px",
-        color: "#64748b",
-        fontWeight: "600",
-        fontSize: "15px",
-    }}
+        className="
+    flex
+    flex-wrap
+    justify-center
+    gap-6
+    mt-10
+    "
 >
 
     <span>

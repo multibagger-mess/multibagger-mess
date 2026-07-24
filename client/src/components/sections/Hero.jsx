@@ -9,23 +9,28 @@ import { HERO_STATS } from "../../constants/heroStats";
 
 import HostelGallery from "../ui/HostelGallery";
 
+import { TYPOGRAPHY } from "../../theme/typography";
+import { SPACING } from "../../theme/spacing";
+import { COMPONENTS } from "../../theme/components";
+
 export default function Hero() {
   return (
     <section
       id="hero"
-      className="bg-gradient-to-br from-slate-50 via-blue-50 to-white pt-28 pb-20"
+      className={`bg-gradient-to-br from-slate-50 via-blue-50 to-white pt-24 ${SPACING.sectionLarge}`}
     >
       <Container>
 
-        <div className="
-                          grid
-                          grid-cols-1
-                          lg:grid-cols-[38%_62%]
-                          gap-10
-                          lg:gap-14
-                          items-center
-                          min-h-[88vh]
-                          ">
+        <div
+        className={`
+        grid
+        grid-cols-1
+        lg:grid-cols-[40%_60%]
+        ${SPACING.gapLarge}
+        items-center
+        min-h-[80vh]
+        `}
+        >
 
           {/* LEFT COLUMN */}
 
@@ -39,11 +44,7 @@ export default function Hero() {
 
             </div>
 
-            <h1 className="mt-8 text-3xl
-                                sm:text-4xl
-                                md:text-5xl
-                                xl:text-6xl
-                                2xl:text-7xl font-extrabold leading-tight text-slate-900">
+            <h1 className={`mt-6 ${TYPOGRAPHY.heroTitle} font-extrabold leading-tight text-slate-900`}>
 
               {HERO_CONTENT.title}
 
@@ -53,15 +54,13 @@ export default function Hero() {
 
             </h1>
 
-            <p className="mt-8 text-base
-                                sm:text-lg
-                                xl:text-xl text-slate-600 leading-8 xl:leading-9 max-w-2xl">
+            <p className={`mt-6 ${TYPOGRAPHY.body} text-slate-600 leading-8 max-w-xl`}>
 
               {HERO_CONTENT.description}
 
             </p>
 
-            <div className="mt-12">
+            <div className="mt-8">
 
               <Button to={ROUTES.REQUEST_ACCESS}>
 
@@ -76,18 +75,28 @@ export default function Hero() {
               {HERO_CONTENT.helperText}
 
             </p>
-            <div className="mt-12 grid grid-cols-1
-                                        sm:grid-cols-2
-                                        lg:grid-cols-3 gap-6">
+            <div
+            className={`mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 ${SPACING.gap}`}
+            >
 
   {HERO_STATS.map((item) => (
 
     <div
       key={item.title}
-      className="rounded-3xl bg-white shadow-lg p-6 border border-slate-100 hover:shadow-2xl transition-all duration-300 hover:-translate-y-1"
+      className={`
+          bg-white
+          shadow-lg
+          border
+          border-slate-100
+          ${COMPONENTS.card.small}
+          hover:shadow-2xl
+          transition-all
+          duration-300
+          hover:-translate-y-1
+      `}
     >
 
-      <div className="text-3xl mb-3">
+      <div className="text-2xl mb-3">
         {item.icon}
       </div>
 
@@ -95,7 +104,7 @@ export default function Hero() {
         {item.title}
       </h3>
 
-      <p className="text-sm text-slate-500 mt-2">
+      <p className="text-sm text-slate-500 mt-3">
         {item.description}
       </p>
 

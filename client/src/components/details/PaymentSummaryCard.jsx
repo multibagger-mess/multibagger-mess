@@ -264,7 +264,7 @@ return (
 
                     <PaymentBreakdown
                         rent={rent}
-                        cleaning={effectiveCleaning}
+                        cleaning={cleaning}
                         originalCleaning={cleaning}
                         displayTotal={displayTotal}
                         offerUnlocked={offerUnlocked}
@@ -328,7 +328,7 @@ return (
                     >
                         <SavingsCard
                             rent={rent}
-                            cleaning={effectiveCleaning}
+                            cleaning={cleaning}
                             offerUnlocked={offerUnlocked}
                         />
                     </div>
