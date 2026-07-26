@@ -150,15 +150,49 @@ const getRequests = async (req, res) => {
 
         }
 
-        res.status(200).json({
+const data = requests.map((request) => {
 
-            success: true,
+    const requestObject = request.toObject();
 
-            count: requests.length,
+    let daysRemaining = null;
 
-            data: requests,
+    if (
+        request.status === "Approved" &&
+        request.accessExpiresAt
+    ) {
 
-        });
+        const millisecondsRemaining =
+            request.accessExpiresAt - new Date();
+
+        daysRemaining = Math.max(
+            0,
+            Math.ceil(
+                millisecondsRemaining /
+                (1000 * 60 * 60 * 24)
+            )
+        );
+
+    }
+
+    return {
+
+        ...requestObject,
+
+        daysRemaining,
+
+    };
+
+});
+
+res.status(200).json({
+
+    success: true,
+
+    count: data.length,
+
+    data,
+
+});
 
     }
 

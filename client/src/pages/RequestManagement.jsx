@@ -1,12 +1,21 @@
 import { useEffect, useState } from "react";
 import adminService from "../services/adminService";
 import AdminHeader from "../components/AdminHeader";
-import { Trash2 } from "lucide-react";
+import StatCard from "../components/ui/StatCard";
+import RequestCard from "../components/requests/RequestCard";
+import ConfirmationModal from "../components/ui/ConfirmationModal";
+import toast from "react-hot-toast";
 
 export default function AdminDashboard() {
 
   const [requests, setRequests] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("All");
+  const [loadingAction, setLoadingAction] = useState(null);
+
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [selectedRequestId, setSelectedRequestId] = useState(null);
+
   const pendingCount = requests.filter(
     (request) => request.status === "Pending"
 ).length;
@@ -18,17 +27,24 @@ const approvedCount = requests.filter(
 const rejectedCount = requests.filter(
     (request) => request.status === "Rejected"
 ).length;
+
+const expiredCount = requests.filter(
+    (request) => request.status === "Expired"
+).length;
+
 const filteredRequests = requests.filter((request) => {
 
     const search = searchTerm.toLowerCase();
 
-    return (
-
+    const matchesSearch =
         request.name.toLowerCase().includes(search) ||
+        request.phoneNumber.includes(search);
 
-        request.phoneNumber.includes(search)
+    const matchesStatus =
+        statusFilter === "All" ||
+        request.status === statusFilter;
 
-    );
+    return matchesSearch && matchesStatus;
 
 });
 
@@ -43,33 +59,23 @@ const filteredRequests = requests.filter((request) => {
 
   };
 
-  const updateStatus = async (id, status) => {
-
-    const response = await adminService.updateRequestStatus(
-        id,
-        status
-    );
-
-    if (response.success) {
-        loadRequests();
-    }
-
-};
-
-const handleDeleteRequest = async (id) => {
-
-    const confirmed = window.confirm(
-        "Are you sure you want to permanently delete this request?"
-    );
-
-    if (!confirmed) return;
+const updateStatus = async (id, status) => {
 
     try {
 
+        setLoadingAction(`${status}-${id}`);
+
         const response =
-            await adminService.deleteRequest(id);
+            await adminService.updateRequestStatus(
+                id,
+                status
+            );
 
         if (response.success) {
+
+            toast.success(
+                `Request ${status.toLowerCase()} successfully.`
+            );
 
             await loadRequests();
 
@@ -79,13 +85,72 @@ const handleDeleteRequest = async (id) => {
 
     catch (error) {
 
-        alert(
+        toast.error(
+
+            error.response?.data?.message ||
+
+            `Unable to ${status.toLowerCase()} request.`
+
+        );
+
+    }
+
+    finally {
+
+        setLoadingAction(null);
+
+    }
+
+};
+
+const handleDeleteRequest = (id) => {
+
+    setSelectedRequestId(id);
+
+    setDeleteModalOpen(true);
+
+};
+
+const confirmDeleteRequest = async () => {
+
+    try {
+
+        setLoadingAction(`Delete-${selectedRequestId}`);
+
+        const response =
+            await adminService.deleteRequest(selectedRequestId);
+
+        if (response.success) {
+
+            toast.success(
+                "Request deleted successfully."
+            );
+
+            await loadRequests();
+
+        }
+
+    }
+
+    catch (error) {
+
+        toast.error(
 
             error.response?.data?.message ||
 
             "Unable to delete request."
 
         );
+
+    }
+
+    finally {
+
+        setLoadingAction(null);
+
+        setDeleteModalOpen(false);
+
+        setSelectedRequestId(null);
 
     }
 
@@ -102,7 +167,7 @@ useEffect(() => {
   return (
 
     <div style={{
-            maxWidth: "900px",
+            maxWidth: "1200px",
             margin: "40px auto",
             padding: "20px",
         }}>
@@ -113,29 +178,55 @@ useEffect(() => {
             title="Request Management"
         />
           
-      <div
+<div
     style={{
+        display: "grid",
+        gridTemplateColumns:
+            "repeat(auto-fit, minmax(180px, 1fr))",
+        gap: "20px",
         marginBottom: "30px",
-        lineHeight: "2",
-        fontSize: "18px",
     }}
 >
-    <div>📋 Total Requests: {requests.length}</div>
 
-    <div>🟡 Pending: {pendingCount}</div>
+    <StatCard
+        title="Total Requests"
+        value={requests.length}
+        bg="#ffffff"
+    />
 
-    <div>🟢 Approved: {approvedCount}</div>
+    <StatCard
+        title="Pending"
+        value={pendingCount}
+        bg="#fef3c7"
+    />
 
-    <div>🔴 Rejected: {rejectedCount}</div>
+    <StatCard
+        title="Approved"
+        value={approvedCount}
+        bg="#dcfce7"
+    />
+
+    <StatCard
+        title="Expired"
+        value={expiredCount}
+        bg="#ffedd5"
+    />
+
+    <StatCard
+        title="Rejected"
+        value={rejectedCount}
+        bg="#fee2e2"
+    />
+
 </div>
 
       <hr />
 
       <div
-    style={{
-        margin: "25px 0",
-    }}
->
+            style={{
+                margin: "25px 0",
+            }}
+      >
 
     <input
         type="text"
@@ -152,174 +243,129 @@ useEffect(() => {
         }}
     />
 
-</div>
-
-      {filteredRequests.map((request) => (
-
-        <div
-          key={request._id}
-          style={{
-    backgroundColor: "#ffffff",
-    borderRadius: "12px",
-    boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-    padding: "20px",
-    marginBottom: "20px",
-}}
-        >
-
-          <h3
-    style={{
-        fontSize: "24px",
-        fontWeight: "600",
-        marginBottom: "12px",
-        color: "#1e293b",
-    }}
->
-    👤 {request.name}
-</h3>
-
-          <p
-    style={{
-        color: "#475569",
-        marginBottom: "10px",
-        fontSize: "16px",
-    }}
->
-    📞 {request.phoneNumber}
-</p>
-<p
-    style={{
-        color: "#64748b",
-        fontSize: "15px",
-        marginBottom: "12px",
-    }}
->
-    📅 Submitted:{" "}
-    {new Date(request.createdAt).toLocaleString()}
-</p>
-
-          <p
-    style={{
-        display: "flex",
-        alignItems: "center",
-        gap: "10px",
-        fontSize: "16px",
-        marginBottom: "20px",
-    }}
->
-    Status :{" "}
-    <span
-        style={{
-            padding: "6px 12px",
-            borderRadius: "20px",
-            color: "white",
-            fontWeight: "bold",
-            backgroundColor:
-                request.status === "Approved"
-                    ? "#16a34a"
-                    : request.status === "Rejected"
-                    ? "#dc2626"
-                    : "#f59e0b",
-        }}
-    >
-        {request.status}
-    </span>
-</p>
-          <br />
-
-<div style={{ marginTop: "20px" }}>
-
-<button
-  onClick={() => updateStatus(request._id, "Approved")}
-  disabled={request.status === "Approved"}
-  style={{
-    backgroundColor: "#16a34a",
-    color: "white",
-    border: "none",
-    padding: "10px 18px",
-    marginRight: "10px",
-    borderRadius: "6px",
-    cursor:
-      request.status === "Approved"
-        ? "not-allowed"
-        : "pointer",
-    opacity:
-      request.status === "Approved"
-        ? 0.6
-        : 1,
-  }}
->
-  {request.status === "Approved"
-    ? "✓ Approved"
-    : "Approve"}
-</button>
-
-<button
-  onClick={() => updateStatus(request._id, "Rejected")}
-  disabled={request.status === "Rejected"}
-  style={{
-    backgroundColor: "#dc2626",
-    color: "white",
-    border: "none",
-    padding: "10px 18px",
-    borderRadius: "6px",
-    cursor:
-      request.status === "Rejected"
-        ? "not-allowed"
-        : "pointer",
-    opacity:
-      request.status === "Rejected"
-        ? 0.6
-        : 1,
-  }}
->
-  {request.status === "Rejected"
-    ? "✗ Rejected"
-    : "Reject"}
-</button>
-
-<button
-
-    onClick={() =>
-        handleDeleteRequest(request._id)
-    }
-
-    style={{
-
-        backgroundColor: "#991b1b",
-
-        color: "white",
-
-        border: "none",
-
-        padding: "10px 18px",
-
-        marginLeft: "10px",
-
-        borderRadius: "6px",
-
-        cursor: "pointer",
-
-        display: "inline-flex",
-
-        alignItems: "center",
-
-        gap: "8px",
-
-    }}
-
->
-
-    <Trash2 size={16} />
-
-    Delete
-
-</button>
-</div>
-
         </div>
 
-      ))}
+        <div
+    style={{
+        display: "flex",
+        gap: "12px",
+        flexWrap: "wrap",
+        marginBottom: "30px",
+    }}
+>
+
+    {[
+        "All",
+        "Pending",
+        "Approved",
+        "Expired",
+        "Rejected",
+    ].map((status) => (
+
+        <button
+            key={status}
+            onClick={() => setStatusFilter(status)}
+            style={{
+                padding: "10px 18px",
+                borderRadius: "8px",
+                border: "none",
+                cursor: "pointer",
+                fontWeight: "600",
+
+                backgroundColor:
+                    statusFilter === status
+                        ? "#2563eb"
+                        : "#e2e8f0",
+
+                color:
+                    statusFilter === status
+                        ? "white"
+                        : "#1e293b",
+
+                transition: "0.2s",
+            }}
+        >
+            {status}
+        </button>
+
+    ))}
+
+</div>
+
+{filteredRequests.length === 0 ? (
+
+    <div
+        style={{
+            textAlign: "center",
+            padding: "80px 20px",
+            background: "#ffffff",
+            borderRadius: "14px",
+            boxShadow:
+                "0 6px 16px rgba(0,0,0,0.08)",
+        }}
+    >
+
+        <div
+            style={{
+                fontSize: "48px",
+                marginBottom: "16px",
+            }}
+        >
+            🔍
+        </div>
+
+        <h2
+            style={{
+                color: "#334155",
+                marginBottom: "10px",
+            }}
+        >
+            No requests found
+        </h2>
+
+        <p
+            style={{
+                color: "#64748b",
+                fontSize: "16px",
+            }}
+        >
+            Try another search or change the filter.
+        </p>
+
+    </div>
+
+) : (
+
+    filteredRequests.map((request) => (
+
+        <RequestCard
+            key={request._id}
+            request={request}
+            loadingAction={loadingAction}
+            onApprove={(id) => updateStatus(id, "Approved")}
+            onReject={(id) => updateStatus(id, "Rejected")}
+            onDelete={handleDeleteRequest}
+        />
+
+    ))
+
+)}
+
+<ConfirmationModal
+    open={deleteModalOpen}
+    title="Delete Request"
+    message="Are you sure you want to permanently delete this request? This action cannot be undone."
+    confirmText="Delete"
+    confirmColor="#dc2626"
+    onCancel={() => {
+
+        setDeleteModalOpen(false);
+
+        setSelectedRequestId(null);
+
+    }}
+    onConfirm={confirmDeleteRequest}
+/>
 
     </div>
 
