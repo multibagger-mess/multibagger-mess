@@ -1,0 +1,7 @@
+const REQUEST_CONFIG = {
+
+    REJECTION_COOLDOWN_HOURS: 24,
+
+};
+
+module.exports = REQUEST_CONFIG;

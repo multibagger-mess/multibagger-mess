@@ -78,6 +78,24 @@ telegramLinkedAt: {
     default: null,
 },
 
+rejectedAt: {
+
+    type: Date,
+
+    default: null,
+
+},
+
+rejectionReason: {
+
+    type: String,
+
+    trim: true,
+
+    default: null,
+
+},
+
   },
   {
     timestamps: true,

@@ -9,6 +9,8 @@ const crypto = require("crypto");
 const notificationService =
 require("../services/notification");
 
+const REQUEST_CONFIG = require("../config/requestConfig");
+
 // Create a new access request
 const createRequest = async (req, res) => {
   try {
@@ -21,34 +23,69 @@ const createRequest = async (req, res) => {
         message: "Name and phone number are required.",
       });
     }
-    const existingRequest = await Request.findOne({ phoneNumber });
-    
-    if (existingRequest && existingRequest.status === "Pending") {
-    return res.status(400).json({
-        success: false,
-        message: "You already have a pending request.",
-    });
-}
+    const latestRequest = await Request.findOne({ phoneNumber })
+    .sort({ createdAt: -1 });
 
-if (existingRequest && existingRequest.status === "Approved") {
-    return res.status(400).json({
-        success: false,
-        message: "Your request has already been approved.",
-    });
-}
+if (latestRequest) {
 
-if (existingRequest && existingRequest.status === "Rejected") {
+    if (latestRequest.status === "Pending") {
 
-    existingRequest.status = "Pending";
-    existingRequest.name = name;
+        return res.status(409).json({
 
-    await existingRequest.save();
+            success: false,
 
-    return res.status(200).json({
-        success: true,
-        message: "Request submitted again successfully.",
-        data: existingRequest,
-    });
+            code: "REQUEST_ALREADY_PENDING",
+
+            message:
+                "Your request is already pending for approval. Please wait while the hostel administrator reviews your application. You will receive a notification once your request has been approved or rejected."
+
+        });
+
+    }
+
+    if (latestRequest.status === "Approved") {
+
+        return res.status(409).json({
+
+            success: false,
+
+            code: "REQUEST_ALREADY_APPROVED",
+
+            message:
+                "Your request has already been approved. You already have access to the hostel details."
+
+        });
+
+    }
+
+    if (latestRequest.status === "Rejected") {
+
+        const cooldownEnds = new Date(
+            latestRequest.rejectedAt.getTime() +
+            REQUEST_CONFIG.REJECTION_COOLDOWN_HOURS * 60 * 60 * 1000
+        );
+
+        if (new Date() < cooldownEnds) {
+
+            return res.status(429).json({
+
+    success: false,
+
+    code: "REJECTION_COOLDOWN",
+
+    message:
+        "Your previous request was rejected.",
+
+    cooldownHours:
+        REQUEST_CONFIG.REJECTION_COOLDOWN_HOURS,
+
+    cooldownEnds,
+
+});
+
+        }
+
+    }
 
 }
     // Save request to MongoDB
@@ -88,23 +125,57 @@ catch (error) {
 };
 // Get all requests
 const getRequests = async (req, res) => {
-    try {
-        const requests = await Request.find().sort({ createdAt: -1 });
 
-        res.status(200).json({
-            success: true,
-            count: requests.length,
-            data: requests,
+    try {
+
+        const requests = await Request.find().sort({
+            createdAt: -1,
         });
 
-    } catch (error) {
+        const now = new Date();
+
+        for (const request of requests) {
+
+            if (
+                request.status === "Approved" &&
+                request.accessExpiresAt &&
+                now > request.accessExpiresAt
+            ) {
+
+                request.status = "Expired";
+
+                await request.save();
+
+            }
+
+        }
+
+        res.status(200).json({
+
+            success: true,
+
+            count: requests.length,
+
+            data: requests,
+
+        });
+
+    }
+
+    catch (error) {
+
         console.error(error);
 
         res.status(500).json({
+
             success: false,
+
             message: "Internal Server Error",
+
         });
+
     }
+
 };
 // Update request status
 const updateRequestStatus = async (req, res) => {
@@ -173,8 +244,21 @@ else {
 
     request.accessExpiresAt = null;
 
-}
+    request.accessToken = null;
 
+    request.tokenExpiresAt = null;
+
+    if (status === "Rejected") {
+
+        request.rejectedAt = new Date();
+
+    } else {
+
+        request.rejectedAt = null;
+
+    }
+
+}
         await request.save();
 
         if (status === "Approved") {
@@ -454,12 +538,6 @@ const verifyAccessToken = async (req, res) => {
         request.lastAccessedAt = new Date();
 
         await request.save();
-
-        request.accessCount += 1;
-
-request.lastAccessedAt = new Date();
-
-await request.save();
 
 const today = new Date();
 

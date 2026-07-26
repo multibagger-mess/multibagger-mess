@@ -11,6 +11,12 @@ import {
   validateName,
   validatePhone,
 } from "../../utils/validators";
+import { motion } from "framer-motion";
+import {
+  FaUser,
+  FaPhoneAlt,
+  FaSpinner,
+} from "react-icons/fa";
 
 export default function RequestAccessForm() {
   const navigate = useNavigate();
@@ -24,6 +30,10 @@ export default function RequestAccessForm() {
     name: "",
     phone: "",
   });
+
+  const [serverResponse, setServerResponse] = useState(null);
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
  const handleChange = (field) => (event) => {
 
@@ -53,45 +63,65 @@ export default function RequestAccessForm() {
 
 };
 
-  const handleSubmit = async (event) => {
+ const handleSubmit = async (event) => {
+
     event.preventDefault();
 
     const nameError = validateName(formData.name);
     const phoneError = validatePhone(formData.phone);
 
     if (nameError || phoneError) {
-      setErrors({
-        name: nameError,
-        phone: phoneError,
-      });
 
-      return;
+        setErrors({
+
+            name: nameError,
+
+            phone: phoneError,
+
+        });
+
+        return;
+
     }
 
-    const response = await requestService.submitRequest(formData);
+    try {
 
-if (response.success) {
+          setServerResponse(null);
 
-    navigate(
+          setIsSubmitting(true);
 
-        ROUTES.REQUEST_SUBMITTED,
+          const response =
+              await requestService.submitRequest(formData);
 
-        {
+        if (response.success) {
 
-            state: {
+            setIsSubmitting(false);
 
-                phoneNumber: formData.phone,
-
-                name: formData.name,
-
-            },
+            navigate(
+                ROUTES.REQUEST_SUBMITTED,
+                {
+                    state: {
+                        phoneNumber: formData.phone,
+                        name: formData.name,
+                    },
+                }
+            );
 
         }
 
-    );
+    }
+
+    catch (error) {
+
+    setIsSubmitting(false);
+
+    const data = error.response?.data;
+
+    setServerResponse(data);
 
 }
-  };
+
+};
 
   return (
     <form
@@ -100,6 +130,7 @@ if (response.success) {
     >
       <div>
         <InputField
+          icon={<FaUser />}
           label={REQUEST_ACCESS_CONTENT.fields.name.label}
           placeholder={REQUEST_ACCESS_CONTENT.fields.name.placeholder}
           value={formData.name}
@@ -115,6 +146,7 @@ if (response.success) {
 
       <div>
         <InputField
+          icon={<FaPhoneAlt />}
           label={REQUEST_ACCESS_CONTENT.fields.phone.label}
           type="tel"
           placeholder={REQUEST_ACCESS_CONTENT.fields.phone.placeholder}
@@ -129,9 +161,156 @@ if (response.success) {
         )}
       </div>
 
-      <Button>
-        {REQUEST_ACCESS_CONTENT.buttonText}
-      </Button>
+{serverResponse && (
+
+<motion.div
+key={serverResponse.code}
+initial={{
+    opacity: 0,
+    y: 15,
+    scale: 0.97,
+}}
+animate={{
+    opacity: 1,
+    y: 0,
+    scale: 1,
+}}
+transition={{
+    duration: 0.35,
+    ease: "easeOut",
+}}
+className={`rounded-2xl border p-6 shadow-sm transition-all duration-300
+
+${
+serverResponse.code === "REQUEST_ALREADY_PENDING"
+? "border-amber-300 bg-amber-50"
+
+: serverResponse.code === "REQUEST_ALREADY_APPROVED"
+? "border-green-300 bg-green-50"
+
+: serverResponse.code === "REJECTION_COOLDOWN"
+? "border-red-300 bg-red-50"
+
+: "border-blue-300 bg-blue-50"
+
+}
+`}
+>
+
+<h3 className="text-xl font-bold">
+
+{
+
+serverResponse.code === "REQUEST_ALREADY_PENDING"
+
+? "⏳ Request Under Review"
+
+: serverResponse.code === "REQUEST_ALREADY_APPROVED"
+
+? "✅ Access Already Granted"
+
+: serverResponse.code === "REJECTION_COOLDOWN"
+
+? "❌ Request Rejected"
+
+: "ℹ️ Notice"
+
+}
+
+</h3>
+
+<p className="mt-3 leading-7 text-slate-700">
+
+{serverResponse.message}
+
+</p>
+
+{
+
+serverResponse.code === "REJECTION_COOLDOWN" && (
+
+<>
+
+<p className="mt-4 font-semibold">
+
+You may submit another request after
+
+</p>
+
+<div className="mt-4 space-y-3">
+
+    <div className="inline-block rounded-lg bg-white px-4 py-2 shadow-sm">
+
+        📅 {" "}
+        {new Date(serverResponse.cooldownEnds).toLocaleDateString("en-GB", {
+            weekday: "long",
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+        })}
+
+    </div>
+
+    <br />
+
+    <div className="inline-block rounded-lg bg-white px-4 py-2 shadow-sm">
+
+        🕒 {" "}
+        {new Date(serverResponse.cooldownEnds).toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+        })}
+
+    </div>
+
+</div>
+
+</>
+
+)
+
+}
+
+{
+
+serverResponse.code === "REQUEST_ALREADY_APPROVED" && (
+
+<p className="mt-4">
+
+👉 Please visit the
+
+<strong>
+
+{" "}Hostel Details{" "}
+
+</strong>
+
+page to view the complete details of the hostel.
+
+</p>
+
+)
+
+}
+
+</motion.div>
+
+)}
+
+      <Button
+    type="submit"
+    disabled={isSubmitting}
+    className="w-full"
+>
+    {isSubmitting ? (
+        <>
+            <FaSpinner className="animate-spin" />
+            Submitting Request...
+        </>
+    ) : (
+        REQUEST_ACCESS_CONTENT.buttonText
+    )}
+</Button>
     </form>
   );
 }
