@@ -275,19 +275,59 @@ You may submit another request after
 
 serverResponse.code === "REQUEST_ALREADY_APPROVED" && (
 
-<p className="mt-4">
+<div className="mt-5">
 
-👉 Please visit the
+    <p className="mb-4 text-slate-700">
 
-<strong>
+        🎉 Your access has already been approved.
 
-{" "}Hostel Details{" "}
+        You can now open the complete hostel details directly.
 
-</strong>
+    </p>
 
-page to view the complete details of the hostel.
+    <button
+
+    onClick={() =>
+        navigate(ROUTES.ACCESS_DETAILS)
+    }
+
+    className="
+        w-full
+        flex
+        justify-center
+        items-center
+        gap-3
+        bg-gradient-to-r
+        from-green-600
+        to-emerald-600
+        hover:from-green-700
+        hover:to-emerald-700
+        text-white
+        py-3
+        rounded-xl
+        font-semibold
+        shadow-lg
+        hover:scale-[1.02]
+        transition-all
+        duration-200
+        cursor-pointer
+    "
+
+>
+
+    🏡
+
+    View Hostel Details
+
+</button>
+
+<p className="mt-3 text-sm text-slate-500 text-center">
+
+You won't need to submit another request unless your access is revoked.
 
 </p>
+
+</div>
 
 )
 

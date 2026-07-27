@@ -34,8 +34,14 @@ const getVisitors = async () => {
     return response.data;
 };
 
+const getVisitorById = async (id) => {
+    const response = await api.get(`/visitors/${id}`);
+    return response.data;
+};
+
 export default {
     trackVisitor,
     getSummary,
     getVisitors,
+    getVisitorById,
 };

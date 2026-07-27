@@ -5,6 +5,31 @@ export default function VisitorDetailsModal({
 
     if (!visitor) return null;
 
+    const getPageName = (page) => {
+
+        switch (page) {
+
+            case "/":
+                return "🏠 Landing Page";
+
+            case "/request-access":
+                return "📝 Request Access";
+
+            case "/details":
+                return "📄 Hostel Details";
+
+            case "/waiting":
+                return "⏳ Waiting Page";
+
+            case "/view-hostel-details":
+                return "🏡 View Hostel Details";
+
+            default:
+                return page;
+        }
+
+    };
+
     return (
 
         <div
@@ -23,10 +48,10 @@ export default function VisitorDetailsModal({
                 className="
                     bg-white
                     rounded-2xl
-                    w-[700px]
+                    shadow-2xl
+                    w-[800px]
                     max-h-[85vh]
                     overflow-y-auto
-                    shadow-2xl
                     p-8
                 "
             >
@@ -34,113 +59,59 @@ export default function VisitorDetailsModal({
                 <div className="flex justify-between items-center mb-6">
 
                     <h2 className="text-3xl font-bold">
+
                         Visitor Details
+
                     </h2>
 
                     <button
                         onClick={onClose}
                         className="
                             text-red-600
-                            font-bold
                             text-xl
+                            font-bold
+                            cursor-pointer
+                            hover:text-red-700
+                            hover:scale-110
+                            transition
+                            duration-200
                         "
+                        aria-label="Close visitor details"
                     >
                         ✕
                     </button>
 
                 </div>
 
-                <div className="grid grid-cols-2 gap-6">
+                <div className="grid md:grid-cols-2 gap-6">
 
-                    <div>
+                    <Info title="Visitor ID" value={visitor.visitorId} />
 
-                        <p className="font-semibold">
-                            Visitor ID
-                        </p>
+                    <Info title="Browser" value={visitor.browser} />
 
-                        <p>{visitor.visitorId}</p>
+                    <Info title="Operating System" value={visitor.operatingSystem} />
 
-                    </div>
+                    <Info title="Device" value={visitor.deviceType} />
 
-                    <div>
+                    <Info title="IP Address" value={visitor.ipAddress} />
 
-                        <p className="font-semibold">
-                            Browser
-                        </p>
+                    <Info title="Visit Count" value={visitor.visitCount} />
 
-                        <p>{visitor.browser}</p>
+                    <Info
+                        title="First Visit"
+                        value={new Date(visitor.firstVisit).toLocaleString()}
+                    />
 
-                    </div>
-
-                    <div>
-
-                        <p className="font-semibold">
-                            Operating System
-                        </p>
-
-                        <p>{visitor.operatingSystem}</p>
-
-                    </div>
-
-                    <div>
-
-                        <p className="font-semibold">
-                            Device
-                        </p>
-
-                        <p>{visitor.deviceType}</p>
-
-                    </div>
-
-                    <div>
-
-                        <p className="font-semibold">
-                            IP Address
-                        </p>
-
-                        <p>{visitor.ipAddress}</p>
-
-                    </div>
-
-                    <div>
-
-                        <p className="font-semibold">
-                            Visit Count
-                        </p>
-
-                        <p>{visitor.visitCount}</p>
-
-                    </div>
-
-                    <div>
-
-                        <p className="font-semibold">
-                            First Visit
-                        </p>
-
-                        <p>
-                            {new Date(visitor.firstVisit).toLocaleString()}
-                        </p>
-
-                    </div>
-
-                    <div>
-
-                        <p className="font-semibold">
-                            Last Visit
-                        </p>
-
-                        <p>
-                            {new Date(visitor.lastVisit).toLocaleString()}
-                        </p>
-
-                    </div>
+                    <Info
+                        title="Last Visit"
+                        value={new Date(visitor.lastVisit).toLocaleString()}
+                    />
 
                 </div>
 
                 <hr className="my-8" />
 
-                <h3 className="text-2xl font-bold mb-4">
+                <h3 className="text-2xl font-bold mb-5">
 
                     Visit Timeline
 
@@ -151,18 +122,21 @@ export default function VisitorDetailsModal({
                     visitor.visits.map((visit, index) => (
 
                         <div
+
                             key={index}
+
                             className="
                                 border-l-4
                                 border-blue-500
-                                pl-4
+                                pl-5
                                 mb-5
                             "
+
                         >
 
                             <p className="font-semibold">
 
-                                🕒 {new Date(
+                                {new Date(
                                     visit.timestamp
                                 ).toLocaleString()}
 
@@ -170,7 +144,7 @@ export default function VisitorDetailsModal({
 
                             <p>
 
-                                📄 {visit.page}
+                                {getPageName(visit.page)}
 
                             </p>
 
@@ -181,6 +155,30 @@ export default function VisitorDetailsModal({
                 }
 
             </div>
+
+        </div>
+
+    );
+
+}
+
+function Info({ title, value }) {
+
+    return (
+
+        <div>
+
+            <p className="text-slate-500">
+
+                {title}
+
+            </p>
+
+            <p className="font-semibold">
+
+                {value}
+
+            </p>
 
         </div>
 

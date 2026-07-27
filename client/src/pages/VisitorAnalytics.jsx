@@ -26,10 +26,30 @@ export default function VisitorAnalytics() {
         }
     };
 
+const openVisitor = async (id) => {
+
+    try {
+
+        const visitor =
+            await visitorService.getVisitorById(id);
+
+        setSelectedVisitor(visitor);
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+    }
+
+};
+
     const navigate = useNavigate();
 
-    const [selectedVisitor, setSelectedVisitor] =
-    useState(null);
+    const [selectedVisitor, setSelectedVisitor] = useState(null);
+
+
     
     useEffect(() => {
         loadAnalytics();
@@ -124,15 +144,17 @@ export default function VisitorAnalytics() {
                 <tbody>
                     {visitors.map((visitor) => (
                         <tr
+
                             key={visitor._id}
-                            onClick={() =>
-                                setSelectedVisitor(visitor)
-                            }
+
+                            onClick={() => openVisitor(visitor._id)}
+
                             className="
-                                hover:bg-slate-100
+                                hover:bg-slate-50
                                 cursor-pointer
                                 transition
                             "
+
                         >
                             <td className="border p-2">
                                 {visitor.visitorId}
@@ -177,7 +199,7 @@ export default function VisitorAnalytics() {
                 }
 
             />
-            
+
         </div>
     );
 }

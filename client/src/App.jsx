@@ -16,8 +16,12 @@ import AdminLogin from "./pages/AdminLogin";
 import AdminProtectedRoute from "./components/auth/AdminProtectedRoute";
 import { Navigate } from "react-router-dom";
 import VisitorAnalytics from "./pages/VisitorAnalytics";
+import useVisitorTracking from "./hooks/useVisitorTracking";
 
 function App() {
+
+  useVisitorTracking();
+  
   return (
     <Routes>
   <Route
