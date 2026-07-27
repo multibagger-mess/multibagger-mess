@@ -16,4 +16,8 @@ export const ROUTES = {
   ADMIN_LOGIN: "/admin/login",
 
   ADMIN_DASHBOARD: "/admin/dashboard",
+
+  VISITOR_ANALYTICS: "/admin/visitor-analytics",
+
+  PAYMENT_VERIFICATION: "/admin/payment-verification",
 };

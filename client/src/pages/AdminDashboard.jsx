@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import adminService from "../services/adminService";
+import { useNavigate } from "react-router-dom";
+import { Home, LogOut } from "lucide-react";
 
 export default function AdminDashboard() {
 
+  const navigate = useNavigate();
   const [requests, setRequests] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const pendingCount = requests.filter(
@@ -73,57 +76,79 @@ useEffect(() => {
     {/* ADD THIS */}
 
         <div
+    style={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginBottom: "30px",
+        borderBottom: "1px solid #e5e7eb",
+        paddingBottom: "18px",
+    }}
+>
+
+    <h1
+        style={{
+            fontSize: "36px",
+            margin: 0,
+            color: "#1e293b",
+        }}
+    >
+        Admin Dashboard
+    </h1>
+
+    <div
+        style={{
+            display: "flex",
+            gap: "12px",
+        }}
+    >
+
+        <button
+            onClick={() => navigate("/")}
             style={{
                 display: "flex",
-                justifyContent: "flex-end",
-                marginBottom: "20px",
+                alignItems: "center",
+                gap: "8px",
+                background: "#f8fafc",
+                border: "1px solid #cbd5e1",
+                padding: "10px 18px",
+                borderRadius: "8px",
+                cursor: "pointer",
+                fontWeight: "600",
             }}
         >
+            <Home size={16} />
+            Back to Website
+        </button>
 
-            <button
+        <button
+            onClick={() => {
 
-                onClick={() => {
+                localStorage.removeItem("adminToken");
 
-                    localStorage.removeItem("adminToken");
+                navigate("/admin/login");
 
-                    window.location.href = "/admin/login";
+            }}
+            style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                background: "#dc2626",
+                color: "white",
+                border: "none",
+                padding: "10px 18px",
+                borderRadius: "8px",
+                cursor: "pointer",
+                fontWeight: "600",
+            }}
+        >
+            <LogOut size={16} />
+            Logout
+        </button>
 
-                }}
+    </div>
 
-                style={{
-
-                    backgroundColor:"#dc2626",
-
-                    color:"white",
-
-                    border:"none",
-
-                    padding:"10px 18px",
-
-                    borderRadius:"8px",
-
-                    cursor:"pointer",
-
-                }}
-
-            >
-
-                Logout
-
-            </button>
-
-        </div>
-
-        {/* END */}
-
-      <h1 style={{ 
-        fontSize: "36px", 
-        marginBottom: "10px",
-         color: "#1e293b", }}>
-          
-          Admin Dashboard
-          
-          </h1>
+</div>
           <div
     style={{
         display: "flex",
@@ -131,38 +156,6 @@ useEffect(() => {
         marginBottom: "20px",
     }}
 >
-
-<button
-
-    onClick={() => {
-
-        localStorage.removeItem("adminToken");
-
-        window.location.href="/admin/login";
-
-    }}
-
-    style={{
-
-        background:"#dc2626",
-
-        color:"white",
-
-        border:"none",
-
-        padding:"10px 18px",
-
-        borderRadius:"8px",
-
-        cursor:"pointer",
-
-    }}
-
->
-
-Logout
-
-</button>
 
 </div>
 

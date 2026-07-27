@@ -1,3 +1,6 @@
+import { useEffect } from "react";
+import visitorService from "../services/visitorService";
+
 import MainLayout from "../layouts/MainLayout";
 
 import Hero from "../components/sections/Hero";
@@ -7,7 +10,13 @@ import WhyChooseUs from "../components/sections/WhyChooseUs";
 import Location from "../components/sections/Location";
 import HowItWorks from "../components/sections/HowItWorks";
 
+
 export default function LandingPage() {
+
+  useEffect(() => {
+    visitorService.trackVisitor("/");
+  }, []);
+
   return (
     <MainLayout>
       <Hero />

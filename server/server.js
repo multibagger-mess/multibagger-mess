@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
 require("dotenv").config();
 
 const connectDB = require("./config/db");
@@ -9,6 +10,7 @@ const adminRoutes = require("./routes/adminRoutes");
 const telegramRoutes = require("./routes/telegramRoutes");
 const gatewayRoutes = require("./routes/gatewayRoutes");
 const gatewayStatusRoutes = require("./routes/gatewayStatusRoutes");
+const visitorRoutes = require("./routes/visitorRoutes");
 
 const app = express();
 connectDB();
@@ -24,12 +26,14 @@ app.use(
     })
 );
 app.use(express.json());
+app.use(cookieParser());
 app.use("/api/requests", requestRoutes);
 app.use("/api/occupants", occupantRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/telegram", telegramRoutes);
 app.use("/api/gateway", gatewayRoutes);
 app.use("/api/gateway", gatewayStatusRoutes);
+app.use("/api/visitors", visitorRoutes);
 
 // Test Route
 app.get("/", (req, res) => {

@@ -15,6 +15,7 @@ import AccessTokenPage from "./pages/AccessTokenPage";
 import AdminLogin from "./pages/AdminLogin";
 import AdminProtectedRoute from "./components/auth/AdminProtectedRoute";
 import { Navigate } from "react-router-dom";
+import VisitorAnalytics from "./pages/VisitorAnalytics";
 
 function App() {
   return (
@@ -85,6 +86,15 @@ function App() {
     element={
         <AdminProtectedRoute>
             <RequestManagement />
+        </AdminProtectedRoute>
+    }
+/>
+
+<Route
+    path={ROUTES.VISITOR_ANALYTICS}
+    element={
+        <AdminProtectedRoute>
+            <VisitorAnalytics />
         </AdminProtectedRoute>
     }
 />

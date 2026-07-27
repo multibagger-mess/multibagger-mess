@@ -1,0 +1,146 @@
+const UAParser = require("ua-parser-js");
+
+const {
+    trackVisitor,
+    getVisitorSummary,
+    getAllVisitors,
+    getVisitorById,
+} = require("../services/visitorService");
+
+const track = async (req, res) => {
+    try {
+        const { visitorId, page } = req.body;
+
+        if (!visitorId) {
+            return res.status(400).json({
+                success: false,
+                message: "Visitor ID is required.",
+            });
+        }
+
+        const parser = new UAParser(req.headers["user-agent"]);
+        const result = parser.getResult();
+
+        const browser = result.browser.name || "Unknown";
+        const operatingSystem = result.os.name || "Unknown";
+
+        let deviceType = "Desktop";
+
+        if (result.device.type === "mobile") {
+            deviceType = "Mobile";
+        } else if (result.device.type === "tablet") {
+            deviceType = "Tablet";
+        }
+
+        const ipAddress =
+            req.headers["x-forwarded-for"]?.split(",")[0] ||
+            req.socket.remoteAddress ||
+            "";
+
+        const visitor = await trackVisitor({
+            visitorId,
+            ipAddress,
+            browser,
+            operatingSystem,
+            deviceType,
+            page,
+        });
+
+        res.status(200).json({
+            success: true,
+            visitor,
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+            success: false,
+            message: "Failed to track visitor.",
+        });
+
+    }
+};
+
+const summary = async (req, res) => {
+
+    try {
+
+        const data = await getVisitorSummary();
+
+        res.status(200).json(data);
+
+    } catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+            success: false,
+            message: "Failed to fetch visitor summary.",
+        });
+
+    }
+
+};
+
+const getVisitors = async (req, res) => {
+
+    try {
+
+        const visitors = await getAllVisitors();
+
+        res.status(200).json(visitors);
+
+    } catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+            success: false,
+            message: "Failed to fetch visitors.",
+        });
+
+    }
+
+};
+
+const getVisitor = async (req, res) => {
+
+    try {
+
+        const visitor = await getVisitorById(req.params.id);
+
+        if (!visitor) {
+            return res.status(404).json({
+                success: false,
+                message: "Visitor not found.",
+            });
+        }
+
+        res.status(200).json(visitor);
+
+    } catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+            success: false,
+            message: "Failed to fetch visitor.",
+        });
+
+    }
+
+};
+
+module.exports = {
+
+    track,
+
+    summary,
+
+    getVisitors,
+
+    getVisitor,
+
+};

@@ -1,4 +1,9 @@
 import { useNavigate } from "react-router-dom";
+import {
+    LayoutDashboard,
+    LogOut,
+    Home,
+} from "lucide-react";
 
 export default function AdminHeader({ title }) {
 
@@ -28,22 +33,43 @@ export default function AdminHeader({ title }) {
             <div>
 
                 <button
+                    onClick={() => navigate("/")}
+                    style={{
+                        background: "transparent",
+                        border: "none",
+                        color: "#475569",
+                        cursor: "pointer",
+                        fontSize: "15px",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "6px",
+                        marginBottom: "8px",
+                        transition: "0.2s",
+                    }}
+                >
+                    <Home size={16} />
+                    Back to Website
+                </button>
 
+                <button
                     onClick={() =>
                         navigate("/admin/dashboard")
                     }
-
                     style={{
                         background: "transparent",
                         border: "none",
                         color: "#2563eb",
                         cursor: "pointer",
-                        fontSize: "16px",
-                        marginBottom: "10px",
+                        fontSize: "15px",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "6px",
+                        marginBottom: "12px",
+                        transition: "0.2s",
                     }}
-
                 >
-                    ← Dashboard
+                    <LayoutDashboard size={16} />
+                    Dashboard
                 </button>
 
                 <h1
@@ -58,9 +84,7 @@ export default function AdminHeader({ title }) {
             </div>
 
             <button
-
                 onClick={logout}
-
                 style={{
                     background: "#dc2626",
                     color: "white",
@@ -68,9 +92,13 @@ export default function AdminHeader({ title }) {
                     padding: "10px 18px",
                     borderRadius: "8px",
                     cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    fontWeight: "600",
                 }}
-
             >
+                <LogOut size={16} />
                 Logout
             </button>
 

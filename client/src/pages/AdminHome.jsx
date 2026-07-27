@@ -28,10 +28,10 @@ export default function AdminHome() {
         },
 
         {
-            title: "📊 Analytics",
+            title: "📊 Visitor Analytics",
             description:
-                "Coming Soon",
-            disabled: true,
+                "Monitor visitor traffic, browsers, devices and visit history.",
+            route: "/admin/visitor-analytics",
         },
 
     ];
@@ -52,6 +52,9 @@ export default function AdminHome() {
                 justify-between
                 items-center
                 mb-10
+                border-b
+                border-slate-300
+                pb-5
             "
             >
 
@@ -66,34 +69,68 @@ export default function AdminHome() {
 
                 </h1>
 
-                <button
+                <div className="flex gap-3">
 
-                    onClick={() => {
+    <button
 
-                        localStorage.removeItem(
-                            "adminToken"
-                        );
+        onClick={() => navigate("/")}
 
-                        navigate(
-                            "/admin/login"
-                        );
+        className="
+        flex
+        items-center
+        gap-2
+        bg-white
+        border
+        border-slate-300
+        px-5
+        py-2
+        rounded-lg
+        hover:bg-slate-100
+        transition
+        cursor-pointer
+    "
 
-                    }}
+    >
 
-                    className="
-                    bg-red-600
-                    hover:bg-red-700
-                    text-white
-                    px-5
-                    py-2
-                    rounded-lg
-                    cursor-pointer
-                "
-                >
+        🏠 Back to Website
 
-                    Logout
+    </button>
 
-                </button>
+    <button
+
+        onClick={() => {
+
+            localStorage.removeItem(
+                "adminToken"
+            );
+
+            navigate(
+                "/admin/login"
+            );
+
+        }}
+
+        className="
+        flex
+        items-center
+        gap-2
+        bg-red-600
+        hover:bg-red-700
+        text-white
+        px-5
+        py-2
+        rounded-lg
+        transition
+        cursor-pointer
+    "
+
+    >
+
+        🚪 Logout
+
+    </button>
+
+</div>
 
             </div>
 
