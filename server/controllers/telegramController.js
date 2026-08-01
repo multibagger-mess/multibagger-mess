@@ -5,6 +5,14 @@ const Request = require("../models/Request");
 const notificationService =
 require("../services/notification");
 
+const axios = require("axios");
+
+const approvedSMSTemplate =
+require("../templates/sms/approved");
+
+const SmsJob =
+require("../models/SmsJob");
+
 const generateTelegramLink = async (req, res) => {
 
     try {
@@ -87,13 +95,43 @@ const generateTelegramLink = async (req, res) => {
 
 const handleTelegramCallback = async (req, res) => {
 
-    console.log(
-        "Telegram Callback Received"
-    );
+    try {
 
-    console.log(req.body);
+        if (!req.body.callback_query) {
 
-    return res.sendStatus(200);
+            return res.sendStatus(200);
+
+        }
+
+        const callback =
+            req.body.callback_query;
+
+        const callbackData =
+            callback.data;
+
+        const action =
+            callbackData.split("_")[0];
+
+        const requestId =
+            callbackData.substring(
+                action.length + 1
+            );
+
+        console.log("Action:", action);
+
+        console.log("Request ID:", requestId);
+
+        return res.sendStatus(200);
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+        return res.sendStatus(500);
+
+    }
 
 };
 
