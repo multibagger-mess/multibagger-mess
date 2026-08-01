@@ -6,6 +6,8 @@ const {
 
     generateTelegramLink,
 
+    handleTelegramCallback,
+
 } = require("../controllers/telegramController");
 
 router.post(
@@ -13,6 +15,14 @@ router.post(
     "/link",
 
     generateTelegramLink
+
+);
+
+router.post(
+
+    "/webhook",
+
+    handleTelegramCallback
 
 );
 

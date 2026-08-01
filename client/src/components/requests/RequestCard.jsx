@@ -41,6 +41,7 @@ export default function RequestCard({
     onApprove,
     onReject,
     onDelete,
+    onWhatsApp,
 }) {
 
     const submitted = formatDateTime(request.createdAt);
@@ -318,6 +319,7 @@ return (
                 onApprove={onApprove}
                 onReject={onReject}
                 onDelete={onDelete}
+                onWhatsApp={onWhatsApp}
             />
 
         </motion.div>

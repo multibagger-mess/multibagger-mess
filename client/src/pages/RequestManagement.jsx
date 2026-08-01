@@ -73,9 +73,23 @@ const updateStatus = async (id, status) => {
 
         if (response.success) {
 
+            // Automatically open WhatsApp
             toast.success(
                 `Request ${status.toLowerCase()} successfully.`
             );
+
+            if (response.whatsappLink) {
+
+                setTimeout(() => {
+
+                    window.open(
+                        response.whatsappLink,
+                        "_blank"
+                    );
+
+                }, 500);
+
+            }
 
             await loadRequests();
 
@@ -151,6 +165,41 @@ const confirmDeleteRequest = async () => {
         setDeleteModalOpen(false);
 
         setSelectedRequestId(null);
+
+    }
+
+};
+
+const handleWhatsApp = async (id) => {
+
+    try {
+
+        const response =
+            await adminService.getWhatsAppLink(id);
+
+        if (response.success) {
+
+            window.open(
+
+                response.whatsappLink,
+
+                "_blank"
+
+            );
+
+        }
+
+    }
+
+    catch (error) {
+
+        toast.error(
+
+            error.response?.data?.message ||
+
+            "Unable to generate WhatsApp message."
+
+        );
 
     }
 
@@ -345,6 +394,7 @@ useEffect(() => {
             onApprove={(id) => updateStatus(id, "Approved")}
             onReject={(id) => updateStatus(id, "Rejected")}
             onDelete={handleDeleteRequest}
+            onWhatsApp={handleWhatsApp}
         />
 
     ))

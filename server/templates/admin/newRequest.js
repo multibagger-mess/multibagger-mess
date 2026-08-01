@@ -27,8 +27,6 @@ ${phoneNumber}
 ${formatDateTime()}
 
 ━━━━━━━━━━━━━━━━━━
-
-🌐 <b><a href="${dashboardLink}">Open Request Management</a></b>
 `;
 };
 

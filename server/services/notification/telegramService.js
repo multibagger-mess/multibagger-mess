@@ -2,16 +2,22 @@ const axios = require("axios");
 
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 
-const TELEGRAM_API = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+const TELEGRAM_API =
+`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
 
 const sendTelegramMessage = async (
-            chatId,
-            message
-        ) => {
+
+    chatId,
+
+    message,
+
+    replyMarkup = null
+
+) => {
 
     try {
 
-        const response = await axios.post(TELEGRAM_API, {
+        const payload = {
 
             chat_id: chatId,
 
@@ -21,11 +27,27 @@ const sendTelegramMessage = async (
 
             disable_web_page_preview: false,
 
-        });
+        };
+
+        if (replyMarkup) {
+
+            payload.reply_markup = replyMarkup;
+
+        }
+
+        const response = await axios.post(
+
+            TELEGRAM_API,
+
+            payload
+
+        );
 
         return response.data;
 
-    } catch (error) {
+    }
+
+    catch (error) {
 
         console.error("Telegram Error:");
 
@@ -33,16 +55,22 @@ const sendTelegramMessage = async (
 
             console.error(error.response.data);
 
-        } else {
+        }
+
+        else {
 
             console.error(error.message);
 
         }
 
         throw error;
+
     }
+
 };
 
 module.exports = {
+
     sendTelegramMessage,
+
 };

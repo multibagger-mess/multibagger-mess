@@ -11,6 +11,8 @@ const telegramRoutes = require("./routes/telegramRoutes");
 const gatewayRoutes = require("./routes/gatewayRoutes");
 const gatewayStatusRoutes = require("./routes/gatewayStatusRoutes");
 const visitorRoutes = require("./routes/visitorRoutes");
+const whatsappRoutes = require("./routes/whatsappRoutes");
+
 
 const app = express();
 connectDB();
@@ -34,6 +36,7 @@ app.use("/api/telegram", telegramRoutes);
 app.use("/api/gateway", gatewayRoutes);
 app.use("/api/gateway", gatewayStatusRoutes);
 app.use("/api/visitors", visitorRoutes);
+app.use("/api/whatsapp", whatsappRoutes);
 
 // Test Route
 app.get("/", (req, res) => {

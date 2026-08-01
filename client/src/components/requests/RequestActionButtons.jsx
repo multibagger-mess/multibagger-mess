@@ -6,6 +6,7 @@ export default function RequestActionButtons({
     onApprove,
     onReject,
     onDelete,
+    onWhatsApp,
 }) {
 
     const isApproving =
@@ -117,6 +118,42 @@ export default function RequestActionButtons({
                     ? "Deleting..."
                     : "Delete"}
             </button>
+
+            {request.status !== "Pending" && (
+
+    <button
+
+        onClick={() => onWhatsApp(request._id)}
+
+        style={{
+
+            backgroundColor: "#22c55e",
+
+            color: "white",
+
+            border: "none",
+
+            padding: "10px 18px",
+
+            borderRadius: "6px",
+
+            cursor: "pointer",
+
+            display: "flex",
+
+            alignItems: "center",
+
+            gap: "8px",
+
+        }}
+
+    >
+
+        📱 WhatsApp
+
+    </button>
+
+)}
 
         </div>
 

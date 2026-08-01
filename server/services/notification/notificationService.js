@@ -15,18 +15,65 @@ require("../../templates/sms/approved");
 const { sendSMS } =
     require("./smsService");
 
+const {
+    buildWhatsAppApprovalLink,
+    buildWhatsAppRejectionLink,
+} = require("./whatsappService");
+
 const notifyNewRequest = async (request) => {
 
     const message =
         newRequestTemplate(request);
 
+    const replyMarkup = {
+
+        inline_keyboard: [
+
+            [
+
+                {
+
+                    text: "🟢 Approve",
+
+                    callback_data: `approve_${request._id}`,
+
+                },
+
+                {
+
+                    text: "🔴 Reject",
+
+                    callback_data: `reject_${request._id}`,
+
+                },
+
+            ],
+
+            [
+
+                {
+
+                    text: "🌐 Open Dashboard",
+
+                    url: process.env.ADMIN_DASHBOARD_URL,
+
+                },
+
+            ],
+
+        ],
+
+    };
+
     await sendTelegramMessage(
 
-    process.env.TELEGRAM_CHAT_ID,
+        process.env.TELEGRAM_CHAT_ID,
 
-    message
+        message,
 
-);
+        replyMarkup
+
+    );
 
 };
 
@@ -55,13 +102,41 @@ const notifyApproval = async (request) => {
     const smsMessage =
     approvedSMSTemplate(request);
 
-await sendSMS(
+        await sendSMS(
 
-    request.phoneNumber,
+            request.phoneNumber,
 
-    smsMessage
+            smsMessage
 
-);
+        );
+    
+// ------------------------------------
+// Generate Access Link
+// ------------------------------------
+
+const accessLink =
+`${process.env.CLIENT_URL}/access/${request.accessToken}`;
+
+// ------------------------------------
+// WhatsApp Link
+// ------------------------------------
+
+const whatsappLink =
+buildWhatsAppApprovalLink({
+
+    name: request.name,
+
+    phone: request.phoneNumber,
+
+    accessLink,
+
+});
+
+return {
+
+    whatsappLink,
+
+};
 
 };
 
@@ -72,11 +147,26 @@ const notifyRejection = async (request) => {
 
     await sendTelegramMessage(
 
-    process.env.TELEGRAM_CHAT_ID,
+        process.env.TELEGRAM_CHAT_ID,
 
-    message
+        message
 
-);
+    );
+
+    const whatsappLink =
+        buildWhatsAppRejectionLink({
+
+            name: request.name,
+
+            phone: request.phoneNumber,
+
+        });
+
+    return {
+
+        whatsappLink,
+
+    };
 
 };
 

@@ -147,6 +147,42 @@ const deleteRequest = async (id) => {
 
 };
 
+const getWhatsAppLink = async (id) => {
+
+    try {
+
+        const response = await api.get(
+
+            `/whatsapp/request/${id}`,
+
+            {
+
+                headers: getHeaders(),
+
+            }
+
+        );
+
+        return response.data;
+
+    }
+
+    catch (error) {
+
+        if (error.response?.status === 401) {
+
+            localStorage.removeItem("adminToken");
+
+            window.location.href = "/admin/login";
+
+        }
+
+        throw error;
+
+    }
+
+};
+
 export default {
 
     getAllRequests,
@@ -154,5 +190,7 @@ export default {
     updateRequestStatus,
 
     deleteRequest,
+
+     getWhatsAppLink,
 
 };

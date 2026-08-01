@@ -320,17 +320,21 @@ else if (status === "Rejected") {
 
 }
 
+let notificationResult = null;
+
 try {
 
     if (status === "Approved") {
 
-        await notificationService.notifyApproval(request);
+        notificationResult =
+            await notificationService.notifyApproval(request);
 
     }
 
     else if (status === "Rejected") {
 
-        await notificationService.notifyRejection(request);
+        notificationResult =
+            await notificationService.notifyRejection(request);
 
     }
 
@@ -352,6 +356,9 @@ res.status(200).json({
     message: "Status updated successfully",
 
     data: request,
+
+    whatsappLink:
+        notificationResult?.whatsappLink || null,
 
 });
 

@@ -2,6 +2,9 @@ const crypto = require("crypto");
 
 const Request = require("../models/Request");
 
+const notificationService =
+require("../services/notification");
+
 const generateTelegramLink = async (req, res) => {
 
     try {
@@ -82,8 +85,21 @@ const generateTelegramLink = async (req, res) => {
 
 };
 
+const handleTelegramCallback = async (req, res) => {
+
+    console.log(
+        "Telegram Callback Received"
+    );
+
+    console.log(req.body);
+
+    return res.sendStatus(200);
+
+};
+
 module.exports = {
 
     generateTelegramLink,
+    handleTelegramCallback,
 
 };
