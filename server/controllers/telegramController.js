@@ -13,6 +13,12 @@ require("../templates/sms/approved");
 const SmsJob =
 require("../models/SmsJob");
 
+const {
+
+    getRequestById,
+
+} = require("../services/requestService");
+
 const generateTelegramLink = async (req, res) => {
 
     try {
@@ -116,6 +122,19 @@ const handleTelegramCallback = async (req, res) => {
             callbackData.substring(
                 action.length + 1
             );
+
+        const request =
+            await getRequestById(requestId);
+
+        console.log(
+
+            "Found Request:",
+
+            request.name,
+
+            request.phoneNumber
+
+        );
 
         console.log("Action:", action);
 
