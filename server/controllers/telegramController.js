@@ -162,6 +162,61 @@ const handleTelegramCallback = async (req, res) => {
 
                 );
 
+                if (result.deleted) {
+
+    await answerCallbackQuery(
+
+        callbackId,
+
+        "Request already deleted."
+
+    );
+
+    await editTelegramMessage(
+
+        chatId,
+
+        messageId,
+
+`🏠 <b>The Multi-Bagger Mess</b>
+
+━━━━━━━━━━━━━━━━━━
+
+⚠️ <b>REQUEST DELETED</b>
+
+This request has already been deleted
+from Request Management.
+
+No further action can be taken.
+
+━━━━━━━━━━━━━━━━━━`,
+
+        {
+
+            inline_keyboard: [
+
+                [
+
+                    {
+
+                        text: "🌐 Open Dashboard",
+
+                        url: process.env.ADMIN_DASHBOARD_URL,
+
+                    },
+
+                ],
+
+            ],
+
+        }
+
+    );
+
+    return res.sendStatus(200);
+
+}
+
             await answerCallbackQuery(
 
                 callbackId,
@@ -235,6 +290,61 @@ const handleTelegramCallback = async (req, res) => {
                     }
 
                 );
+
+                if (result.deleted) {
+
+    await answerCallbackQuery(
+
+        callbackId,
+
+        "Request already deleted."
+
+    );
+
+    await editTelegramMessage(
+
+        chatId,
+
+        messageId,
+
+`🏠 <b>The Multi-Bagger Mess</b>
+
+━━━━━━━━━━━━━━━━━━
+
+⚠️ <b>REQUEST DELETED</b>
+
+This request has already been deleted
+from Request Management.
+
+No further action can be taken.
+
+━━━━━━━━━━━━━━━━━━`,
+
+        {
+
+            inline_keyboard: [
+
+                [
+
+                    {
+
+                        text: "🌐 Open Dashboard",
+
+                        url: process.env.ADMIN_DASHBOARD_URL,
+
+                    },
+
+                ],
+
+            ],
+
+        }
+
+    );
+
+    return res.sendStatus(200);
+
+}
 
             await answerCallbackQuery(
 

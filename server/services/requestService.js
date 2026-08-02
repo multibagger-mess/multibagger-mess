@@ -30,7 +30,13 @@ const request =
 
 if (!request) {
 
-    throw new Error("Request not found.");
+    return {
+
+        success: false,
+
+        deleted: true,
+
+    };
 
 }
 
