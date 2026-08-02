@@ -2,20 +2,9 @@ const crypto = require("crypto");
 
 const Request = require("../models/Request");
 
-const notificationService =
-require("../services/notification");
-
-const axios = require("axios");
-
-const approvedSMSTemplate =
-require("../templates/sms/approved");
-
-const SmsJob =
-require("../models/SmsJob");
-
 const {
 
-    getRequestById,
+    updateRequestStatus,
 
 } = require("../services/requestService");
 
@@ -123,22 +112,51 @@ const handleTelegramCallback = async (req, res) => {
                 action.length + 1
             );
 
-        const request =
-            await getRequestById(requestId);
-
         console.log(
-
-            "Found Request:",
-
-            request.name,
-
-            request.phoneNumber
-
+            "Action:",
+            action
         );
 
-        console.log("Action:", action);
+        console.log(
+            "Request ID:",
+            requestId
+        );
 
-        console.log("Request ID:", requestId);
+        if (action === "approve") {
+
+            await updateRequestStatus(
+
+                requestId,
+
+                "Approved"
+
+            );
+
+            console.log(
+
+                "Approved Successfully"
+
+            );
+
+        }
+
+        else if (action === "reject") {
+
+            await updateRequestStatus(
+
+                requestId,
+
+                "Rejected"
+
+            );
+
+            console.log(
+
+                "Rejected Successfully"
+
+            );
+
+        }
 
         return res.sendStatus(200);
 

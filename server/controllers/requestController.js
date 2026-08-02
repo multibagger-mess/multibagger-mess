@@ -1,15 +1,12 @@
 const Request = require("../models/Request");
 
-const SmsJob = require("../models/SmsJob");
-
-const approvedSMSTemplate = require("../templates/sms/approved");
-
-const crypto = require("crypto");
-
 const notificationService =
 require("../services/notification");
 
 const REQUEST_CONFIG = require("../config/requestConfig");
+
+const requestService =
+require("../services/requestService");
 
 // Create a new access request
 const createRequest = async (req, res) => {
@@ -230,135 +227,25 @@ if (!allowedStatus.includes(status)) {
     });
 }
 
-        const request = await Request.findById(req.params.id);
+const result =
+    await requestService.updateRequestStatus(
 
-        if (!request) {
-            return res.status(404).json({
-                success: false,
-                message: "Request not found",
-            });
-        }
+        req.params.id,
 
-        request.status = status;
+        status
 
-if (status === "Approved") {
-
-    const approvedDate = new Date();
-
-    const expiryDate = new Date();
-
-    expiryDate.setDate(expiryDate.getDate() + 5);
-
-    const tokenExpiry = new Date();
-
-    tokenExpiry.setDate(tokenExpiry.getDate() + 5);
-
-    const token =
-        crypto.randomBytes(32).toString("hex");
-
-    request.status = "Approved";
-
-    request.approvedAt = approvedDate;
-
-    request.accessExpiresAt = expiryDate;
-
-    request.accessToken = token;
-
-    request.tokenExpiresAt = tokenExpiry;
-
-    request.accessCount = 0;
-
-    request.lastAccessedAt = null;
-
-}
-
-else {
-
-    request.approvedAt = null;
-
-    request.accessExpiresAt = null;
-
-    request.accessToken = null;
-
-    request.tokenExpiresAt = null;
-
-    if (status === "Rejected") {
-
-        request.rejectedAt = new Date();
-
-    } else {
-
-        request.rejectedAt = null;
-
-    }
-
-}
-        await request.save();
-
-        if (status === "Approved") {
-
-await SmsJob.create({
-
-    phone: request.phoneNumber,
-
-    message: approvedSMSTemplate(request),
-
-});
-
-}
-
-else if (status === "Rejected") {
-
-    await SmsJob.create({
-
-        phone: request.phoneNumber,
-
-        message:
-            `Hello ${request.name}, we regret to inform you that your request for The Multi-Bagger Mess has been rejected.`
-
-    });
-
-}
-
-let notificationResult = null;
-
-try {
-
-    if (status === "Approved") {
-
-        notificationResult =
-            await notificationService.notifyApproval(request);
-
-    }
-
-    else if (status === "Rejected") {
-
-        notificationResult =
-            await notificationService.notifyRejection(request);
-
-    }
-
-}
-
-catch (error) {
-
-    console.error(
-        "Notification Failed:",
-        error.message
     );
 
-}
-
-res.status(200).json({
+return res.status(200).json({
 
     success: true,
 
     message: "Status updated successfully",
 
-    data: request,
+    data: result.request,
 
     whatsappLink:
-        notificationResult?.whatsappLink || null,
+        result.whatsappLink,
 
 });
 
