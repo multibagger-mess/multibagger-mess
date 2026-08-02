@@ -152,7 +152,13 @@ const handleTelegramCallback = async (req, res) => {
 
                     requestId,
 
-                    "Approved"
+                    "Approved",
+
+                    {
+
+                        sendTelegramNotification: false,
+
+                    }
 
                 );
 
@@ -181,6 +187,8 @@ const handleTelegramCallback = async (req, res) => {
                     }),
 
                     callbackKeyboard({
+
+                        request: result.request,
 
                         whatsappLink:
                             result.whatsappLink,
@@ -218,7 +226,13 @@ const handleTelegramCallback = async (req, res) => {
 
                     requestId,
 
-                    "Rejected"
+                    "Rejected",
+
+                    {
+
+                        sendTelegramNotification: false,
+
+                    }
 
                 );
 
@@ -245,6 +259,8 @@ const handleTelegramCallback = async (req, res) => {
                 }),
 
                 callbackKeyboard({
+
+                    request: result.request,
 
                     whatsappLink:
                         result.whatsappLink,

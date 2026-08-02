@@ -77,7 +77,17 @@ const notifyNewRequest = async (request) => {
 
 };
 
-const notifyApproval = async (request) => {
+const notifyApproval = async (
+
+    request,
+
+    {
+
+        sendTelegram = true,
+
+    } = {}
+
+) => {
 
     // ------------------------------------
     // Admin Telegram Notification
@@ -86,13 +96,17 @@ const notifyApproval = async (request) => {
     const message =
         approvedTemplate(request);
 
-    await sendTelegramMessage(
+    if (sendTelegram) {
 
-        process.env.TELEGRAM_CHAT_ID,
+        await sendTelegramMessage(
 
-        message
+            process.env.TELEGRAM_CHAT_ID,
 
-    );
+            message
+
+        );
+
+    }
 
     // ------------------------------------
     // SMS Notification
@@ -145,13 +159,17 @@ const notifyRejection = async (request) => {
     const message =
         rejectedTemplate(request);
 
-    await sendTelegramMessage(
+    if (sendTelegram) {
 
-        process.env.TELEGRAM_CHAT_ID,
+        await sendTelegramMessage(
 
-        message
+            process.env.TELEGRAM_CHAT_ID,
 
-    );
+            message
+
+        );
+
+    }
 
     const whatsappLink =
         buildWhatsAppRejectionLink({

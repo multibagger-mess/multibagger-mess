@@ -1,5 +1,7 @@
 module.exports = ({
 
+    request,
+
     whatsappLink,
 
 }) => {
@@ -21,6 +23,28 @@ module.exports = ({
         ]);
 
     }
+
+    keyboard.push([
+
+        {
+
+            text:
+                request.status === "Approved"
+
+                    ? "🔴 Reject"
+
+                    : "🟢 Approve",
+
+            callback_data:
+                request.status === "Approved"
+
+                    ? `reject_${request._id}`
+
+                    : `approve_${request._id}`,
+
+        },
+
+    ]);
 
     keyboard.push([
 

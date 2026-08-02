@@ -13,9 +13,17 @@ const updateRequestStatus = async (
 
     requestId,
 
-    status
+    status,
+
+    options = {}
 
 ) => {
+
+    const {
+
+        sendTelegramNotification = true,
+
+    } = options;
 
 const request =
     await Request.findById(requestId);
@@ -121,14 +129,38 @@ try {
     if (status === "Approved") {
 
         notificationResult =
-            await notificationService.notifyApproval(request);
+            await notificationService.notifyApproval(
+
+                request,
+
+                {
+
+                    sendTelegram:
+
+                        sendTelegramNotification,
+
+                }
+
+            );
 
     }
 
     else if (status === "Rejected") {
 
         notificationResult =
-            await notificationService.notifyRejection(request);
+            await notificationService.notifyRejection(
+
+                request,
+
+                {
+
+                    sendTelegram:
+
+                        sendTelegramNotification,
+
+                }
+
+            );
 
     }
 
