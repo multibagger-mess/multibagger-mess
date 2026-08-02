@@ -283,11 +283,80 @@ const handleTelegramCallback = async (req, res) => {
 
     catch (error) {
 
-        console.error(error);
+    console.error(error);
 
-        return res.sendStatus(500);
+    if (
+
+        error.message === "Request not found."
+
+    ) {
+
+        try {
+
+            await answerCallbackQuery(
+
+                callbackId,
+
+                "Request already deleted."
+
+            );
+
+            await editTelegramMessage(
+
+                chatId,
+
+                messageId,
+
+`🏠 <b>The Multi-Bagger Mess</b>
+
+━━━━━━━━━━━━━━━━━━
+
+⚠️ <b>REQUEST NO LONGER EXISTS</b>
+
+This request has already been deleted
+from Request Management.
+
+No further action can be taken.
+
+━━━━━━━━━━━━━━━━━━`,
+
+                {
+
+                    inline_keyboard: [
+
+                        [
+
+                            {
+
+                                text: "🌐 Open Dashboard",
+
+                                url: process.env.ADMIN_DASHBOARD_URL,
+
+                            },
+
+                        ],
+
+                    ],
+
+                }
+
+            );
+
+        }
+
+        catch (telegramError) {
+
+            console.error(telegramError);
+
+        }
+
+        return res.sendStatus(200);
 
     }
+
+    return res.sendStatus(500);
+
+}
 
 };
 

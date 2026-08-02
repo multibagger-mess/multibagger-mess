@@ -1,5 +1,6 @@
 const formatDateTime = (date = new Date()) => {
     return date.toLocaleString("en-IN", {
+        timeZone: "Asia/Kolkata",
         dateStyle: "medium",
         timeStyle: "short",
     });
