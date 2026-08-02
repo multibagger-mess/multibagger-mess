@@ -69,8 +69,76 @@ const sendTelegramMessage = async (
 
 };
 
+const answerCallbackQuery = async (
+
+    callbackQueryId,
+
+    text
+
+) => {
+
+    return axios.post(
+
+        `https://api.telegram.org/bot${BOT_TOKEN}/answerCallbackQuery`,
+
+        {
+
+            callback_query_id: callbackQueryId,
+
+            text,
+
+        }
+
+    );
+
+};
+
+const editTelegramMessage = async (
+
+    chatId,
+
+    messageId,
+
+    text,
+
+    replyMarkup = null
+
+) => {
+
+    const payload = {
+
+        chat_id: chatId,
+
+        message_id: messageId,
+
+        text,
+
+        parse_mode: "HTML",
+
+    };
+
+    if (replyMarkup) {
+
+        payload.reply_markup = replyMarkup;
+
+    }
+
+    return axios.post(
+
+        `https://api.telegram.org/bot${BOT_TOKEN}/editMessageText`,
+
+        payload
+
+    );
+
+};
+
 module.exports = {
 
     sendTelegramMessage,
+
+    answerCallbackQuery,
+
+    editTelegramMessage,
 
 };

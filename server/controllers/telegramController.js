@@ -8,6 +8,20 @@ const {
 
 } = require("../services/requestService");
 
+const {
+
+    answerCallbackQuery,
+
+    editTelegramMessage,
+
+} = require("../services/notification/telegramService");
+
+const callbackResult =
+require("../templates/admin/callbackResult");
+
+const callbackKeyboard =
+require("../templates/admin/callbackKeyboard");
+
 const generateTelegramLink = async (req, res) => {
 
     try {
@@ -101,6 +115,15 @@ const handleTelegramCallback = async (req, res) => {
         const callback =
             req.body.callback_query;
 
+        const callbackId =
+            callback.id;
+
+        const chatId =
+            callback.message.chat.id;
+
+        const messageId =
+            callback.message.message_id;
+
         const callbackData =
             callback.data;
 
@@ -124,13 +147,61 @@ const handleTelegramCallback = async (req, res) => {
 
         if (action === "approve") {
 
-            await updateRequestStatus(
+            const result =
+                await updateRequestStatus(
 
-                requestId,
+                    requestId,
 
-                "Approved"
+                    "Approved"
+
+                );
+
+            await answerCallbackQuery(
+
+                callbackId,
+
+                "Request Approved ✅"
 
             );
+
+            try {
+
+                await editTelegramMessage(
+
+                    chatId,
+
+                    messageId,
+
+                    callbackResult({
+
+                        request: result.request,
+
+                        status: "Approved",
+
+                    }),
+
+                    callbackKeyboard({
+
+                        whatsappLink:
+                            result.whatsappLink,
+
+                    })
+
+                );
+
+            }
+
+            catch (error) {
+
+                console.error(
+
+                    "Unable to edit Telegram message:",
+
+                    error.response?.data || error.message
+
+                );
+
+            }
 
             console.log(
 
@@ -142,11 +213,43 @@ const handleTelegramCallback = async (req, res) => {
 
         else if (action === "reject") {
 
-            await updateRequestStatus(
+            const result =
+                await updateRequestStatus(
 
-                requestId,
+                    requestId,
 
-                "Rejected"
+                    "Rejected"
+
+                );
+
+            await answerCallbackQuery(
+
+                callbackId,
+
+                "Request Rejected ❌"
+
+            );
+
+            await editTelegramMessage(
+
+                chatId,
+
+                messageId,
+
+                callbackResult({
+
+                    request: result.request,
+
+                    status: "Rejected",
+
+                }),
+
+                callbackKeyboard({
+
+                    whatsappLink:
+                        result.whatsappLink,
+
+                })
 
             );
 
