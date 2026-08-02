@@ -47,25 +47,16 @@ const sendTelegramMessage = async (
 
     }
 
-    catch (error) {
+catch (error) {
 
-        console.error("Telegram Error:");
+    console.error(
+        "[Telegram Send Error]",
+        error.response?.data || error.message
+    );
 
-        if (error.response) {
+    throw error;
 
-            console.error(error.response.data);
-
-        }
-
-        else {
-
-            console.error(error.message);
-
-        }
-
-        throw error;
-
-    }
+}
 
 };
 
@@ -79,21 +70,41 @@ const answerCallbackQuery = async (
 
 ) => {
 
-    return axios.post(
+    try {
 
-        `https://api.telegram.org/bot${BOT_TOKEN}/answerCallbackQuery`,
+        return await axios.post(
 
-        {
+            `https://api.telegram.org/bot${BOT_TOKEN}/answerCallbackQuery`,
 
-            callback_query_id: callbackQueryId,
+            {
 
-            text,
+                callback_query_id: callbackQueryId,
 
-            show_alert: showAlert,
+                text,
 
-        }
+                show_alert: showAlert,
 
-    );
+            }
+
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(
+
+            "[Telegram Callback Error]",
+
+            error.response?.data ||
+
+            error.message
+
+        );
+
+        throw error;
+
+    }
 
 };
 
@@ -127,18 +138,33 @@ const editTelegramMessage = async (
 
     }
 
-    console.log(
-        "Reply Markup:",
-        JSON.stringify(replyMarkup, null, 2)
-    );
+try {
 
-    return axios.post(
+    return await axios.post(
 
         `https://api.telegram.org/bot${BOT_TOKEN}/editMessageText`,
 
         payload
 
     );
+
+}
+
+catch (error) {
+
+    console.error(
+
+        "[Telegram Edit Error]",
+
+        error.response?.data ||
+
+        error.message
+
+    );
+
+    throw error;
+
+}
 
 };
 

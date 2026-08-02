@@ -177,7 +177,15 @@ const handleTelegramCallback = async (req, res) => {
 
         if (action === "approve") {
 
-            const result =
+            await answerCallbackQuery(
+
+                callbackId,
+
+                "⏳ Processing..."
+
+            );
+
+                const result =
                 await updateRequestStatus(
 
                     requestId,
@@ -191,50 +199,69 @@ const handleTelegramCallback = async (req, res) => {
                     }
 
                 );
-
+                
                 if (result.deleted) {
 
-                    await answerCallbackQuery(
+    try {
 
-                        callbackId,
+        await editTelegramMessage(
 
-                        "This request has already been deleted from Request Management page.",
+            chatId,
 
-                        true
+            messageId,
 
-                    );
+            callback.message.text,
 
-                    await editTelegramMessage(
+            disabledKeyboard
 
-                        chatId,
+        );
 
-                        messageId,
+    }
 
-                        callback.message.text,
+    catch (error) {
 
-                        disabledKeyboard
+        console.error(
 
-                    );
+            "Telegram Edit Failed:",
 
-                await sendTelegramMessage(
+            error.response?.data ||
 
-                    chatId,
+            error.message
 
-                    deletedRequestTemplate()
+        );
 
-                );
+    }
 
-                    return res.sendStatus(200);
+    try {
 
-                }
+        await sendTelegramMessage(
 
-            await answerCallbackQuery(
+            chatId,
 
-                callbackId,
+            deletedRequestTemplate()
 
-                "Request Approved ✅"
+        );
 
-            );
+    }
+
+    catch (error) {
+
+        console.error(
+
+            "Telegram Send Failed:",
+
+            error.response?.data ||
+
+            error.message
+
+        );
+
+    }
+
+    return res.sendStatus(200);
+
+}
+
 
             try {
 
@@ -287,6 +314,14 @@ const handleTelegramCallback = async (req, res) => {
 
         else if (action === "reject") {
 
+            await answerCallbackQuery(
+
+                callbackId,
+
+                "⏳ Processing..."
+
+            );
+            
             const result =
                 await updateRequestStatus(
 
@@ -302,51 +337,69 @@ const handleTelegramCallback = async (req, res) => {
 
                 );
 
-                if (result.deleted) {
+ if (result.deleted) {
 
-            await answerCallbackQuery(
+    try {
 
-                callbackId,
+        await editTelegramMessage(
 
-                "This request has already been deleted from Request Management page.",
+            chatId,
 
-                true
+            messageId,
 
-            );
-    
-    console.log("Editing message with disabled keyboard...");
+            callback.message.text,
 
-    await editTelegramMessage(
+            disabledKeyboard
 
-        chatId,
+        );
 
-        messageId,
+    }
 
-        callback.message.text,
+    catch (error) {
 
-        disabledKeyboard
+        console.error(
 
-    );
+            "Telegram Edit Failed:",
 
-await sendTelegramMessage(
+            error.response?.data ||
 
-    chatId,
+            error.message
 
-    deletedRequestTemplate()
+        );
 
-);
+    }
+
+    try {
+
+        await sendTelegramMessage(
+
+            chatId,
+
+            deletedRequestTemplate()
+
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(
+
+            "Telegram Send Failed:",
+
+            error.response?.data ||
+
+            error.message
+
+        );
+
+    }
 
     return res.sendStatus(200);
 
 }
 
-            await answerCallbackQuery(
-
-                callbackId,
-
-                "Request Rejected ❌"
-
-            );
+            try{
 
             await editTelegramMessage(
 
@@ -372,7 +425,21 @@ await sendTelegramMessage(
                 })
 
             );
+        }
+        
+        catch (error) {
 
+            console.error(
+
+                "Telegram Edit Failed:",
+
+                error.response?.data ||
+
+                error.message
+
+            );
+
+        }
             console.log(
 
                 "Rejected Successfully"
@@ -385,13 +452,19 @@ await sendTelegramMessage(
 
     }
 
-    catch (error) {
+catch (error) {
 
-        console.error(error);
+    console.error(
 
-        return res.sendStatus(500);
+        error.response?.data ||
 
-    }
+        error.message
+
+    );
+
+    return res.sendStatus(500);
+
+}
 
 };
 
