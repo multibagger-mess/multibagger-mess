@@ -178,6 +178,16 @@ catch (error) {
 
 }
 
+console.log(
+    "Status:",
+    status
+);
+
+console.log(
+    "WhatsApp Link:",
+    notificationResult?.whatsappLink
+);
+
 return {
 
     request,

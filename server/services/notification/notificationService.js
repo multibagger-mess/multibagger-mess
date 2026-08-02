@@ -154,7 +154,17 @@ return {
 
 };
 
-const notifyRejection = async (request) => {
+const notifyRejection = async (
+
+    request,
+
+    {
+
+        sendTelegram = true,
+
+    } = {}
+
+) => {
 
     const message =
         rejectedTemplate(request);

@@ -21,7 +21,7 @@ function buildWhatsAppApprovalLink({
 
     });
 
-    return `https://api.whatsapp.com/send?phone=91${phone}&text=${encodeURIComponent(message)}`;return `https://wa.me/91${phone}?text=${encodeURIComponent(message)}`;
+    return `https://api.whatsapp.com/send?phone=91${phone}&text=${encodeURIComponent(message)}`;
 
 }
 
