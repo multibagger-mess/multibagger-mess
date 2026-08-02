@@ -127,6 +127,11 @@ const editTelegramMessage = async (
 
     }
 
+    console.log(
+        "Reply Markup:",
+        JSON.stringify(replyMarkup, null, 2)
+    );
+
     return axios.post(
 
         `https://api.telegram.org/bot${BOT_TOKEN}/editMessageText`,

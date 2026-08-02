@@ -129,22 +129,25 @@ const handleTelegramCallback = async (req, res) => {
             callback.message.message_id;
 
         const callbackData = callback.data;
-            
+
+        console.log("=========================");
+        console.log("Callback Data:", callbackData);
+        console.log("=========================");
+                    
 
         // ------------------------------
         // Ignore disabled button
         // ------------------------------
-        console.log("Callback Data:", callbackData);
 
         if (callbackData === "deleted") {
-            
-            console.log("Deleted button pressed");
+
+            console.log("INSIDE DELETED CALLBACK");
 
             await answerCallbackQuery(
 
                 callbackId,
 
-                "This request has already been deleted from Request Management page.",
+                "This request has already been deleted from Request Management.",
 
                 true
 
@@ -310,6 +313,8 @@ const handleTelegramCallback = async (req, res) => {
                 true
 
             );
+    
+    console.log("Editing message with disabled keyboard...");
 
     await editTelegramMessage(
 
