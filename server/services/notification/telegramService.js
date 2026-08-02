@@ -73,7 +73,9 @@ const answerCallbackQuery = async (
 
     callbackQueryId,
 
-    text
+    text,
+
+    showAlert = false
 
 ) => {
 
@@ -86,6 +88,8 @@ const answerCallbackQuery = async (
             callback_query_id: callbackQueryId,
 
             text,
+
+            show_alert: showAlert,
 
         }
 

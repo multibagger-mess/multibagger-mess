@@ -9,11 +9,9 @@ const {
 } = require("../services/requestService");
 
 const {
-
     answerCallbackQuery,
-
     editTelegramMessage,
-
+    sendTelegramMessage,
 } = require("../services/notification/telegramService");
 
 const callbackResult =
@@ -21,6 +19,12 @@ require("../templates/admin/callbackResult");
 
 const callbackKeyboard =
 require("../templates/admin/callbackKeyboard");
+
+const deletedRequestTemplate =
+require("../templates/admin/deletedRequest");
+
+const disabledKeyboard =
+require("../templates/admin/disabledKeyboard");
 
 const generateTelegramLink = async (req, res) => {
 
@@ -127,6 +131,26 @@ const handleTelegramCallback = async (req, res) => {
         const callbackData =
             callback.data;
 
+        // ------------------------------
+        // Ignore disabled button
+        // ------------------------------
+
+        if (callbackData === "deleted") {
+
+            await answerCallbackQuery(
+
+                callbackId,
+
+                "This request has already been deleted from Request Management page.",
+
+                true
+
+            );
+
+            return res.sendStatus(200);
+
+        }
+
         const action =
             callbackData.split("_")[0];
 
@@ -164,58 +188,39 @@ const handleTelegramCallback = async (req, res) => {
 
                 if (result.deleted) {
 
-    await answerCallbackQuery(
+                    await answerCallbackQuery(
 
-        callbackId,
+                        callbackId,
 
-        "Request already deleted."
+                        "This request has already been deleted from Request Management page.",
 
-    );
+                        true
 
-    await editTelegramMessage(
+                    );
 
-        chatId,
+                    await editTelegramMessage(
 
-        messageId,
+                        chatId,
 
-`🏠 <b>The Multi-Bagger Mess</b>
+                        messageId,
 
-━━━━━━━━━━━━━━━━━━
+                        callback.message.text,
 
-⚠️ <b>REQUEST DELETED</b>
+                        disabledKeyboard
 
-This request has already been deleted
-from Request Management.
+                    );
 
-No further action can be taken.
+                await sendTelegramMessage(
 
-━━━━━━━━━━━━━━━━━━`,
+                    chatId,
 
-        {
+                    deletedRequestTemplate()
 
-            inline_keyboard: [
+                );
 
-                [
+                    return res.sendStatus(200);
 
-                    {
-
-                        text: "🌐 Open Dashboard",
-
-                        url: process.env.ADMIN_DASHBOARD_URL,
-
-                    },
-
-                ],
-
-            ],
-
-        }
-
-    );
-
-    return res.sendStatus(200);
-
-}
+                }
 
             await answerCallbackQuery(
 
@@ -293,13 +298,15 @@ No further action can be taken.
 
                 if (result.deleted) {
 
-    await answerCallbackQuery(
+            await answerCallbackQuery(
 
-        callbackId,
+                callbackId,
 
-        "Request already deleted."
+                "This request has already been deleted from Request Management page.",
 
-    );
+                true
+
+            );
 
     await editTelegramMessage(
 
@@ -307,40 +314,19 @@ No further action can be taken.
 
         messageId,
 
-`🏠 <b>The Multi-Bagger Mess</b>
+        callback.message.text,
 
-━━━━━━━━━━━━━━━━━━
-
-⚠️ <b>REQUEST DELETED</b>
-
-This request has already been deleted
-from Request Management.
-
-No further action can be taken.
-
-━━━━━━━━━━━━━━━━━━`,
-
-        {
-
-            inline_keyboard: [
-
-                [
-
-                    {
-
-                        text: "🌐 Open Dashboard",
-
-                        url: process.env.ADMIN_DASHBOARD_URL,
-
-                    },
-
-                ],
-
-            ],
-
-        }
+        disabledKeyboard
 
     );
+
+await sendTelegramMessage(
+
+    chatId,
+
+    deletedRequestTemplate()
+
+);
 
     return res.sendStatus(200);
 
@@ -393,80 +379,11 @@ No further action can be taken.
 
     catch (error) {
 
-    console.error(error);
+        console.error(error);
 
-    if (
-
-        error.message === "Request not found."
-
-    ) {
-
-        try {
-
-            await answerCallbackQuery(
-
-                callbackId,
-
-                "Request already deleted."
-
-            );
-
-            await editTelegramMessage(
-
-                chatId,
-
-                messageId,
-
-`🏠 <b>The Multi-Bagger Mess</b>
-
-━━━━━━━━━━━━━━━━━━
-
-⚠️ <b>REQUEST NO LONGER EXISTS</b>
-
-This request has already been deleted
-from Request Management.
-
-No further action can be taken.
-
-━━━━━━━━━━━━━━━━━━`,
-
-                {
-
-                    inline_keyboard: [
-
-                        [
-
-                            {
-
-                                text: "🌐 Open Dashboard",
-
-                                url: process.env.ADMIN_DASHBOARD_URL,
-
-                            },
-
-                        ],
-
-                    ],
-
-                }
-
-            );
-
-        }
-
-        catch (telegramError) {
-
-            console.error(telegramError);
-
-        }
-
-        return res.sendStatus(200);
+        return res.sendStatus(500);
 
     }
-
-    return res.sendStatus(500);
-
-}
 
 };
 
