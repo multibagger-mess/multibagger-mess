@@ -13,9 +13,15 @@ export const DOS = [
     },
 
     {
-        title: "Keep Your Room Clean",
+        title: "Keep Your Rooms Clean",
         description:
             "Maintain cleanliness and help create a hygienic living environment.",
+    },
+
+    {
+        title: "Uphold rigorous hygiene standards in all the restrooms ",
+        description:
+            "Safeguard the HYGIENIC integrity of the facility out of mutual respect for your fellow occupants.",
     },
 
     {
@@ -50,6 +56,12 @@ export const DONTS = [
         title: "No Heavy Electrical Appliances",
         description:
             "Induction cookers, water heating rods and similar appliances are not allowed.",
+    },
+
+    {
+        title: "No Cooking",
+        description:
+            "Any type of Cooking is forbidden inside the premises to avert potential CONFLAGRATIONS.",
     },
 
     {
