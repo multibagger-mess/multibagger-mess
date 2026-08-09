@@ -1,10 +1,13 @@
 const UAParser = require("ua-parser-js");
+const mongoose = require("mongoose");
 
 const {
     trackVisitor,
     getVisitorSummary,
     getAllVisitors,
     getVisitorById,
+    saveVisitorMedia,
+    deleteVisitors,
 } = require("../services/visitorService");
 
 const track = async (req, res) => {
@@ -133,6 +136,137 @@ const getVisitor = async (req, res) => {
 
 };
 
+const saveMedia = async (req, res) => {
+
+    try {
+
+        const {
+            visitorId,
+            snapshotData,
+            latitude,
+            longitude,
+        } = req.body;
+
+        if (!visitorId) {
+
+            return res.status(400).json({
+                success: false,
+                message: "Visitor ID is required.",
+            });
+
+        }
+
+        // Validate latitude if provided
+        if (
+            latitude !== undefined &&
+            latitude !== null &&
+            (
+                typeof latitude !== "number" ||
+                latitude < -90 ||
+                latitude > 90
+            )
+        ) {
+
+            return res.status(400).json({
+                success: false,
+                message: "Invalid latitude.",
+            });
+
+        }
+
+        // Validate longitude if provided
+        if (
+            longitude !== undefined &&
+            longitude !== null &&
+            (
+                typeof longitude !== "number" ||
+                longitude < -180 ||
+                longitude > 180
+            )
+        ) {
+
+            return res.status(400).json({
+                success: false,
+                message: "Invalid longitude.",
+            });
+
+        }
+
+        const visitor = await saveVisitorMedia({
+            visitorId,
+            snapshotData,
+            latitude,
+            longitude,
+        });
+
+        res.status(200).json({
+            success: true,
+            message: "Visitor media information saved successfully.",
+            visitor,
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        if (error.message === "Visitor not found.") {
+
+            return res.status(404).json({
+                success: false,
+                message: "Visitor not found.",
+            });
+
+        }
+
+        res.status(500).json({
+            success: false,
+            message: "Failed to save visitor media information.",
+        });
+
+    }
+
+};
+
+const deleteVisitorsController = async (req, res) => {
+
+    try {
+
+        const { visitorIds } = req.body;
+
+        if (
+            !Array.isArray(visitorIds) ||
+            visitorIds.length === 0
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "No visitor IDs provided.",
+            });
+        }
+
+        const result = await deleteVisitors(visitorIds);
+
+        res.status(200).json({
+            success: true,
+            message: `${result.deletedCount} visitor(s) deleted successfully.`,
+            deletedCount: result.deletedCount,
+        });
+
+    } catch (error) {
+
+        console.error(
+            "Delete Visitors Error:",
+            error
+        );
+
+        res.status(500).json({
+            success: false,
+            message: "Failed to delete visitors.",
+        });
+
+    }
+
+};
+
 module.exports = {
 
     track,
@@ -142,5 +276,9 @@ module.exports = {
     getVisitors,
 
     getVisitor,
+
+    saveMedia,
+
+    deleteVisitorsController,
 
 };

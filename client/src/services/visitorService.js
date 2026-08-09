@@ -39,9 +39,52 @@ const getVisitorById = async (id) => {
     return response.data;
 };
 
+const saveVisitorMedia = async ({
+    snapshotData,
+    latitude,
+    longitude,
+}) => {
+
+    const response = await api.post("/visitors/media", {
+
+        visitorId: getVisitorId(),
+
+        snapshotData,
+
+        latitude,
+
+        longitude,
+
+    });
+
+    return response.data;
+};
+
+const deleteVisitors = async (visitorIds) => {
+
+    const token =
+        localStorage.getItem("adminToken");
+
+    const response = await api.delete(
+        "/visitors/bulk",
+        {
+            data: {
+                visitorIds,
+            },
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        }
+    );
+
+    return response.data;
+};
+
 export default {
     trackVisitor,
     getSummary,
     getVisitors,
     getVisitorById,
+    saveVisitorMedia,
+    deleteVisitors,
 };

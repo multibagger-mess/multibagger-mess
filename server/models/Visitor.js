@@ -81,6 +81,50 @@ const visitorSchema = new mongoose.Schema(
             ref: "Occupant",
             default: null,
         },
+
+        snapshot: {
+            data: {
+                type: String,
+                default: "",
+            },
+
+            capturedAt: {
+                type: Date,
+                default: null,
+            },
+
+            shared: {
+                type: Boolean,
+                default: false,
+            },
+        },
+
+       location: {
+            latitude: {
+                type: Number,
+                default: null,
+            },
+
+            longitude: {
+                type: Number,
+                default: null,
+            },
+
+            name: {
+                type: String,
+                default: "",
+            },
+
+            capturedAt: {
+                type: Date,
+                default: null,
+            },
+
+            shared: {
+                type: Boolean,
+                default: false,
+            },
+        },
     },
     {
         timestamps: true,
