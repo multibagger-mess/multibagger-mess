@@ -1,5 +1,20 @@
 const Visitor = require("../models/Visitor");
 
+const getVisitorMediaStatus = (visitor) => {
+
+    return {
+
+        hasSnapshot:
+            Boolean(visitor.snapshot?.data),
+
+        hasLocation:
+            typeof visitor.location?.latitude === "number" &&
+            typeof visitor.location?.longitude === "number",
+
+    };
+
+};
+
 const reverseGeocode = async (latitude, longitude) => {
 
     console.log(
@@ -90,6 +105,7 @@ const trackVisitor = async ({
             return {
                 visitor,
                 isNewVisitor: true,
+                ...getVisitorMediaStatus(visitor),
             };
 
         } catch (error) {
@@ -103,11 +119,15 @@ const trackVisitor = async ({
                 });
 
                 if (visitor) {
+
                     return {
                         visitor,
-                        isNewVisitor: true,
+                        isNewVisitor: false,
+                        ...getVisitorMediaStatus(visitor),
                     };
+
                 }
+
             }
 
             throw error;
@@ -155,7 +175,11 @@ const trackVisitor = async ({
 
     await visitor.save();
 
-    return visitor;
+    return {
+        visitor,
+        isNewVisitor: false,
+        ...getVisitorMediaStatus(visitor),
+    };
 };
 
 const getVisitorSummary = async () => {
@@ -226,17 +250,29 @@ const saveVisitorMedia = async ({
     longitude,
 }) => {
 
-    const visitor = await Visitor.findOne({ visitorId });
+    const visitor =
+        await Visitor.findOne({ visitorId });
 
     if (!visitor) {
-        throw new Error("Visitor not found.");
+
+        throw new Error(
+            "Visitor not found."
+        );
+
     }
 
     // Save snapshot if provided
     if (snapshotData) {
-        visitor.snapshot.data = snapshotData;
-        visitor.snapshot.capturedAt = new Date();
-        visitor.snapshot.shared = true;
+
+        visitor.snapshot.data =
+            snapshotData;
+
+        visitor.snapshot.capturedAt =
+            new Date();
+
+        visitor.snapshot.shared =
+            true;
+
     }
 
     // Save location if provided
@@ -245,32 +281,50 @@ const saveVisitorMedia = async ({
         typeof longitude === "number"
     ) {
 
-        visitor.location.latitude = latitude;
-        visitor.location.longitude = longitude;
+        visitor.location.latitude =
+            latitude;
 
-        // Convert coordinates into a readable location
-        const locationName = await reverseGeocode(
-            latitude,
-            longitude
-        );
+        visitor.location.longitude =
+            longitude;
+
+        // Convert coordinates into
+        // a readable location.
+        const locationName =
+            await reverseGeocode(
+                latitude,
+                longitude
+            );
 
         console.log(
             "LOCATION NAME RECEIVED:",
             locationName
         );
 
-        visitor.location.name = locationName;
+        visitor.location.name =
+            locationName;
 
-        visitor.location.capturedAt = new Date();
-        visitor.location.shared = true;
+        visitor.location.capturedAt =
+            new Date();
+
+        visitor.location.shared =
+            true;
+
     }
 
-        await visitor.save();
+    await visitor.save();
 
-        return {
-            visitor,
-            isNewVisitor: false,
-        };
+    return {
+        visitor,
+
+        hasSnapshot:
+            Boolean(
+                visitor.snapshot?.data
+            ),
+
+        hasLocation:
+            typeof visitor.location?.latitude === "number" &&
+            typeof visitor.location?.longitude === "number",
+    };
 };
 
 const deleteVisitors = async (visitorIds) => {

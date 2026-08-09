@@ -1,5 +1,4 @@
 const UAParser = require("ua-parser-js");
-const mongoose = require("mongoose");
 
 const {
     trackVisitor,
@@ -11,28 +10,44 @@ const {
 } = require("../services/visitorService");
 
 const track = async (req, res) => {
+
     try {
+
         const { visitorId, page } = req.body;
 
         if (!visitorId) {
+
             return res.status(400).json({
                 success: false,
                 message: "Visitor ID is required.",
             });
+
         }
 
-        const parser = new UAParser(req.headers["user-agent"]);
-        const result = parser.getResult();
+        const parser =
+            new UAParser(
+                req.headers["user-agent"]
+            );
 
-        const browser = result.browser.name || "Unknown";
-        const operatingSystem = result.os.name || "Unknown";
+        const result =
+            parser.getResult();
+
+        const browser =
+            result.browser.name || "Unknown";
+
+        const operatingSystem =
+            result.os.name || "Unknown";
 
         let deviceType = "Desktop";
 
         if (result.device.type === "mobile") {
+
             deviceType = "Mobile";
+
         } else if (result.device.type === "tablet") {
+
             deviceType = "Tablet";
+
         }
 
         const ipAddress =
@@ -40,19 +55,32 @@ const track = async (req, res) => {
             req.socket.remoteAddress ||
             "";
 
-        const visitor = await trackVisitor({
-            visitorId,
-            ipAddress,
-            browser,
-            operatingSystem,
-            deviceType,
-            page,
-        });
+        const visitorResult =
+            await trackVisitor({
+                visitorId,
+                ipAddress,
+                browser,
+                operatingSystem,
+                deviceType,
+                page,
+            });
+
+            console.log("VISITOR MEDIA STATUS:", {
+                isNewVisitor: visitorResult.isNewVisitor,
+                hasSnapshot: visitorResult.hasSnapshot,
+                hasLocation: visitorResult.hasLocation,
+            });
 
         res.status(200).json({
             success: true,
-            visitor: result.visitor,
-            isNewVisitor: result.isNewVisitor,
+            isNewVisitor:
+                visitorResult.isNewVisitor,
+
+            hasSnapshot:
+                visitorResult.hasSnapshot,
+
+            hasLocation:
+                visitorResult.hasLocation,
         });
 
     } catch (error) {
@@ -65,6 +93,7 @@ const track = async (req, res) => {
         });
 
     }
+
 };
 
 const summary = async (req, res) => {
