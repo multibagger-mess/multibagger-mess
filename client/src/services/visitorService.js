@@ -14,13 +14,24 @@ const getVisitorId = () => {
 };
 
 const trackVisitor = async (page) => {
+
     try {
-        await api.post("/visitors/track", {
-            visitorId: getVisitorId(),
-            page,
-        });
+
+        const response = await api.post(
+            "/visitors/track",
+            {
+                visitorId: getVisitorId(),
+                page,
+            }
+        );
+
+        return response.data;
+
     } catch (error) {
+
         console.error(error);
+
+        return null;
     }
 };
 

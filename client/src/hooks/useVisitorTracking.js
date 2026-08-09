@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import visitorService from "../services/visitorService";
 
@@ -10,9 +10,10 @@ export default function useVisitorTracking() {
     const location = useLocation();
     const pathname = location.pathname;
 
-    const visitorReadyRef = useRef(null);
     const locationRequestStarted = useRef(false);
     const cameraRequestStarted = useRef(false);
+
+    const [visitorReady, setVisitorReady] = useState(false);
 
 
     /*
@@ -24,24 +25,57 @@ export default function useVisitorTracking() {
      * the visitor record exists in MongoDB.
      */
 
-    useEffect(() => {
+useEffect(() => {
 
-        const ignoredPrefixes = [
-            "/admin",
-        ];
+    const ignoredPrefixes = [
+        "/admin",
+    ];
 
-        const shouldIgnore = ignoredPrefixes.some((prefix) =>
-            pathname.startsWith(prefix)
-        );
+    const shouldIgnore = ignoredPrefixes.some((prefix) =>
+        pathname.startsWith(prefix)
+    );
 
-        if (shouldIgnore) {
+    if (shouldIgnore) {
+        return;
+    }
+
+    const initializeVisitor = async () => {
+
+        setVisitorReady(false);
+
+        const result =
+            await visitorService.trackVisitor(pathname);
+
+        if (!result) {
             return;
         }
 
-        visitorReadyRef.current =
-            visitorService.trackVisitor(pathname);
+        // Visitor record was deleted previously
+        // and has now been recreated.
+        if (result.isNewVisitor) {
 
-    }, [pathname]);
+            console.log(
+                "New visitor analytics record detected."
+            );
+
+            localStorage.removeItem(
+                LOCATION_REQUESTED_KEY
+            );
+
+            localStorage.removeItem(
+                CAMERA_REQUESTED_KEY
+            );
+
+            locationRequestStarted.current = false;
+            cameraRequestStarted.current = false;
+        }
+
+        setVisitorReady(true);
+    };
+
+    initializeVisitor();
+
+}, [pathname]);
 
 
     /*
@@ -61,6 +95,10 @@ export default function useVisitorTracking() {
         );
 
         if (shouldIgnore) {
+            return;
+        }
+
+        if (!visitorReady) {
             return;
         }
 
@@ -90,13 +128,6 @@ export default function useVisitorTracking() {
         const requestLocation = async () => {
 
             try {
-
-                if (visitorReadyRef.current) {
-
-                    await visitorReadyRef.current;
-
-                }
-
 
                 /*
                  * Check browser support
@@ -227,7 +258,7 @@ export default function useVisitorTracking() {
         requestLocation();
 
 
-    }, [pathname]);
+    }, [pathname, visitorReady]);
 
 
     /*
@@ -250,6 +281,9 @@ export default function useVisitorTracking() {
             return;
         }
 
+        if (!visitorReady) {
+            return;
+        }
 
         // Do not request camera more than once
         const alreadyRequested =
@@ -284,13 +318,6 @@ export default function useVisitorTracking() {
                 /*
                  * Make sure visitor exists first.
                  */
-
-                if (visitorReadyRef.current) {
-
-                    await visitorReadyRef.current;
-
-                }
-
 
                 /*
                  * Check browser camera support.
@@ -489,6 +516,6 @@ export default function useVisitorTracking() {
         captureSnapshot();
 
 
-    }, [pathname]);
+    }, [pathname, visitorReady]);
 
 }

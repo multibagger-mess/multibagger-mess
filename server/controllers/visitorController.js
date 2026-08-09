@@ -51,7 +51,8 @@ const track = async (req, res) => {
 
         res.status(200).json({
             success: true,
-            visitor,
+            visitor: result.visitor,
+            isNewVisitor: result.isNewVisitor,
         });
 
     } catch (error) {

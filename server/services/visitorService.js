@@ -87,7 +87,10 @@ const trackVisitor = async ({
                 ],
             });
 
-            return visitor;
+            return {
+                visitor,
+                isNewVisitor: true,
+            };
 
         } catch (error) {
 
@@ -100,7 +103,10 @@ const trackVisitor = async ({
                 });
 
                 if (visitor) {
-                    return visitor;
+                    return {
+                        visitor,
+                        isNewVisitor: true,
+                    };
                 }
             }
 
@@ -259,9 +265,12 @@ const saveVisitorMedia = async ({
         visitor.location.shared = true;
     }
 
-    await visitor.save();
+        await visitor.save();
 
-    return visitor;
+        return {
+            visitor,
+            isNewVisitor: false,
+        };
 };
 
 const deleteVisitors = async (visitorIds) => {
